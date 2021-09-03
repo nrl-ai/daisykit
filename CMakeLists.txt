@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(daisykitsdk)
 
-option(COMPILE_EXAMPLES "Compile Examples" OFF)
+option(COMPILE_EXAMPLES "Compile Examples" ON)
 set(ncnn_FIND_PATH "/home/vietanhdev/Apps/ncnn-20210720-ubuntu-1804")
 
 if(ANDROID)

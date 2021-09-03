@@ -1,7 +1,6 @@
 # Daisykit SDK
 
-Fitness SDK for mobile devices.
-
+AI Kit for mobile and embedded devices.
 ## Requirements
 
 ### Ubuntu
