@@ -4,7 +4,7 @@
 using namespace std;
 using namespace daisykit::utils::logging;
 
-int MJPEGServer::_write(int sock, char* s, int len) {
+int MJPEGServer::SockWrite(int sock, char* s, int len) {
   if (len < 1) {
     len = strlen(s);
   }
@@ -12,7 +12,7 @@ int MJPEGServer::_write(int sock, char* s, int len) {
   return retval;
 }
 
-int MJPEGServer::_read(int socket, char* buffer) {
+int MJPEGServer::SockRead(int socket, char* buffer) {
   int result;
   result = recv(socket, buffer, 4096, MSG_PEEK);
   if (result < 0) {
@@ -24,17 +24,17 @@ int MJPEGServer::_read(int socket, char* buffer) {
   return result;
 }
 
-void* MJPEGServer::listen_Helper(void* context) {
+void* MJPEGServer::ListenHelper(void* context) {
   ((MJPEGServer*)context)->Listener();
   return NULL;
 }
 
-void* MJPEGServer::writer_Helper(void* context) {
+void* MJPEGServer::WriteHelper(void* context) {
   ((MJPEGServer*)context)->Writer();
   return NULL;
 }
 
-void* MJPEGServer::clientWrite_Helper(void* payload) {
+void* MJPEGServer::ClientWriteHelper(void* payload) {
   void* ctx = ((clientPayload*)payload)->context;
   struct clientFrame cf = ((clientPayload*)payload)->cf;
   ((MJPEGServer*)ctx)->ClientWrite(cf);
@@ -42,61 +42,61 @@ void* MJPEGServer::clientWrite_Helper(void* payload) {
 }
 
 MJPEGServer::MJPEGServer(int port)
-    : sock(kInvalidSocket), timeout(kTimeout), quality(90), port(port) {
+    : sock_(kInvalidSocket), timeout_(kTimeout), quality_(90), port_(port) {
   signal(SIGPIPE, SIG_IGN);
-  FD_ZERO(&master);
+  FD_ZERO(&master_);
 }
 
-MJPEGServer::~MJPEGServer() { release(); }
+MJPEGServer::~MJPEGServer() { Release(); }
 
-bool MJPEGServer::release() {
-  if (sock != kInvalidSocket) shutdown(sock, 2);
-  sock = (kInvalidSocket);
+bool MJPEGServer::Release() {
+  if (sock_ != kInvalidSocket) shutdown(sock_, 2);
+  sock_ = (kInvalidSocket);
   return false;
 }
 
-bool MJPEGServer::open() {
-  sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+bool MJPEGServer::Open() {
+  sock_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
   SockAddrIn address;
   address.sin_addr.s_addr = INADDR_ANY;
   address.sin_family = AF_INET;
-  address.sin_port = htons(port);
-  if (::bind(sock, (SockAddr*)&address, sizeof(SockAddr)) == kSocketError) {
-    std::cerr << "Error : couldn't bind sock " << sock << " to port " << port
+  address.sin_port = htons(port_);
+  if (::bind(sock_, (SockAddr*)&address, sizeof(SockAddr)) == kSocketError) {
+    std::cerr << "Error : couldn't bind sock " << sock_ << " to port " << port_
               << std::endl;
-    return release();
+    return Release();
   }
-  if (listen(sock, kNumConnections) == kSocketError) {
-    std::cerr << "Error : couldn't bind sock " << sock << " to port " << port
+  if (listen(sock_, kNumConnections) == kSocketError) {
+    std::cerr << "Error : couldn't bind sock " << sock_ << " to port " << port_
               << std::endl;
-    return release();
+    return Release();
   }
-  FD_SET(sock, &master);
+  FD_SET(sock_, &master_);
   return true;
 }
 
-bool MJPEGServer::isOpened() { return sock != kInvalidSocket; }
+bool MJPEGServer::IsOpened() { return sock_ != kInvalidSocket; }
 
-void MJPEGServer::start() {
-  pthread_mutex_lock(&mutex_writer);
-  pthread_create(&thread_listen, NULL, this->listen_Helper, this);
-  pthread_create(&thread_write, NULL, this->writer_Helper, this);
+void MJPEGServer::Start() {
+  pthread_mutex_lock(&mutex_writer_);
+  pthread_create(&thread_listen_, NULL, this->ListenHelper, this);
+  pthread_create(&thread_write_, NULL, this->WriteHelper, this);
 }
 
-void MJPEGServer::stop() {
-  this->release();
-  pthread_join(thread_listen, NULL);
-  pthread_join(thread_write, NULL);
+void MJPEGServer::Stop() {
+  this->Release();
+  pthread_join(thread_listen_, NULL);
+  pthread_join(thread_write_, NULL);
 }
 
-void MJPEGServer::write(cv::Mat frame) {
-  pthread_mutex_lock(&mutex_writer);
+void MJPEGServer::WriteFrame(cv::Mat frame) {
+  pthread_mutex_lock(&mutex_writer_);
   if (!frame.empty()) {
-    lastFrame.release();
-    lastFrame = frame.clone();
+    last_frame_.release();
+    last_frame_ = frame.clone();
   }
-  pthread_mutex_unlock(&mutex_writer);
+  pthread_mutex_unlock(&mutex_writer_);
 }
 
 void MJPEGServer::Listener() {
@@ -112,39 +112,39 @@ void MJPEGServer::Listener() {
   char* header_data = (char*)header.data();
   fd_set rread;
   Socket maxfd;
-  this->open();
-  pthread_mutex_unlock(&mutex_writer);
+  this->Open();
+  pthread_mutex_unlock(&mutex_writer_);
   while (true) {
-    rread = master;
+    rread = master_;
 
-    struct timeval to = {0, timeout};
-    maxfd = sock + 1;
-    if (sock == kInvalidSocket) {
+    struct timeval to = {0, timeout_};
+    maxfd = sock_ + 1;
+    if (sock_ == kInvalidSocket) {
       return;
     }
     int sel = select(maxfd, &rread, NULL, NULL, &to);
     if (sel > 0) {
       for (int s = 0; s < maxfd; s++) {
-        if (FD_ISSET(s, &rread) && s == sock) {
+        if (FD_ISSET(s, &rread) && s == sock_) {
           int addrlen = sizeof(SockAddr);
           SockAddrIn address = {0};
           Socket client =
-              accept(sock, (SockAddr*)&address, (socklen_t*)&addrlen);
+              accept(sock_, (SockAddr*)&address, (socklen_t*)&addrlen);
           if (client == kSocketError) {
             std::cout << "Error : couldn't accept connection on sock %d"
                       << std::endl;
             return;
           }
           maxfd = (maxfd > client ? maxfd : client);
-          pthread_mutex_lock(&mutex_cout);
+          pthread_mutex_lock(&mutex_cout_);
           char headers[4096] = "\0";
-          int readBytes = _read(client, headers);
+          int readBytes = SockRead(client, headers);
           cout << headers;
-          pthread_mutex_unlock(&mutex_cout);
-          pthread_mutex_lock(&mutex_client);
-          _write(client, header_data, header_size);
-          clients.push_back(client);
-          pthread_mutex_unlock(&mutex_client);
+          pthread_mutex_unlock(&mutex_cout_);
+          pthread_mutex_lock(&mutex_client_);
+          SockWrite(client, header_data, header_size);
+          clients_.push_back(client);
+          pthread_mutex_unlock(&mutex_client_);
         }
       }
     }
@@ -153,13 +153,13 @@ void MJPEGServer::Listener() {
 }
 
 void MJPEGServer::Writer() {
-  pthread_mutex_lock(&mutex_writer);
-  pthread_mutex_unlock(&mutex_writer);
+  pthread_mutex_lock(&mutex_writer_);
+  pthread_mutex_unlock(&mutex_writer_);
   const int milis2wait = 16666;
-  while (this->isOpened()) {
-    pthread_mutex_lock(&mutex_client);
-    int num_connected_clients = clients.size();
-    pthread_mutex_unlock(&mutex_client);
+  while (this->IsOpened()) {
+    pthread_mutex_lock(&mutex_client_);
+    int num_connected_clients = clients_.size();
+    pthread_mutex_unlock(&mutex_client_);
     if (!num_connected_clients) {
       usleep(milis2wait);
       continue;
@@ -170,23 +170,23 @@ void MJPEGServer::Writer() {
     std::vector<uchar> outbuf;
     std::vector<int> params;
     params.push_back(cv::IMWRITE_JPEG_QUALITY);
-    params.push_back(quality);
-    pthread_mutex_lock(&mutex_writer);
-    imencode(".jpg", lastFrame, outbuf, params);
-    pthread_mutex_unlock(&mutex_writer);
+    params.push_back(quality_);
+    pthread_mutex_lock(&mutex_writer_);
+    imencode(".jpg", last_frame_, outbuf, params);
+    pthread_mutex_unlock(&mutex_writer_);
     int outlen = outbuf.size();
 
-    pthread_mutex_lock(&mutex_client);
-    std::vector<int>::iterator begin = clients.begin();
-    std::vector<int>::iterator end = clients.end();
-    pthread_mutex_unlock(&mutex_client);
+    pthread_mutex_lock(&mutex_client_);
+    std::vector<int>::iterator begin = clients_.begin();
+    std::vector<int>::iterator end = clients_.end();
+    pthread_mutex_unlock(&mutex_client_);
     std::vector<clientPayload*> payloads;
     for (std::vector<int>::iterator it = begin; it != end; ++it, ++count) {
       if (count > kNumConnections) break;
       struct clientPayload* cp =
           new clientPayload({(MJPEGServer*)this, {outbuf.data(), outlen, *it}});
       payloads.push_back(cp);
-      pthread_create(&threads[count], NULL, &MJPEGServer::clientWrite_Helper,
+      pthread_create(&threads[count], NULL, &MJPEGServer::ClientWriteHelper,
                      cp);
     }
     for (; count > 0; count--) {
@@ -202,18 +202,18 @@ void MJPEGServer::ClientWrite(clientFrame& cf) {
   head << "--mjpegstream\r\nContent-Type: image/jpeg\r\nContent-Length: "
        << cf.outlen << "\r\n\r\n";
   string string_head = head.str();
-  pthread_mutex_lock(&mutex_client);
-  _write(cf.client, (char*)string_head.c_str(), string_head.size());
-  int n = _write(cf.client, (char*)(cf.outbuf), cf.outlen);
+  pthread_mutex_lock(&mutex_client_);
+  SockWrite(cf.client, (char*)string_head.c_str(), string_head.size());
+  int n = SockWrite(cf.client, (char*)(cf.outbuf), cf.outlen);
   if (n < cf.outlen) {
     std::vector<int>::iterator it;
-    it = find(clients.begin(), clients.end(), cf.client);
-    if (it != clients.end()) {
+    it = find(clients_.begin(), clients_.end(), cf.client);
+    if (it != clients_.end()) {
       std::cout << "Kill client " << cf.client << std::endl;
-      clients.erase(std::remove(clients.begin(), clients.end(), cf.client));
+      clients_.erase(std::remove(clients_.begin(), clients_.end(), cf.client));
       ::shutdown(cf.client, 2);
     }
   }
-  pthread_mutex_unlock(&mutex_client);
+  pthread_mutex_unlock(&mutex_client_);
   pthread_exit(NULL);
 }

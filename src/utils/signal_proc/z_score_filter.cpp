@@ -2,7 +2,7 @@
 
 using namespace daisykit::utils::signal_proc;
 
-std::vector<int> ZScoreFilter::filter(std::vector<ld> input) {
+std::vector<int> ZScoreFilter::Filter(std::vector<ld> input) {
   // lag for the smoothing functions
   int lag = 10;
   // standard deviations for signal

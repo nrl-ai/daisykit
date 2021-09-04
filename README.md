@@ -41,6 +41,6 @@ Follow [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.htm
 **Exceptions:**
 
 - Source code file names: `.cpp` for source file and `.h` for header files.
-- 
+- Accept `using namespace` in `.cpp` files.
 
 

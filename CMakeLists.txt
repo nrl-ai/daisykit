@@ -30,6 +30,7 @@ add_library(daisykitsdk SHARED
     src/utils/logging/mjpeg_writer.cpp
     src/utils/signal_proc/signal_smoothing.cpp
     src/utils/signal_proc/z_score_filter.cpp
+    src/utils/img_proc/img_utils.cpp
     src/utils/visualizer/viz_utils.cpp
 
     src/examples/fitness/pushup_analyzer.cpp

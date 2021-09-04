@@ -2,22 +2,23 @@
 
 using namespace daisykit::common;
 using namespace daisykit::models;
+using namespace daisykit::utils::img_proc;
 
 ActionClassifier::ActionClassifier(const std::string& param_file,
                                    const std::string& weight_file,
                                    bool smooth) {
   _smooth = smooth;
-  load_model(param_file, weight_file);
+  LoadModel(param_file, weight_file);
 }
 
-void ActionClassifier::load_model(const std::string& param_file,
+void ActionClassifier::LoadModel(const std::string& param_file,
                                   const std::string& weight_file) {
-  if (_model) {
-    delete _model;
+  if (model_) {
+    delete model_;
   }
-  _model = new ncnn::Net;
-  _model->load_param(param_file.c_str());
-  _model->load_model(weight_file.c_str());
+  model_ = new ncnn::Net;
+  model_->load_param(param_file.c_str());
+  model_->load_model(weight_file.c_str());
 }
 
 #ifdef __ANDROID__
@@ -26,32 +27,32 @@ ActionClassifier::ActionClassifier(AAssetManager* mgr,
                                    const std::string& weight_file,
                                    bool smooth) {
   _smooth = smooth;
-  load_model(mgr, param_file, weight_file);
+  LoadModel(mgr, param_file, weight_file);
 }
 
-void ActionClassifier::load_model(AAssetManager* mgr,
+void ActionClassifier::LoadModel(AAssetManager* mgr,
                                   const std::string& param_file,
                                   const std::string& weight_file) {
-  if (_model) {
-    delete _model;
+  if (model_) {
+    delete model_;
   }
-  _model = new ncnn::Net;
-  _model->load_param(mgr, param_file.c_str());
-  _model->load_model(mgr, weight_file.c_str());
+  model_ = new ncnn::Net;
+  model_->load_param(mgr, param_file.c_str());
+  model_->load_model(mgr, weight_file.c_str());
 }
 #endif
 
-Action ActionClassifier::classify(cv::Mat& image, float& confidence) {
+Action ActionClassifier::Classify(cv::Mat& image, float& confidence) {
   cv::Mat rgb = image.clone();
-  rgb = square_padding(rgb, _input_width).clone();
+  rgb = ImgUtils::SquarePadding(rgb, input_width_).clone();
   ncnn::Mat in = ncnn::Mat::from_pixels_resize(
-      rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols, rgb.rows, _input_width,
-      _input_height);
+      rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols, rgb.rows, input_width_,
+      input_height_);
 
   ncnn::Mat out;
   { 
-    ncnn::MutexLockGuard g(_lock);
-    ncnn::Extractor ex = _model->create_extractor();
+    ncnn::MutexLockGuard g(lock_);
+    ncnn::Extractor ex = model_->create_extractor();
     ex.set_num_threads(4);
     ex.input("input_1_blob", in);
     ex.extract("dense_Softmax_blob", out);
@@ -71,43 +72,18 @@ Action ActionClassifier::classify(cv::Mat& image, float& confidence) {
           std::chrono::system_clock::now().time_since_epoch())
           .count();
   if (is_pushup) {
-    _last_pushup_time = current_time;
+    last_pushup_time_ = current_time;
   }
 
   // Return smoothed result
-  if (current_time - _last_pushup_time < 2000) {
+  if (current_time - last_pushup_time_ < 2000) {
     return Action::kPushup;
   }
 
   return Action::kUnknown;
 }
 
-Action ActionClassifier::classify(cv::Mat& image) {
+Action ActionClassifier::Classify(cv::Mat& image) {
   float confidence;
-  return classify(image, confidence);
-}
-
-cv::Mat ActionClassifier::square_padding(const cv::Mat& img, int target_width) {
-  int width = img.cols, height = img.rows;
-
-  cv::Mat square = cv::Mat::zeros(target_width, target_width, img.type());
-
-  int max_dim = (width >= height) ? width : height;
-  float scale = ((float)target_width) / max_dim;
-  cv::Rect roi;
-  if (width >= height) {
-    roi.width = target_width;
-    roi.x = 0;
-    roi.height = height * scale;
-    roi.y = (target_width - roi.height) / 2;
-  } else {
-    roi.y = 0;
-    roi.height = target_width;
-    roi.width = width * scale;
-    roi.x = (target_width - roi.width) / 2;
-  }
-
-  cv::resize(img, square(roi), roi.size());
-
-  return square;
+  return Classify(image, confidence);
 }

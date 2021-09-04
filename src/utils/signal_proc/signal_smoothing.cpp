@@ -2,7 +2,7 @@
 
 using namespace daisykit::utils::signal_proc;
 
-std::vector<ld> SignalSmoothing::mean_filter_1d(std::vector<ld> input) {
+std::vector<ld> SignalSmoothing::MeanFilter1D(std::vector<ld> input) {
   std::vector<ld> processing_signal;
   double runningTotal = 0.0;
   int windowSize = 8;

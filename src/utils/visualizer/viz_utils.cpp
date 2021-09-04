@@ -2,7 +2,7 @@
 
 using namespace daisykit::utils::visualizer;
 
-void VizUtils::draw_label(cv::Mat& im, const std::string label,
+void VizUtils::DrawLabel(cv::Mat& im, const std::string label,
                           const cv::Point& origin, int fontface, double scale,
                           int thickness, int baseline, cv::Scalar text_color,
                           cv::Scalar bg_color) {

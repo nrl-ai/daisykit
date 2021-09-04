@@ -36,16 +36,16 @@ int main(int, char **) {
     cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
   
     // Detect human pose
-    std::vector<Object> bodies = body_detector->detect(rgb);
+    std::vector<Object> bodies = body_detector->Detect(rgb);
 
     // Detect keypoints
-    std::vector<std::vector<Keypoint>> keypoints = pose_detector->detect_multi(rgb, bodies);
+    std::vector<std::vector<Keypoint>> keypoints = pose_detector->DetectMulti(rgb, bodies);
 
     // Recognize action and count pushups
     float is_pushup_score;
-    Action action = action_classifier->classify(rgb, is_pushup_score);
+    Action action = action_classifier->Classify(rgb, is_pushup_score);
     bool is_pushup = action==Action::kPushup;
-    int n_pushups = pushup_analyzer->count_pushups(rgb, is_pushup);
+    int n_pushups = pushup_analyzer->CountPushups(rgb, is_pushup);
 
     // Draw result
     for (auto body : bodies) {
@@ -53,7 +53,7 @@ int main(int, char **) {
                     cv::Scalar(0, 255, 0), 2);
     }
     for (auto kp_single : keypoints) {
-      pose_detector->draw_pose(frame, kp_single);
+      pose_detector->DrawKeypoints(frame, kp_single);
     }
     if (action == Action::kPushup) {
       cv::putText(frame, "PUSHING UP - " + std::to_string(is_pushup_score) + " - " + std::to_string(n_pushups), cv::Point(20, 20),

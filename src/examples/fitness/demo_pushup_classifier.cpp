@@ -23,7 +23,7 @@ int main(int, char **) {
     cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
 
     float confidence;
-    auto action = model->classify(rgb, confidence);
+    auto action = model->Classify(rgb, confidence);
 
     cv::Scalar color(0, 255, 0);
     if (confidence < 0.9) {

@@ -5,51 +5,51 @@ using namespace daisykit::models;
 
 PoseDetector::PoseDetector(const std::string& param_file,
                            const std::string& weight_file) {
-  load_model(param_file, weight_file);
+  LoadModel(param_file, weight_file);
 }
 
-void PoseDetector::load_model(const std::string& param_file,
+void PoseDetector::LoadModel(const std::string& param_file,
                               const std::string& weight_file) {
-  if (_model) {
-    delete _model;
+  if (model_) {
+    delete model_;
   }
-  _model = new ncnn::Net;
-  _model->load_param(param_file.c_str());
-  _model->load_model(weight_file.c_str());
+  model_ = new ncnn::Net;
+  model_->load_param(param_file.c_str());
+  model_->load_model(weight_file.c_str());
 }
 
 #ifdef __ANDROID__
 PoseDetector::PoseDetector(AAssetManager* mgr, const std::string& param_file,
                            const std::string& weight_file) {
-  load_model(mgr, param_file, weight_file);
+  LoadModel(mgr, param_file, weight_file);
 }
 
-void PoseDetector::load_model(AAssetManager* mgr, const std::string& param_file,
+void PoseDetector::LoadModel(AAssetManager* mgr, const std::string& param_file,
                               const std::string& weight_file) {
-  if (_model) {
-    delete _model;
+  if (model_) {
+    delete model_;
   }
-  _model = new ncnn::Net;
-  _model->load_param(mgr, param_file.c_str());
-  _model->load_model(mgr, weight_file.c_str());
+  model_ = new ncnn::Net;
+  model_->load_param(mgr, param_file.c_str());
+  model_->load_model(mgr, weight_file.c_str());
 }
 #endif
 
 // Detect keypoints for single object
-std::vector<Keypoint> PoseDetector::detect(cv::Mat& image, float offset_x,
+std::vector<Keypoint> PoseDetector::Detect(cv::Mat& image, float offset_x,
                                            float offset_y) {
   std::vector<Keypoint> keypoints;
   int w = image.cols;
   int h = image.rows;
   ncnn::Mat in = ncnn::Mat::from_pixels_resize(image.data, ncnn::Mat::PIXEL_RGB,
                                                image.cols, image.rows,
-                                               _input_width, _input_height);
+                                               input_width_, input_height_);
   const float mean_vals[3] = {0.485f * 255.f, 0.456f * 255.f, 0.406f * 255.f};
   const float norm_vals[3] = {1 / 0.229f / 255.f, 1 / 0.224f / 255.f,
                               1 / 0.225f / 255.f};
   in.substract_mean_normalize(mean_vals, norm_vals);
-  ncnn::MutexLockGuard g(_lock);
-  ncnn::Extractor ex = _model->create_extractor();
+  ncnn::MutexLockGuard g(lock_);
+  ncnn::Extractor ex = model_->create_extractor();
   ex.set_num_threads(4);
   ex.input("data", in);
   ncnn::Mat out;
@@ -82,7 +82,7 @@ std::vector<Keypoint> PoseDetector::detect(cv::Mat& image, float offset_x,
 }
 
 // Detect keypoints for multiple objects
-std::vector<std::vector<Keypoint>> PoseDetector::detect_multi(
+std::vector<std::vector<Keypoint>> PoseDetector::DetectMulti(
     cv::Mat& image, const std::vector<Object>& objects) {
   int img_w = image.cols;
   int img_h = image.rows;
@@ -104,7 +104,7 @@ std::vector<std::vector<Keypoint>> PoseDetector::detect_multi(
     if (y2 > img_h) y2 = img_h;
 
     cv::Mat roi = image(cv::Rect(x1, y1, x2 - x1, y2 - y1)).clone();
-    std::vector<Keypoint> keypoints_single = detect(roi, x1, y1);
+    std::vector<Keypoint> keypoints_single = Detect(roi, x1, y1);
     keypoints.push_back(keypoints_single);
   }
 
@@ -112,7 +112,7 @@ std::vector<std::vector<Keypoint>> PoseDetector::detect_multi(
 }
 
 // Draw pose
-void PoseDetector::draw_pose(const cv::Mat& image,
+void PoseDetector::DrawKeypoints(const cv::Mat& image,
                              const std::vector<Keypoint>& keypoints) {
   float threshold = 0.2;
   // draw bone

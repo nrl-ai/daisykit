@@ -5,50 +5,50 @@ using namespace daisykit::models;
 
 BodyDetector::BodyDetector(const std::string& param_file,
                            const std::string& weight_file) {
-  load_model(param_file, weight_file);
+  LoadModel(param_file, weight_file);
 }
 
-void BodyDetector::load_model(const std::string& param_file,
+void BodyDetector::LoadModel(const std::string& param_file,
                               const std::string& weight_file) {
-  if (_model) {
-    delete _model;
+  if (model_) {
+    delete model_;
   }
-  _model = new ncnn::Net;
-  _model->load_param(param_file.c_str());
-  _model->load_model(weight_file.c_str());
+  model_ = new ncnn::Net;
+  model_->load_param(param_file.c_str());
+  model_->load_model(weight_file.c_str());
 }
 
 #ifdef __ANDROID__
 BodyDetector::BodyDetector(AAssetManager* mgr, const std::string& param_file,
                            const std::string& weight_file) {
-  load_model(mgr, param_file, weight_file);
+  LoadModel(mgr, param_file, weight_file);
 }
 
-void BodyDetector::load_model(AAssetManager* mgr, const std::string& param_file,
+void BodyDetector::LoadModel(AAssetManager* mgr, const std::string& param_file,
                               const std::string& weight_file) {
-  if (_model) {
-    delete _model;
+  if (model_) {
+    delete model_;
   }
-  _model = new ncnn::Net;
-  _model->load_param(mgr, param_file.c_str());
-  _model->load_model(mgr, weight_file.c_str());
+  model_ = new ncnn::Net;
+  model_->load_param(mgr, param_file.c_str());
+  model_->load_model(mgr, weight_file.c_str());
 }
 #endif
 
-std::vector<Object> BodyDetector::detect(cv::Mat& image) {
+std::vector<Object> BodyDetector::Detect(cv::Mat& image) {
   cv::Mat rgb = image.clone();
   int img_w = rgb.cols;
   int img_h = rgb.rows;
 
   ncnn::Mat in =
       ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols,
-                                    rgb.rows, _input_width, _input_height);
+                                    rgb.rows, input_width_, input_height_);
 
   const float mean_vals[3] = {0.f, 0.f, 0.f};
   const float norm_vals[3] = {1 / 255.f, 1 / 255.f, 1 / 255.f};
   in.substract_mean_normalize(mean_vals, norm_vals);
 
-  ncnn::Extractor ex = _model->create_extractor();
+  ncnn::Extractor ex = model_->create_extractor();
   ex.set_num_threads(4);
   ex.input("data", in);
   ncnn::Mat out;

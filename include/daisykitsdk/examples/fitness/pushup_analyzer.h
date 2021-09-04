@@ -15,27 +15,30 @@
 #include <vector>
 
 #include "daisykitsdk/utils/logging/mjpeg_server.h"
-#include "daisykitsdk/utils/visualizer/viz_utils.h"
 #include "daisykitsdk/utils/signal_proc/signal_smoothing.h"
 #include "daisykitsdk/utils/signal_proc/z_score_filter.h"
+#include "daisykitsdk/utils/visualizer/viz_utils.h"
 
 namespace daisykit {
 namespace examples {
-  
+
 class PushupAnalyzer {
  public:
   PushupAnalyzer();
-  int count_pushups(const cv::Mat &rgb, bool is_pushing_up);
-  int count_with_new_point(double data, bool is_pushing_up);
-  double calc_optical_flow(const cv::Mat &img);
-  cv::Mat _prvs;  // TODO: Init image from camera
-  std::vector<daisykit::utils::signal_proc::ld> _input = {0, 0, 0, 0, 0, 0, 0, 0};
-  std::vector<bool> _pushing;
-  std::shared_ptr<daisykit::utils::logging::MJPEGServer> _debug_server;
-  bool _is_first_frame = true;
-  int _count_interval = 50; // ms
-  int _current_count = 0;
-  long long int _last_count_time = 0;
+  int CountPushups(const cv::Mat &rgb, bool is_pushing_up);
+
+ private:
+  int CountWithNewPoint(double data, bool is_pushing_up);
+  double CalcOpticalFlow(const cv::Mat &img);
+  std::shared_ptr<daisykit::utils::logging::MJPEGServer> debug_img_server_;
+  cv::Mat prvs_;
+  std::vector<daisykit::utils::signal_proc::ld> input_ = {0, 0, 0, 0,
+                                                          0, 0, 0, 0};
+  std::vector<bool> pushing_;
+  bool is_first_frame_ = true;
+  int count_interval_ = 50;  // ms
+  int current_count_ = 0;
+  long long int last_count_time_ = 0;
 };
 
 }  // namespace examples

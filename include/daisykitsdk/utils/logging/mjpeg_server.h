@@ -43,35 +43,34 @@ struct clientPayload {
 };
 
 class MJPEGServer {
-  Socket sock;
-  fd_set master;
-  int timeout;
-  int quality;  // jpeg compression [1..100]
-  std::vector<int> clients;
-  pthread_t thread_listen, thread_write;
-  pthread_mutex_t mutex_client = PTHREAD_MUTEX_INITIALIZER;
-  pthread_mutex_t mutex_cout = PTHREAD_MUTEX_INITIALIZER;
-  pthread_mutex_t mutex_writer = PTHREAD_MUTEX_INITIALIZER;
-  cv::Mat lastFrame;
-  int port;
-
-  int _write(int sock, char* s, int len);
-  int _read(int socket, char* buffer);
-  static void* listen_Helper(void* context);
-  static void* writer_Helper(void* context);
-  static void* clientWrite_Helper(void* payload);
-
  public:
   MJPEGServer(int port = 0);
   ~MJPEGServer();
-  bool release();
-  bool open();
-  bool isOpened();
-  void start();
-  void stop();
-  void write(cv::Mat frame);
+  bool Release();
+  bool Open();
+  bool IsOpened();
+  void Start();
+  void Stop();
+  void WriteFrame(cv::Mat frame);
 
  private:
+  Socket sock_;
+  fd_set master_;
+  int timeout_;
+  int quality_;  // jpeg compression [1..100]
+  std::vector<int> clients_;
+  pthread_t thread_listen_, thread_write_;
+  pthread_mutex_t mutex_client_ = PTHREAD_MUTEX_INITIALIZER;
+  pthread_mutex_t mutex_cout_ = PTHREAD_MUTEX_INITIALIZER;
+  pthread_mutex_t mutex_writer_ = PTHREAD_MUTEX_INITIALIZER;
+  cv::Mat last_frame_;
+  int port_;
+
+  int SockWrite(int sock, char* s, int len);
+  int SockRead(int socket, char* buffer);
+  static void* ListenHelper(void* context);
+  static void* WriteHelper(void* context);
+  static void* ClientWriteHelper(void* payload);
   void Listener();
   void Writer();
   void ClientWrite(clientFrame& cf);

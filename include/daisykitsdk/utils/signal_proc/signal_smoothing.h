@@ -23,7 +23,7 @@ typedef std::vector<ld>::iterator vec_iter_ld;
 
 class SignalSmoothing {
  public:
-  static std::vector<ld> mean_filter_1d(std::vector<ld> input);
+  static std::vector<ld> MeanFilter1D(std::vector<ld> input);
 };
 
 }  // namespace signal_proc

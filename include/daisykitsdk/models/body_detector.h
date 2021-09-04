@@ -28,24 +28,23 @@ namespace daisykit {
 namespace models {
 
 class BodyDetector {
- private:
-  const int _input_width = 320;
-  const int _input_height = 320;
-  ncnn::Mutex _lock;
-  ncnn::Net* _model = 0;
-
  public:
   BodyDetector(const std::string& param_file, const std::string& weight_file);
-  void load_model(const std::string& param_file,
-                  const std::string& weight_file);
+  void LoadModel(const std::string& param_file, const std::string& weight_file);
 #ifdef __ANDROID__
   BodyDetector(AAssetManager* mgr, const std::string& param_file,
                const std::string& weight_file);
-  void load_model(AAssetManager* mgr, const std::string& param_file,
-                  const std::string& weight_file);
+  void LoadModel(AAssetManager* mgr, const std::string& param_file,
+                 const std::string& weight_file);
 #endif
 
-  std::vector<daisykit::common::Object> detect(cv::Mat& image);
+  std::vector<daisykit::common::Object> Detect(cv::Mat& image);
+
+ private:
+  const int input_width_ = 320;
+  const int input_height_ = 320;
+  ncnn::Mutex lock_;
+  ncnn::Net* model_ = 0;
 };
 
 }  // namespace models

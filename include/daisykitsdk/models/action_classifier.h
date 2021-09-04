@@ -23,35 +23,32 @@
 #include <arm_neon.h>
 #endif  // __ARM_NEON
 
-#include "daisykitsdk/common/types.h"
+#include <daisykitsdk/common/types.h>
+#include <daisykitsdk/utils/img_proc/img_utils.h>
 
 namespace daisykit {
 namespace models {
 class ActionClassifier {
- private:
-  const int _input_width = 224;
-  const int _input_height = 224;
-  ncnn::Mutex _lock;
-  ncnn::Net* _model = 0;
-  bool _smooth = true;  // Smooth the result or not
-  long long int _last_pushup_time = 0;
-
  public:
   ActionClassifier(const std::string& param_file,
                    const std::string& weight_file, bool smooth = true);
-  void load_model(const std::string& param_file,
-                  const std::string& weight_file);
+  void LoadModel(const std::string& param_file, const std::string& weight_file);
 #ifdef __ANDROID__
   ActionClassifier(AAssetManager* mgr, const std::string& param_file,
                    const std::string& weight_file, bool smooth = true);
-  void load_model(AAssetManager* mgr, const std::string& param_file,
-                  const std::string& weight_file);
+  void LoadModel(AAssetManager* mgr, const std::string& param_file,
+                 const std::string& weight_file);
 #endif
-  daisykit::common::Action classify(cv::Mat& image);
-  daisykit::common::Action classify(cv::Mat& image, float& confidence);
+  daisykit::common::Action Classify(cv::Mat& image);
+  daisykit::common::Action Classify(cv::Mat& image, float& confidence);
 
  private:
-  cv::Mat square_padding(const cv::Mat& img, int target_width = 500);
+  const int input_width_ = 224;
+  const int input_height_ = 224;
+  ncnn::Mutex lock_;
+  ncnn::Net* model_ = 0;
+  bool _smooth = true;  // Smooth the result or not
+  long long int last_pushup_time_ = 0;
 };
 
 }  // namespace models

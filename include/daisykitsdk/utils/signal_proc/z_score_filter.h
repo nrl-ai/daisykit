@@ -23,7 +23,7 @@ typedef std::vector<ld>::iterator vec_iter_ld;
 
 class ZScoreFilter {
  public:
-  static std::vector<int> filter(std::vector<ld> input);
+  static std::vector<int> Filter(std::vector<ld> input);
 };
 
 }  // namespace signal_proc
