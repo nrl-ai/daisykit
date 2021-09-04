@@ -24,6 +24,7 @@ class PushupCounterFlow {
   PushupCounterFlow(AAssetManager* mgr, const std::string& config_str);
 #endif
   void Process(cv::Mat& rgb);
+  int NumPushups();
   void DrawResult(cv::Mat& rgb);
 
  private:

@@ -31,6 +31,7 @@ int main(int, char **) {
 
     flow.Process(rgb);
     flow.DrawResult(rgb);
+    cout << "# of Pushups: " << flow.NumPushups() << endl;
 
     cv::Mat draw;
     cv::cvtColor(rgb, draw, cv::COLOR_RGB2BGR);

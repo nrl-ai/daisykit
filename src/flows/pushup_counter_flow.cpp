@@ -29,6 +29,7 @@ PushupCounterFlow::PushupCounterFlow(const std::string& config_str) {
       config["action_recognition_model"]["model"],
       config["action_recognition_model"]["weights"], true);
   pushup_analyzer_ = new examples::PushupAnalyzer();
+  num_pushups_ = 0;
 }
 
 #ifdef __ANDROID__
@@ -45,6 +46,7 @@ PushupCounterFlow::PushupCounterFlow(AAssetManager* mgr,
       mgr, config["action_recognition_model"]["model"],
       config["action_recognition_model"]["weights"], true);
   pushup_analyzer_ = new examples::PushupAnalyzer();
+  num_pushups_ = 0;
 }
 #endif
 
@@ -70,6 +72,10 @@ void PushupCounterFlow::Process(cv::Mat& rgb) {
   is_pushup_score_ = score;
   num_pushups_ =
       pushup_analyzer_->CountPushups(rgb, action == common::Action::kPushup);
+}
+
+int PushupCounterFlow::NumPushups() {
+  return num_pushups_;
 }
 
 void PushupCounterFlow::DrawResult(cv::Mat& rgb) {
