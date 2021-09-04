@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 project(daisykitsdk)
 
 option(COMPILE_EXAMPLES "Compile Examples" ON)
-set(ncnn_FIND_PATH "/home/vietanhdev/Apps/ncnn-20210720-ubuntu-1804")
+option(ncnn_FIND_PATH "Path to NCNN library" "~/Apps/ncnn-20210720-ubuntu-1804")
 
 if(ANDROID)
 MESSAGE(STATUS "COMPILE_ANDROID")
@@ -20,34 +20,33 @@ set(ncnn_DIR ${ncnn_FIND_PATH}/lib/cmake/ncnn)
 find_package(ncnn REQUIRED ${ncnn_DIR})
 find_package(OpenCV REQUIRED)
 
-include_directories("." "..")
+include_directories(include)
 
 add_library(daisykitsdk SHARED
-    analyzers/pushup_analyzer.cpp
+    src/models/body_detector.cpp
+    src/models/pose_detector.cpp
+    src/models/pose_detector_blazepose.cpp
+    src/models/action_classifier.cpp
 
-    ai_models/model_manager.cpp
-    ai_models/body_detector.cpp
-    ai_models/pose_detector.cpp
-    ai_models/pose_detector_blazepose.cpp
-    ai_models/action_classifier.cpp
+    src/utils/logging/mjpeg_writer.cpp
+    src/utils/signalproc/signal_processor.cpp
+    src/utils/visualizer/viz_utils.cpp
 
-    logging/mjpeg_writer.cpp
-
-    signalproc/signal_processor.cpp
+    src/examples/pushups/pushup_analyzer.cpp
 )
 target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS})
 
 
 if ((NOT ANDROID) AND COMPILE_EXAMPLES)
 
-add_executable(demo_pushup_classifier examples/demo_pushup_classifier.cpp)
+add_executable(demo_pushup_classifier src/examples/demo_pushup_classifier.cpp)
 target_link_libraries(demo_pushup_classifier ${OpenCV_LIBS} daisykitsdk)
 
-add_executable(demo_pushup_full examples/demo_pushup_full.cpp)
+add_executable(demo_pushup_full src/examples/demo_pushup_full.cpp)
 target_link_libraries(demo_pushup_full ${OpenCV_LIBS} daisykitsdk)
 
 # Not yet finished
-add_executable(demo_blazepose examples/demo_blazepose.cpp)
+add_executable(demo_blazepose src/examples/demo_blazepose.cpp)
 target_link_libraries(demo_blazepose ${OpenCV_LIBS} daisykitsdk)
 
 endif()
