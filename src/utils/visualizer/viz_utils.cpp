@@ -1,5 +1,7 @@
 #include <daisykitsdk/utils/visualizer/viz_utils.h>
 
+using namespace daisykit::utils::visualizer;
+
 void VizUtils::draw_label(cv::Mat& im, const std::string label,
                           const cv::Point& origin, int fontface, double scale,
                           int thickness, int baseline, cv::Scalar text_color,

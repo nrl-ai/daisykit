@@ -1,6 +1,8 @@
-#include <daisykitsdk/utils/signalproc/signal_processor.h>
+#include <daisykitsdk/utils/signal_proc/z_score_filter.h>
 
-std::vector<int> SignalProcessor::z_score_thresholding(std::vector<ld> input) {
+using namespace daisykit::utils::signal_proc;
+
+std::vector<int> ZScoreFilter::filter(std::vector<ld> input) {
   // lag for the smoothing functions
   int lag = 10;
   // standard deviations for signal
@@ -59,17 +61,4 @@ std::vector<int> SignalProcessor::z_score_thresholding(std::vector<ld> input) {
   }
 
   return signals;
-}
-
-std::vector<ld> SignalProcessor::smooth_signal(std::vector<ld> input) {
-  std::vector<ld> processing_signal;
-  double runningTotal = 0.0;
-  int windowSize = 8;
-  for (int i = 0; i < input.size(); i++) {
-    runningTotal += input[i];                                    // add
-    if (i >= windowSize) runningTotal -= input[i - windowSize];  // subtract
-    if (i >= (windowSize - 1))  // output moving average
-      processing_signal.push_back(runningTotal / (double)windowSize);
-  }
-  return processing_signal;
 }

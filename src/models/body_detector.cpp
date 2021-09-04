@@ -1,5 +1,8 @@
 #include <daisykitsdk/models/body_detector.h>
 
+using namespace daisykit::common;
+using namespace daisykit::models;
+
 BodyDetector::BodyDetector(const std::string& param_file,
                            const std::string& weight_file) {
   load_model(param_file, weight_file);

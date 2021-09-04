@@ -1,11 +1,11 @@
-#ifndef BODY_DETECTOR_
-#define BODY_DETECTOR_
+#ifndef DAISYKIT_MODELS_BODY_DETECTOR_H_
+#define DAISYKIT_MODELS_BODY_DETECTOR_H_
 
 #include <stdio.h>
 #include <algorithm>
+#include <chrono>
 #include <string>
 #include <vector>
-#include <chrono>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -22,7 +22,10 @@
 #include <arm_neon.h>
 #endif  // __ARM_NEON
 
-#include "daisykitsdk/common/types.h"
+#include <daisykitsdk/common/types.h>
+
+namespace daisykit {
+namespace models {
 
 class BodyDetector {
  private:
@@ -42,7 +45,10 @@ class BodyDetector {
                   const std::string& weight_file);
 #endif
 
-  std::vector<Object> detect(cv::Mat& image);
+  std::vector<daisykit::common::Object> detect(cv::Mat& image);
 };
+
+}  // namespace models
+}  // namespace daisykit
 
 #endif

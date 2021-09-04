@@ -5,6 +5,9 @@
 
 using namespace cv;
 using namespace std;
+using namespace daisykit::common;
+using namespace daisykit::models;
+
 
 int main(int, char **) {
   ActionClassifier *model =

@@ -1,12 +1,12 @@
-#ifndef ACTION_CLASSIFIER_
-#define ACTION_CLASSIFIER_
+#ifndef DAISYKIT_MODELS_ACTION_CLASSIFIER_H_
+#define DAISYKIT_MODELS_ACTION_CLASSIFIER_H_
 
 #include <stdio.h>
 #include <algorithm>
-#include <string>
-#include <vector>
 #include <chrono>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -25,6 +25,8 @@
 
 #include "daisykitsdk/common/types.h"
 
+namespace daisykit {
+namespace models {
 class ActionClassifier {
  private:
   const int _input_width = 224;
@@ -45,11 +47,14 @@ class ActionClassifier {
   void load_model(AAssetManager* mgr, const std::string& param_file,
                   const std::string& weight_file);
 #endif
-  Action classify(cv::Mat& image);
-  Action classify(cv::Mat& image, float& confidence);
+  daisykit::common::Action classify(cv::Mat& image);
+  daisykit::common::Action classify(cv::Mat& image, float& confidence);
 
  private:
   cv::Mat square_padding(const cv::Mat& img, int target_width = 500);
 };
+
+}  // namespace models
+}  // namespace daisykit
 
 #endif

@@ -1,37 +1,41 @@
-#include <daisykitsdk/examples/pushups/pushup_analyzer.h>
+#include <daisykitsdk/examples/fitness/pushup_analyzer.h>
 
 using namespace cv;
 using namespace std;
 using namespace std::chrono;
+using namespace daisykit::examples;
+using namespace daisykit::utils::logging;
+using namespace daisykit::utils::signal_proc;
+using namespace daisykit::utils::visualizer;
 
 PushupAnalyzer::PushupAnalyzer() {
-  img_server = std::make_shared<MJPEGWriter>(8080);
+  _debug_server = std::make_shared<MJPEGServer>(8080);
 }
 
 int PushupAnalyzer::count_with_new_point(double data, bool is_pushing_up) {
-  input.push_back(data);
-  pushing.push_back(is_pushing_up);
-  vector<ld> signal = SignalProcessor::smooth_signal(input);
+  _input.push_back(data);
+  _pushing.push_back(is_pushing_up);
+  vector<ld> signal = SignalSmoothing::mean_filter_1d(_input);
 
   int range[2] = {0, 300};
 
-  vector<int> filtered_signals = SignalProcessor::z_score_thresholding(signal);
+  vector<int> filtered_signals = ZScoreFilter::filter(signal);
 
-  cv::Mat line_graph = plot_graph(signal, range, filtered_signals, 500);
+  cv::Mat line_graph = VizUtils::line_graph(signal, range, filtered_signals, 500);
 
   std::vector<int> countPostions;
   for (int i = 0; i < (int)filtered_signals.size() - 1; ++i) {
     if (filtered_signals[i] == 1 && filtered_signals[i + 1] == 0 &&
-        i < pushing.size() && pushing[i]) {
+        i < _pushing.size() && _pushing[i]) {
       countPostions.push_back((int)i);
     }
   }
 
-  if (is_first_frame) {
-    img_server->start();
-    is_first_frame = false;
+  if (_is_first_frame) {
+    _debug_server->start();
+    _is_first_frame = false;
   } else {
-    img_server->write(line_graph);
+    _debug_server->write(line_graph);
   }
 
   return (int)countPostions.size();
@@ -46,7 +50,7 @@ int PushupAnalyzer::count_pushups(const cv::Mat &rgb,
           .count();
   if (current_time - _last_count_time < _count_interval) {
     // Skip counting
-    return current_count;
+    return _current_count;
   } else {
     _last_count_time = current_time;
   }
@@ -54,20 +58,20 @@ int PushupAnalyzer::count_pushups(const cv::Mat &rgb,
   double x = calc_optical_flow(rgb);
   
   int count = count_with_new_point(x, is_pushing_up);
-  current_count = count;
+  _current_count = count;
 
-  return count;
+  return _current_count;
 }
 
 double PushupAnalyzer::calc_optical_flow(const cv::Mat &frame2) {
   Mat next;
   cv::resize(frame2, next, cv::Size(224, 224));
   cvtColor(next, next, COLOR_BGR2GRAY);
-  if (prvs.empty()) {
-    prvs = next;
+  if (_prvs.empty()) {
+    _prvs = next;
   }
-  Mat flow(prvs.size(), CV_32FC2);
-  calcOpticalFlowFarneback(prvs, next, flow, 0.5, 3, 15, 3, 5, 1.2, 0);
+  Mat flow(_prvs.size(), CV_32FC2);
+  calcOpticalFlowFarneback(_prvs, next, flow, 0.5, 3, 15, 3, 5, 1.2, 0);
 
   Mat flow_parts[2];
   split(flow, flow_parts);
@@ -78,7 +82,7 @@ double PushupAnalyzer::calc_optical_flow(const cv::Mat &frame2) {
 
   double avg_angle = cv::sum(angle)[0];
   avg_angle /= angle.rows * angle.cols;
-  prvs = next;
+  _prvs = next;
 
   return avg_angle;
 }

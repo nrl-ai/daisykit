@@ -1,5 +1,8 @@
 #include <daisykitsdk/models/action_classifier.h>
 
+using namespace daisykit::common;
+using namespace daisykit::models;
+
 ActionClassifier::ActionClassifier(const std::string& param_file,
                                    const std::string& weight_file,
                                    bool smooth) {

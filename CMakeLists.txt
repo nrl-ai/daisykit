@@ -25,28 +25,24 @@ include_directories(include)
 add_library(daisykitsdk SHARED
     src/models/body_detector.cpp
     src/models/pose_detector.cpp
-    src/models/pose_detector_blazepose.cpp
     src/models/action_classifier.cpp
 
     src/utils/logging/mjpeg_writer.cpp
-    src/utils/signalproc/signal_processor.cpp
+    src/utils/signal_proc/signal_smoothing.cpp
+    src/utils/signal_proc/z_score_filter.cpp
     src/utils/visualizer/viz_utils.cpp
 
-    src/examples/pushups/pushup_analyzer.cpp
+    src/examples/fitness/pushup_analyzer.cpp
 )
 target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS})
 
 
 if ((NOT ANDROID) AND COMPILE_EXAMPLES)
 
-add_executable(demo_pushup_classifier src/examples/demo_pushup_classifier.cpp)
+add_executable(demo_pushup_classifier src/examples/fitness/demo_pushup_classifier.cpp)
 target_link_libraries(demo_pushup_classifier ${OpenCV_LIBS} daisykitsdk)
 
-add_executable(demo_pushup_full src/examples/demo_pushup_full.cpp)
+add_executable(demo_pushup_full src/examples/fitness/demo_pushup_full.cpp)
 target_link_libraries(demo_pushup_full ${OpenCV_LIBS} daisykitsdk)
-
-# Not yet finished
-add_executable(demo_blazepose src/examples/demo_blazepose.cpp)
-target_link_libraries(demo_blazepose ${OpenCV_LIBS} daisykitsdk)
 
 endif()

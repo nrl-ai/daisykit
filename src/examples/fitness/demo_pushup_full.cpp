@@ -5,10 +5,13 @@
 #include <daisykitsdk/models/pose_detector.h>
 #include <daisykitsdk/models/action_classifier.h>
 #include <daisykitsdk/models/body_detector.h>
-#include <daisykitsdk/examples/pushups/pushup_analyzer.h>
+#include <daisykitsdk/examples/fitness/pushup_analyzer.h>
 
 using namespace cv;
 using namespace std;
+using namespace daisykit::common;
+using namespace daisykit::models;
+using namespace daisykit::examples;
 
 static BodyDetector* body_detector = 0;
 static PoseDetector* pose_detector = 0;

@@ -33,3 +33,14 @@ make
 ```
 ./demo_pushup_full
 ```
+
+## Coding convention
+
+Follow [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
+
+**Exceptions:**
+
+- Source code file names: `.cpp` for source file and `.h` for header files.
+- 
+
+
