@@ -12,6 +12,7 @@ void BodyDetector::LoadModel(const std::string& param_file,
                               const std::string& weight_file) {
   if (model_) {
     delete model_;
+    model_ = nullptr;
   }
   model_ = new ncnn::Net;
   model_->load_param(param_file.c_str());
@@ -28,6 +29,7 @@ void BodyDetector::LoadModel(AAssetManager* mgr, const std::string& param_file,
                               const std::string& weight_file) {
   if (model_) {
     delete model_;
+    model_ = nullptr;
   }
   model_ = new ncnn::Net;
   model_->load_param(mgr, param_file.c_str());

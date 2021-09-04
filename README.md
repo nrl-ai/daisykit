@@ -17,7 +17,7 @@ sudo apt-get install -y libvulkan-dev
 
 - Download [precompiled NCNN](https://github.com/Tencent/ncnn/releases), extract it.
 
-- Download [pretrained models](https://drive.google.com/drive/folders/1O4bT6somFeBFc23BFKH-0on7E3LAkC-b?usp=sharing) and put into `data/models`.
+- Download [pretrained models](https://drive.google.com/drive/folders/1O4bT6somFeBFc23BFKH-0on7E3LAkC-b?usp=sharing) and put into `data/` folder.
 
 ## Build and Run on PC
 

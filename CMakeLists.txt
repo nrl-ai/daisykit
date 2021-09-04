@@ -34,6 +34,10 @@ add_library(daisykitsdk SHARED
     src/utils/visualizer/viz_utils.cpp
 
     src/examples/fitness/pushup_analyzer.cpp
+
+    src/flows/pushup_counter_flow.cpp
+
+    src/examples/fitness/pushup_analyzer.cpp
 )
 target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS})
 
