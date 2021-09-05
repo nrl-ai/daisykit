@@ -28,7 +28,11 @@ int main(int, char **) {
     cv::Mat rgb;
     cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
 
-    flow.Process(rgb, true);
+    std::string result = flow.Process(rgb, true);
+    if (!result.empty()) {
+      std::cout << "New Scan Finished" << std::endl;
+      std::cout << result << std::endl;
+    }
 
     cv::Mat draw;
     cv::cvtColor(rgb, draw, cv::COLOR_RGB2BGR);

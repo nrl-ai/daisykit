@@ -53,7 +53,7 @@ set(sources ${sources}
 endif()
 
 add_library(daisykitsdk SHARED ${sources})
-target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS} libzxing)
+target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS} ZXing::ZXing)
 
 
 if ((NOT ANDROID) AND COMPILE_EXAMPLES)
@@ -64,7 +64,7 @@ target_link_libraries(demo_pushup_classifier ${OpenCV_LIBS} daisykitsdk)
 add_executable(demo_pushup_full src/examples/fitness/demo_pushup_full.cpp)
 target_link_libraries(demo_pushup_full ${OpenCV_LIBS} daisykitsdk)
 
-add_executable(barcode_scanner src/examples/barcode_scanner.cpp)
-target_link_libraries(barcode_scanner ${OpenCV_LIBS} daisykitsdk)
+add_executable(demo_barcode_scanner src/examples/demo_barcode_scanner.cpp)
+target_link_libraries(demo_barcode_scanner ${OpenCV_LIBS} daisykitsdk)
 
 endif()

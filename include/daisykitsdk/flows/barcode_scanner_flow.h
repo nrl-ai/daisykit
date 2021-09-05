@@ -3,6 +3,8 @@
 
 #include <atomic>
 #include <iostream>
+#include <opencv2/opencv.hpp>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -10,18 +12,9 @@
 #include <android/asset_manager_jni.h>
 #endif
 
-#include <zxing/Binarizer.h>
-#include <zxing/BinaryBitmap.h>
-#include <zxing/DecodeHints.h>
-#include <zxing/Exception.h>
-#include <zxing/MatSource.h>
-#include <zxing/MultiFormatReader.h>
-#include <zxing/ReaderException.h>
-#include <zxing/Result.h>
-#include <zxing/common/Counted.h>
-#include <zxing/common/GlobalHistogramBinarizer.h>
-#include <zxing/common/IllegalArgumentException.h>
-#include <zxing/qrcode/QRCodeReader.h>
+#include "GTIN.h"
+#include "ReadBarcode.h"
+#include "TextUtfEncoding.h"
 
 #include <daisykitsdk/thirdparties/json.hpp>
 #include <daisykitsdk/utils/visualizer/viz_utils.h>
@@ -37,8 +30,8 @@ class BarcodeScannerFlow {
   std::string Process(cv::Mat& rgb, bool draw = true);
 
  private:
-  cv::Point ToCvPoint(zxing::Ref<zxing::ResultPoint> resultPoint);
-  zxing::Ref<zxing::Reader> reader;
+  void DrawRect(cv::Mat& rgb, const ZXing::Position& pos);
+  ZXing::DecodeHints hints;
 };
 
 }  // namespace flows

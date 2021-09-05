@@ -2,92 +2,72 @@
 
 using namespace cv;
 using namespace std;
-using namespace zxing;
-using namespace zxing::qrcode;
+using namespace ZXing;
+using namespace TextUtfEncoding;
 using namespace daisykit::flows;
 using namespace daisykit::utils::visualizer;
 
 BarcodeScannerFlow::BarcodeScannerFlow(const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
+
+  // Setting for barcode reader
+  hints.setEanAddOnSymbol(EanAddOnSymbol::Read);
+  hints.setTryHarder(true);
+  hints.setTryRotate(true);
 }
 
 #ifdef __ANDROID__
 BarcodeScannerFlow::BarcodeScannerFlow(AAssetManager* mgr,
                                        const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
+  // Setting for barcode reader
+  hints.setEanAddOnSymbol(EanAddOnSymbol::Read);
+  hints.setTryHarder(true);
+  hints.setTryRotate(true);
 }
 #endif
 
 std::string BarcodeScannerFlow::Process(cv::Mat& rgb, bool draw) {
-  // Convert to grayscale
-  cv::Mat grey;
-  cvtColor(rgb, grey, cv::COLOR_BGR2GRAY);
+  ImageView image{rgb.data, rgb.cols, rgb.rows, ImageFormat::RGB};
+  auto results = ReadBarcodes(image, hints);
 
-  try {
-    // Create luminance  source
-    Ref<LuminanceSource> source = MatSource::create(grey);
+  int ret;
+  bool angle_escape = false;
+  std::stringstream result_stream;
 
-    reader.reset(new MultiFormatReader);
+  // if we did not find anything, insert a dummy to produce some output for each
+  // file
+  if (results.empty()) results.emplace_back(DecodeStatus::NotFound);
 
-    Ref<Binarizer> binarizer(new GlobalHistogramBinarizer(source));
-    Ref<BinaryBitmap> bitmap(new BinaryBitmap(binarizer));
-    Ref<Result> result(
-        reader->decode(bitmap, DecodeHints(DecodeHints::TRYHARDER_HINT)));
+  for (auto&& result : results) {
 
-    // Get result point count
-    int resultPointCount = result->getResultPoints()->size();
-
+    if (!result.isValid()) continue;
+  
     if (draw) {
-      for (int j = 0; j < resultPointCount; j++) {
-        // Draw circle
-        circle(rgb, ToCvPoint(result->getResultPoints()[j]), 10,
-               Scalar(110, 220, 0), 2);
-      }
-
-      // Draw boundary on image
-      if (resultPointCount > 1) {
-        for (int j = 0; j < resultPointCount; j++) {
-          // Get start result point
-          Ref<ResultPoint> previousResultPoint =
-              (j > 0) ? result->getResultPoints()[j - 1]
-                      : result->getResultPoints()[resultPointCount - 1];
-
-          // Draw line
-          line(rgb, ToCvPoint(previousResultPoint),
-               ToCvPoint(result->getResultPoints()[j]), Scalar(110, 220, 0), 2,
-               8);
-
-          // Update previous point
-          previousResultPoint = result->getResultPoints()[j];
-        }
-      }
-
-      if (resultPointCount > 0) {
-        // Draw text
-        VizUtils::DrawLabel(
-          rgb, result->getText()->getText(),
-          ToCvPoint(result->getResultPoints()[0]), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
-          cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
-      }
+      DrawRect(rgb, result.position());
+      VizUtils::DrawLabel(
+        rgb, ToUtf8(result.text(), angle_escape),
+        cv::Point(10, 40), cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, 10,
+        cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
     }
-
-    if (resultPointCount > 0) {
-      return result->getText()->getText();
-    }
-
-  } catch (const ReaderException& e) {
-    cerr << e.what() << " (ignoring)" << endl;
-  } catch (const zxing::IllegalArgumentException& e) {
-    cerr << e.what() << " (ignoring)" << endl;
-  } catch (const zxing::Exception& e) {
-    cerr << e.what() << " (ignoring)" << endl;
-  } catch (const std::exception& e) {
-    cerr << e.what() << " (ignoring)" << endl;
+    
+    ret |= static_cast<int>(result.status());
+    result_stream << ToString(result.format());
+    if (result.isValid())
+      result_stream << " \"" << ToUtf8(result.text(), angle_escape) << "\"";
+    else if (result.format() != BarcodeFormat::None)
+      result_stream << " " << ToString(result.status());
+    result_stream << "\n";
   }
 
-  return "";
+  return result_stream.str();
 }
 
-cv::Point BarcodeScannerFlow::ToCvPoint(Ref<ResultPoint> resultPoint) {
-  return Point(resultPoint->getX(), resultPoint->getY());
+void BarcodeScannerFlow::DrawRect(cv::Mat& rgb, const Position& pos) {
+  for (int i = 0; i < 4; ++i) {
+    PointI a = pos[i];
+    PointI b = pos[(i + 1) % 4];
+    cv::line(rgb, cv::Point(a.x, a.y), cv::Point(b.x, b.y),
+             cv::Scalar(0, 255, 0), 2);
+  }
 }
