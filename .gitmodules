@@ -1,0 +1,3 @@
+[submodule "src/thirdparties/zxing-cpp"]
+	path = src/thirdparties/zxing-cpp
+	url = git@github.com:glassechidna/zxing-cpp.git
