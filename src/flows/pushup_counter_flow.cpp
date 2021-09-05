@@ -1,21 +1,6 @@
 #include <daisykitsdk/flows/pushup_counter_flow.h>
 
-#include <atomic>
-#include <iostream>
-#include <string>
-#include <vector>
-
-#include <daisykitsdk/common/types.h>
-#include <daisykitsdk/examples/fitness/pushup_analyzer.h>
-#include <daisykitsdk/models/action_classifier.h>
-#include <daisykitsdk/models/body_detector.h>
-#include <daisykitsdk/models/pose_detector.h>
-#include <daisykitsdk/utils/img_proc/img_utils.h>
-#include <daisykitsdk/utils/visualizer/viz_utils.h>
-#include <daisykitsdk/thirdparties/json.hpp>
-
-namespace daisykit {
-namespace flows {
+using namespace daisykit::flows;
 
 PushupCounterFlow::PushupCounterFlow(const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
@@ -113,6 +98,3 @@ void PushupCounterFlow::DrawResult(cv::Mat& rgb) {
       cv::Point(20, 80), cv::FONT_HERSHEY_SIMPLEX, 1.2, 2, 10,
       cv::Scalar(255, 255, 255), cv::Scalar(255, 0, 0));
 }
-
-}  // namespace flows
-}  // namespace daisykit

@@ -6,6 +6,10 @@
 #include <string>
 #include <vector>
 
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
 #include <daisykitsdk/common/types.h>
 #include <daisykitsdk/examples/fitness/pushup_analyzer.h>
 #include <daisykitsdk/models/action_classifier.h>
@@ -28,9 +32,6 @@ class PushupCounterFlow {
   void DrawResult(cv::Mat& rgb);
 
  private:
-  std::mutex input_lock_;
-  std::mutex output_lock_;
-
   std::vector<common::Object> bodies_;
   std::mutex bodies_lock_;
 
