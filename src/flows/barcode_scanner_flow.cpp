@@ -11,9 +11,9 @@ BarcodeScannerFlow::BarcodeScannerFlow(const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
 
   // Setting for barcode reader
-  hints.setEanAddOnSymbol(EanAddOnSymbol::Read);
-  hints.setTryHarder(config["try_harder"]);
-  hints.setTryRotate(config["try_rotate"]);
+  hints_.setEanAddOnSymbol(EanAddOnSymbol::Read);
+  hints_.setTryHarder(config["try_harder"]);
+  hints_.setTryRotate(config["try_rotate"]);
 }
 
 #ifdef __ANDROID__
@@ -21,15 +21,15 @@ BarcodeScannerFlow::BarcodeScannerFlow(AAssetManager* mgr,
                                        const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
   // Setting for barcode reader
-  hints.setEanAddOnSymbol(EanAddOnSymbol::Read);
-  hints.setTryHarder(config["try_harder"]);
-  hints.setTryRotate(config["try_rotate"]);
+  hints_.setEanAddOnSymbol(EanAddOnSymbol::Read);
+  hints_.setTryHarder(config["try_harder"]);
+  hints_.setTryRotate(config["try_rotate"]);
 }
 #endif
 
 std::string BarcodeScannerFlow::Process(cv::Mat& rgb, bool draw) {
   ImageView image{rgb.data, rgb.cols, rgb.rows, ImageFormat::RGB};
-  auto results = ReadBarcodes(image, hints);
+  auto results = ReadBarcodes(image, hints_);
 
   int ret;
   bool angle_escape = false;

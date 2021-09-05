@@ -31,7 +31,7 @@ class BarcodeScannerFlow {
 
  private:
   void DrawRect(cv::Mat& rgb, const ZXing::Position& pos);
-  ZXing::DecodeHints hints;
+  ZXing::DecodeHints hints_;
 };
 
 }  // namespace flows
