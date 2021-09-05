@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.10)
 
 project(daisykitsdk)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fexceptions -frtti -fPIC")
+
+option(ENABLE_BARCODE_SCANNER "Enable barcode scanner" ON)
 option(COMPILE_EXAMPLES "Compile Examples" ON)
 option(ncnn_FIND_PATH "Path to NCNN library" "~/Apps/ncnn-20210720-ubuntu-1804")
 
@@ -14,15 +19,14 @@ else()
     include_directories(${ncnn_FIND_PATH}/include/ncnn)
 endif()
 
+include_directories(include)
 
 message(${ncnn_FIND_PATH}/lib/cmake/ncnn)
 set(ncnn_DIR ${ncnn_FIND_PATH}/lib/cmake/ncnn)
 find_package(ncnn REQUIRED ${ncnn_DIR})
 find_package(OpenCV REQUIRED)
 
-include_directories(include)
-
-add_library(daisykitsdk SHARED
+set(sources
     src/models/body_detector.cpp
     src/models/pose_detector.cpp
     src/models/action_classifier.cpp
@@ -39,7 +43,17 @@ add_library(daisykitsdk SHARED
 
     src/examples/fitness/pushup_analyzer.cpp
 )
-target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS})
+
+if (ENABLE_BARCODE_SCANNER)
+add_subdirectory(src/thirdparties/zxing-cpp)
+include_directories(src/thirdparties/zxing-cpp/core/src)
+include_directories(src/thirdparties/zxing-cpp/opencv/src)
+set(sources ${sources} 
+    src/flows/barcode_scanner_flow.cpp)
+endif()
+
+add_library(daisykitsdk SHARED ${sources})
+target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS} ZXing::ZXing)
 
 
 if ((NOT ANDROID) AND COMPILE_EXAMPLES)
@@ -49,5 +63,8 @@ target_link_libraries(demo_pushup_classifier ${OpenCV_LIBS} daisykitsdk)
 
 add_executable(demo_pushup_full src/examples/fitness/demo_pushup_full.cpp)
 target_link_libraries(demo_pushup_full ${OpenCV_LIBS} daisykitsdk)
+
+add_executable(demo_barcode_scanner src/examples/demo_barcode_scanner.cpp)
+target_link_libraries(demo_barcode_scanner ${OpenCV_LIBS} daisykitsdk)
 
 endif()

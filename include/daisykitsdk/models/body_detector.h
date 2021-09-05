@@ -7,9 +7,11 @@
 #include <string>
 #include <vector>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
+#include <opencv2/opencv.hpp>
 
 #include <benchmark.h>
 #include <cpu.h>
@@ -17,10 +19,6 @@
 #include <gpu.h>
 #include <net.h>
 #include <platform.h>
-
-#if __ARM_NEON
-#include <arm_neon.h>
-#endif  // __ARM_NEON
 
 #include <daisykitsdk/common/types.h>
 
