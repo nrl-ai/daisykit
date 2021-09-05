@@ -12,8 +12,8 @@ BarcodeScannerFlow::BarcodeScannerFlow(const std::string& config_str) {
 
   // Setting for barcode reader
   hints.setEanAddOnSymbol(EanAddOnSymbol::Read);
-  hints.setTryHarder(true);
-  hints.setTryRotate(true);
+  hints.setTryHarder(config["try_harder"]);
+  hints.setTryRotate(config["try_rotate"]);
 }
 
 #ifdef __ANDROID__
@@ -22,8 +22,8 @@ BarcodeScannerFlow::BarcodeScannerFlow(AAssetManager* mgr,
   nlohmann::json config = nlohmann::json::parse(config_str);
   // Setting for barcode reader
   hints.setEanAddOnSymbol(EanAddOnSymbol::Read);
-  hints.setTryHarder(true);
-  hints.setTryRotate(true);
+  hints.setTryHarder(config["try_harder"]);
+  hints.setTryRotate(config["try_rotate"]);
 }
 #endif
 
