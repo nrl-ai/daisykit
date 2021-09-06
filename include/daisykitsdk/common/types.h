@@ -1,6 +1,8 @@
 #ifndef DAISYKIT_COMMON_TYPES_H_
 #define DAISYKIT_COMMON_TYPES_H_
 
+#include <opencv2/opencv.hpp>
+
 namespace daisykit {
 namespace common {
 struct Keypoint {
@@ -16,6 +18,15 @@ struct Object {
   float h;
   int class_id;
   float confidence;
+};
+
+struct Face {
+  float x;
+  float y;
+  float w;
+  float h;
+  float confidence;
+  std::vector<cv::Point2f> landmark;
 };
 
 enum Action { kUnknown = 0, kPushup = 1 };

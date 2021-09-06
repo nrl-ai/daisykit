@@ -1,0 +1,10 @@
+{
+  "face_detection_model": {
+    "model": "../data/models/face_detection/slim/slim_320.param",
+    "weights": "../data/models/face_detection/slim/slim_320.bin",
+    "input_width": 320,
+    "input_height": 240,
+    "score_threshold": 0.7,
+    "iou_threshold": 0.5
+  }
+}
