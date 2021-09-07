@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <mutex>
 
 #ifdef __ANDROID__
 #include <android/asset_manager_jni.h>
