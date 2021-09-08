@@ -6,5 +6,10 @@
     "input_height": 240,
     "score_threshold": 0.7,
     "iou_threshold": 0.5
+  },
+  "with_landmark": true,
+  "facial_landmark_model": {
+    "model": "../data/models/facial_landmark/pfld-sim.param",
+    "weights": "../data/models/facial_landmark/pfld-sim.bin"
   }
 }
