@@ -31,6 +31,7 @@ set(sources
     src/models/pose_detector.cpp
     src/models/action_classifier.cpp
     src/models/face_detector.cpp
+    src/models/facial_landmark_estimator.cpp
 
     src/utils/logging/mjpeg_writer.cpp
     src/utils/signal_proc/signal_smoothing.cpp

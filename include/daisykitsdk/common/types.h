@@ -26,7 +26,7 @@ struct Face {
   float w;
   float h;
   float confidence;
-  std::vector<cv::Point2f> landmark;
+  std::vector<Keypoint> landmark;
 };
 
 enum Action { kUnknown = 0, kPushup = 1 };
