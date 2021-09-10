@@ -31,6 +31,7 @@ set(sources
     src/models/pose_detector.cpp
     src/models/action_classifier.cpp
     src/models/face_detector.cpp
+    src/models/face_detector_with_mask.cpp
     src/models/facial_landmark_estimator.cpp
 
     src/utils/logging/mjpeg_writer.cpp
@@ -43,6 +44,7 @@ set(sources
 
     src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
+    src/flows/face_detector_with_mask_flow.cpp
 
     src/examples/fitness/pushup_analyzer.cpp
 )
@@ -72,5 +74,8 @@ target_link_libraries(demo_barcode_scanner ${OpenCV_LIBS} daisykitsdk)
 
 add_executable(demo_face_detector src/examples/demo_face_detector.cpp)
 target_link_libraries(demo_face_detector ${OpenCV_LIBS} daisykitsdk)
+
+add_executable(demo_face_detector_with_mask src/examples/demo_face_detector_with_mask.cpp)
+target_link_libraries(demo_face_detector_with_mask ${OpenCV_LIBS} daisykitsdk)
 
 endif()

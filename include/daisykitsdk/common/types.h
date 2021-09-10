@@ -26,6 +26,7 @@ struct Face {
   float w;
   float h;
   float confidence;
+  float wearing_mask_prob; // Probability of wearing a mask
   std::vector<Keypoint> landmark;
 };
 

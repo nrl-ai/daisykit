@@ -1,0 +1,15 @@
+{
+  "face_detection_model": {
+    "model": "../data/models/face_detection/yolo_fastest_with_mask/yolo-fastest-opt.param",
+    "weights": "../data/models/face_detection/yolo_fastest_with_mask/yolo-fastest-opt.bin",
+    "input_width": 320,
+    "input_height": 320,
+    "score_threshold": 0.7,
+    "iou_threshold": 0.5
+  },
+  "with_landmark": false,
+  "facial_landmark_model": {
+    "model": "../data/models/facial_landmark/pfld-sim.param",
+    "weights": "../data/models/facial_landmark/pfld-sim.bin"
+  }
+}
