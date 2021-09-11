@@ -55,7 +55,6 @@ class FaceDetectorWithMask {
   int input_height_ = 320;
   std::vector<int> w_h_list_;
 
-  int num_thread_;
   int num_anchors_;
 
   float score_threshold_;

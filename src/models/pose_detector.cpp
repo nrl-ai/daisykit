@@ -52,7 +52,6 @@ std::vector<Keypoint> PoseDetector::Detect(cv::Mat& image, float offset_x,
   in.substract_mean_normalize(mean_vals, norm_vals);
   ncnn::MutexLockGuard g(lock_);
   ncnn::Extractor ex = model_->create_extractor();
-  ex.set_num_threads(4);
   ex.input("data", in);
   ncnn::Mat out;
   ex.extract("hybridsequential0_conv7_fwd", out);

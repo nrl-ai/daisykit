@@ -102,7 +102,6 @@ std::vector<Face> FaceDetector::Detect(cv::Mat& image) {
   std::vector<Face> face_list;
 
   ncnn::Extractor ex = model_->create_extractor();
-  ex.set_num_threads(num_thread_);
   ex.input("input", ncnn_img);
 
   ncnn::Mat scores;

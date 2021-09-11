@@ -67,7 +67,6 @@ class FaceDetector {
   int input_height_ = 240;
   std::vector<int> w_h_list_;
 
-  int num_thread_;
   int num_anchors_;
 
   float score_threshold_;
