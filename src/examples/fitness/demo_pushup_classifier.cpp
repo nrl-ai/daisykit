@@ -11,8 +11,8 @@ using namespace daisykit::models;
 
 int main(int, char **) {
   ActionClassifier *model =
-      new ActionClassifier("../data/models/model_ep001.param",
-                           "../data/models/model_ep001.bin");
+      new ActionClassifier("models/action_classification/is_pushup.param",
+                           "models/action_classification/is_pushup.bin");
 
   Mat frame;
   VideoCapture cap(0);

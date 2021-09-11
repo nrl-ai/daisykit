@@ -33,6 +33,7 @@ set(sources
     src/models/face_detector.cpp
     src/models/face_detector_with_mask.cpp
     src/models/facial_landmark_estimator.cpp
+    src/models/human_matting.cpp
 
     src/utils/logging/mjpeg_writer.cpp
     src/utils/signal_proc/signal_smoothing.cpp
@@ -45,6 +46,7 @@ set(sources
     src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
     src/flows/face_detector_with_mask_flow.cpp
+    src/flows/human_matting_flow.cpp
 
     src/examples/fitness/pushup_analyzer.cpp
 )
@@ -78,4 +80,16 @@ target_link_libraries(demo_face_detector ${OpenCV_LIBS} daisykitsdk)
 add_executable(demo_face_detector_with_mask src/examples/demo_face_detector_with_mask.cpp)
 target_link_libraries(demo_face_detector_with_mask ${OpenCV_LIBS} daisykitsdk)
 
+add_executable(demo_human_matting src/examples/demo_human_matting.cpp)
+target_link_libraries(demo_human_matting ${OpenCV_LIBS} daisykitsdk)
+
 endif()
+
+
+# Copy asset folders
+add_custom_target(configs ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_BINARY_DIR}/configs)
+add_custom_target(models ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/models ${CMAKE_BINARY_DIR}/models)
+add_custom_target(images ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_BINARY_DIR}/images)

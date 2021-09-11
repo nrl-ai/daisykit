@@ -5,7 +5,7 @@
 #include <streambuf>
 #include <string>
 
-#include <daisykitsdk/flows/face_detector_with_mask_flow.h>
+#include <daisykitsdk/flows/human_matting_flow.h>
 #include <daisykitsdk/thirdparties/json.hpp>
 
 using namespace cv;
@@ -15,11 +15,13 @@ using namespace daisykit::common;
 using namespace daisykit::flows;
 
 int main(int, char **) {
-  std::ifstream t("configs/face_detector_with_mask_config.json");
+  std::ifstream t("configs/human_matting_config.json");
   std::string config_str((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());
 
-  FaceDetectorWithMaskFlow flow(config_str);
+  cv::Mat background = cv::imread("images/background.jpg");
+  cv::cvtColor(background, background, cv::COLOR_BGR2RGB);
+  HumanMattingFlow flow(config_str, background);
 
   Mat frame;
   VideoCapture cap(0);
