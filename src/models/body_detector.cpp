@@ -51,7 +51,6 @@ std::vector<Object> BodyDetector::Detect(cv::Mat& image) {
   in.substract_mean_normalize(mean_vals, norm_vals);
 
   ncnn::Extractor ex = model_->create_extractor();
-  ex.set_num_threads(4);
   ex.input("data", in);
   ncnn::Mat out;
   ex.extract("output", out);

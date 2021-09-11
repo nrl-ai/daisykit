@@ -32,8 +32,8 @@ FaceDetectorFlow::FaceDetectorFlow(AAssetManager *mgr,
       config["face_detection_model"]["iou_threshold"]);
   with_landmark_ = config["with_landmark"];
   if (with_landmark_) {
-    facial_landmark_estimator_ = new models::FacialLandmarkEstimator(mgr, 
-        config["facial_landmark_model"]["model"],
+    facial_landmark_estimator_ = new models::FacialLandmarkEstimator(
+        mgr, config["facial_landmark_model"]["model"],
         config["facial_landmark_model"]["weights"]);
   }
 }

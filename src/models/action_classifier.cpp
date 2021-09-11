@@ -55,7 +55,6 @@ Action ActionClassifier::Classify(cv::Mat& image, float& confidence) {
   { 
     ncnn::MutexLockGuard g(lock_);
     ncnn::Extractor ex = model_->create_extractor();
-    ex.set_num_threads(4);
     ex.input("input_1_blob", in);
     ex.extract("dense_Softmax_blob", out);
   }
