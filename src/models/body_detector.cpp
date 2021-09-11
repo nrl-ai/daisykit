@@ -9,14 +9,17 @@ BodyDetector::BodyDetector(const std::string& param_file,
 }
 
 void BodyDetector::LoadModel(const std::string& param_file,
-                              const std::string& weight_file) {
+                             const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
   }
   model_ = new ncnn::Net;
-  model_->load_param(param_file.c_str());
-  model_->load_model(weight_file.c_str());
+  int ret_param = model_->load_param(param_file.c_str());
+  int ret_model = model_->load_model(weight_file.c_str());
+  if (ret_param != 0 || ret_model != 0) {
+    exit(1);
+  }
 }
 
 #ifdef __ANDROID__
@@ -26,14 +29,17 @@ BodyDetector::BodyDetector(AAssetManager* mgr, const std::string& param_file,
 }
 
 void BodyDetector::LoadModel(AAssetManager* mgr, const std::string& param_file,
-                              const std::string& weight_file) {
+                             const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
   }
   model_ = new ncnn::Net;
-  model_->load_param(mgr, param_file.c_str());
-  model_->load_model(mgr, weight_file.c_str());
+  int ret_param = model_->load_param(mgr, param_file.c_str());
+  int ret_model = model_->load_model(mgr, weight_file.c_str());
+  if (ret_param != 0 || ret_model != 0) {
+    exit(1);
+  }
 }
 #endif
 
