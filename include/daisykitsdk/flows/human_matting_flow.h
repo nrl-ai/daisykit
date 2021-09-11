@@ -1,0 +1,43 @@
+#ifndef DAISYKIT_FLOWS_HUMAN_MATTING_FLOW_H_
+#define DAISYKIT_FLOWS_HUMAN_MATTING_FLOW_H_
+
+#include <atomic>
+#include <iostream>
+#include <mutex>
+#include <string>
+#include <vector>
+
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
+#include <daisykitsdk/common/types.h>
+#include <daisykitsdk/models/human_matting.h>
+#include <daisykitsdk/utils/img_proc/img_utils.h>
+#include <daisykitsdk/utils/visualizer/viz_utils.h>
+#include <daisykitsdk/thirdparties/json.hpp>
+
+namespace daisykit {
+namespace flows {
+class HumanMattingFlow {
+ public:
+  HumanMattingFlow(const std::string& config_str, const cv::Mat &default_background);
+#ifdef __ANDROID__
+  HumanMattingFlow(AAssetManager* mgr, const std::string& config_str, const cv::Mat &default_background);
+#endif
+  ~HumanMattingFlow();
+  void Process(cv::Mat& rgb);
+  void DrawResult(cv::Mat& rgb);
+
+ private:
+  cv::Mat mask_;
+  std::mutex mask_lock_;
+  cv::Mat background_;
+
+  models::HumanMatting* human_matting_model_;
+};
+
+}  // namespace flows
+}  // namespace daisykit
+
+#endif

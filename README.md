@@ -15,16 +15,16 @@ sudo apt install libopencv-dev
 sudo apt-get install -y libvulkan-dev
 ```
 
-- Download [precompiled NCNN](https://github.com/Tencent/ncnn/releases), extract it.
+- Download [precompiled NCNN](https://github.com/Tencent/ncnn/releases), extract it (version for your development computer).
 
-- Download [pretrained models](https://drive.google.com/drive/folders/1O4bT6somFeBFc23BFKH-0on7E3LAkC-b?usp=sharing) and put into `data/` folder.
+- Download all assets [here](https://drive.google.com/drive/folders/1ZAM8W4hHkV7-zmfHFjIGLAuso3QajUfW?usp=sharing) and put into `assets/` folder.
 
 ## Build and Run on PC
 
 ```
 mkdir build
 cd build
-cmake .. -D ncnn_FIND_PATH="<path to ncnn lib>"
+cmake .. -Dncnn_FIND_PATH="<path to ncnn lib>"
 make
 ```
 

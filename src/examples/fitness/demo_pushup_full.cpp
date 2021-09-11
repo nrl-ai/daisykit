@@ -15,7 +15,7 @@ using namespace daisykit::common;
 using namespace daisykit::flows;
 
 int main(int, char **) {
-  std::ifstream t("../data/configs/pushup_counter_config.json");
+  std::ifstream t("configs/pushup_counter_config.json");
   std::string config_str((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());
 
