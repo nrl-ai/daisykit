@@ -6,52 +6,58 @@ using namespace daisykit::common;
 using namespace daisykit::models;
 
 FaceDetectorWithMask::FaceDetectorWithMask(const std::string& param_file,
-                                         const std::string& weight_file,
-                                         int input_width, int input_height,
-                                         float score_threshold,
-                                         float iou_threshold) {
+                                           const std::string& weight_file,
+                                           int input_width, int input_height,
+                                           float score_threshold,
+                                           float iou_threshold) {
   InitParams(input_width, input_height, score_threshold, iou_threshold);
   LoadModel(param_file, weight_file);
 }
 
 void FaceDetectorWithMask::LoadModel(const std::string& param_file,
-                                    const std::string& weight_file) {
+                                     const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
   }
   model_ = new ncnn::Net;
-  model_->load_param(param_file.c_str());
-  model_->load_model(weight_file.c_str());
+  int ret_param = model_->load_param(param_file.c_str());
+  int ret_model = model_->load_model(weight_file.c_str());
+  if (ret_param != 0 || ret_model != 0) {
+    exit(1);
+  }
 }
 
 #ifdef __ANDROID__
 FaceDetectorWithMask::FaceDetectorWithMask(AAssetManager* mgr,
-                                         const std::string& param_file,
-                                         const std::string& weight_file,
-                                         int input_width, int input_height,
-                                         float score_threshold,
-                                         float iou_threshold) {
+                                           const std::string& param_file,
+                                           const std::string& weight_file,
+                                           int input_width, int input_height,
+                                           float score_threshold,
+                                           float iou_threshold) {
   InitParams(input_width, input_height, score_threshold, iou_threshold);
   LoadModel(mgr, param_file, weight_file);
 }
 
 void FaceDetectorWithMask::LoadModel(AAssetManager* mgr,
-                                    const std::string& param_file,
-                                    const std::string& weight_file) {
+                                     const std::string& param_file,
+                                     const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
   }
   model_ = new ncnn::Net;
-  model_->load_param(mgr, param_file.c_str());
-  model_->load_model(mgr, weight_file.c_str());
+  int ret_param = model_->load_param(mgr, param_file.c_str());
+  int ret_model = model_->load_model(mgr, weight_file.c_str());
+  if (ret_param != 0 || ret_model != 0) {
+    exit(1);
+  }
 }
 #endif
 
 void FaceDetectorWithMask::InitParams(int input_width, int input_height,
-                                     float score_threshold,
-                                     float iou_threshold) {
+                                      float score_threshold,
+                                      float iou_threshold) {
   score_threshold_ = score_threshold;
   iou_threshold_ = iou_threshold;
   input_width_ = input_width;

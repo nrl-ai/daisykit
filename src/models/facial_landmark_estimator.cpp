@@ -3,43 +3,52 @@
 using namespace daisykit::common;
 using namespace daisykit::models;
 
-FacialLandmarkEstimator::FacialLandmarkEstimator(const std::string& param_file,
-                           const std::string& weight_file) {
+FacialLandmarkEstimator::FacialLandmarkEstimator(
+    const std::string& param_file, const std::string& weight_file) {
   LoadModel(param_file, weight_file);
 }
 
 void FacialLandmarkEstimator::LoadModel(const std::string& param_file,
-                              const std::string& weight_file) {
+                                        const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
   }
   model_ = new ncnn::Net;
-  model_->load_param(param_file.c_str());
-  model_->load_model(weight_file.c_str());
+  int ret_param = model_->load_param(param_file.c_str());
+  int ret_model = model_->load_model(weight_file.c_str());
+  if (ret_param != 0 || ret_model != 0) {
+    exit(1);
+  }
 }
 
 #ifdef __ANDROID__
-FacialLandmarkEstimator::FacialLandmarkEstimator(AAssetManager* mgr, const std::string& param_file,
-                           const std::string& weight_file) {
+FacialLandmarkEstimator::FacialLandmarkEstimator(
+    AAssetManager* mgr, const std::string& param_file,
+    const std::string& weight_file) {
   LoadModel(mgr, param_file, weight_file);
 }
 
-void FacialLandmarkEstimator::LoadModel(AAssetManager* mgr, const std::string& param_file,
-                              const std::string& weight_file) {
+void FacialLandmarkEstimator::LoadModel(AAssetManager* mgr,
+                                        const std::string& param_file,
+                                        const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
   }
   model_ = new ncnn::Net;
-  model_->load_param(mgr, param_file.c_str());
-  model_->load_model(mgr, weight_file.c_str());
+  int ret_param = model_->load_param(mgr, param_file.c_str());
+  int ret_model = model_->load_model(mgr, weight_file.c_str());
+  if (ret_param != 0 || ret_model != 0) {
+    exit(1);
+  }
 }
 #endif
 
 // Detect keypoints for single object
-std::vector<Keypoint> FacialLandmarkEstimator::Detect(cv::Mat& image, float offset_x,
-                                           float offset_y) {
+std::vector<Keypoint> FacialLandmarkEstimator::Detect(cv::Mat& image,
+                                                      float offset_x,
+                                                      float offset_y) {
   std::vector<Keypoint> keypoints;
   int w = image.cols;
   int h = image.rows;
@@ -67,8 +76,8 @@ std::vector<Keypoint> FacialLandmarkEstimator::Detect(cv::Mat& image, float offs
 }
 
 // Detect keypoints for multiple objects
-void FacialLandmarkEstimator::DetectMulti(
-    cv::Mat& image, std::vector<Face>& objects) {
+void FacialLandmarkEstimator::DetectMulti(cv::Mat& image,
+                                          std::vector<Face>& objects) {
   int img_w = image.cols;
   int img_h = image.rows;
   int x1, y1, x2, y2;
@@ -91,12 +100,11 @@ void FacialLandmarkEstimator::DetectMulti(
     cv::Mat roi = image(cv::Rect(x1, y1, x2 - x1, y2 - y1)).clone();
     objects[i].landmark = Detect(roi, x1, y1);
   }
-
 }
 
 // Draw pose
-void FacialLandmarkEstimator::DrawKeypoints(const cv::Mat& image,
-                             const std::vector<Keypoint>& keypoints) {
+void FacialLandmarkEstimator::DrawKeypoints(
+    const cv::Mat& image, const std::vector<Keypoint>& keypoints) {
   float threshold = 0.2;
   // draw joint
   for (size_t i = 0; i < keypoints.size(); i++) {
