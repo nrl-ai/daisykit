@@ -17,7 +17,7 @@ HumanMattingFlow::HumanMattingFlow(AAssetManager *mgr,
                                    const cv::Mat &default_background) {
   nlohmann::json config = nlohmann::json::parse(config_str);
   human_matting_model_ =
-      new models::HumanMatting(config["human_matting_model"]["model"],
+      new models::HumanMatting(mgr, config["human_matting_model"]["model"],
                                config["human_matting_model"]["weights"]);
   background_ = default_background.clone();
 }

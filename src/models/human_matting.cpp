@@ -31,17 +31,7 @@ void HumanMatting::LoadModel(AAssetManager* mgr, const std::string& param_file,
     delete model_;
     model_ = nullptr;
   }
-  // model_ = new ncnn::Net;
-  // model_->opt.use_bf16_storage = false;
-  // model_->opt.use_vulkan_compute = false;
-  // model_->opt.use_int8_inference = false;
-  // model_->opt.use_packing_layout = false;
-  // model_->opt.use_fp16_packed = false;
-  // model_->opt.use_fp16_storage = false;
-  // model_->opt.use_fp16_arithmetic = false;
-  // model_->opt.use_int8_packed = false;
-  // model_->opt.use_int8_storage = false;
-  // model_->opt.use_int8_arithmetic = false;
+  model_ = new ncnn::Net;
   int ret_param = model_->load_param(mgr, param_file.c_str());
   int ret_model = model_->load_model(mgr, weight_file.c_str());
   if (ret_param != 0 || ret_model != 0) {
@@ -56,12 +46,7 @@ void HumanMatting::Segmentation(cv::Mat& image, cv::Mat& mask) {
   const int h = rgb.rows;
 
   ncnn::Mat in = ncnn::Mat::from_pixels_resize(
-      rgb.data, ncnn::Mat::PIXEL_RGB, w, h, input_width_, input_height_);
-
-  // Print sum to confirm input is not constant
-  double s = cv::sum(rgb)[0];
-  cv::putText(image, std::to_string(s), cv::Point(100, 100),
-              cv::FONT_HERSHEY_PLAIN, 1.0, cv::Scalar(0, 0, 0), 2);
+      rgb.data, ncnn::Mat::PIXEL_RGB2BGR, w, h, input_width_, input_height_);
 
   ncnn::Extractor ex = model_->create_extractor();
   ex.input("input_blob1", in);
@@ -77,12 +62,6 @@ void HumanMatting::Segmentation(cv::Mat& image, cv::Mat& mask) {
 
   mask = cv::Mat::zeros(cv::Size(w, h), CV_8UC1);
   out.to_pixels_resize(mask.data, ncnn::Mat::PIXEL_GRAY, w, h);
-
-  // Print sum to confirm input is not constant
-  // => Failed on android
-  double ss = cv::sum(mask)[0];
-  cv::putText(image, std::to_string(ss), cv::Point(100, 200),
-              cv::FONT_HERSHEY_PLAIN, 1.0, cv::Scalar(0, 0, 0), 2);
 }
 
 void HumanMatting::BindWithBackground(cv::Mat& rgb, const cv::Mat& bg,
