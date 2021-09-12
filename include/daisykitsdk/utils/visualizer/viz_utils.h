@@ -10,16 +10,15 @@ namespace visualizer {
 class VizUtils {
  public:
   static void DrawLabel(cv::Mat& im, const std::string label,
-                         const cv::Point& origin,
-                         int fontface = cv::FONT_HERSHEY_SIMPLEX,
-                         double scale = 0.8, int thickness = 1,
-                         int baseline = 0,
-                         cv::Scalar text_color = cv::Scalar(255, 255, 255),
-                         cv::Scalar bg_color = cv::Scalar(255, 0, 0));
+                        const cv::Point& origin,
+                        int fontface = cv::FONT_HERSHEY_SIMPLEX,
+                        double scale = 0.8, int thickness = 1, int baseline = 0,
+                        cv::Scalar text_color = cv::Scalar(255, 255, 255),
+                        cv::Scalar bg_color = cv::Scalar(255, 0, 0));
 
   template <typename T>
   static cv::Mat LineGraph(std::vector<T>& vals, int YRange[2],
-                            std::vector<int> signals, int n_last_values = -1) {
+                           std::vector<int> signals, int n_last_values = -1) {
     auto begin_elm = n_last_values == -1 ? vals.begin()
                                          : vals.size() > n_last_values
                                                ? vals.end() - n_last_values

@@ -1,17 +1,7 @@
 #ifndef DAISYKIT_MODELS_FACIAL_LANDMARK_ESTIMATOR_H_
 #define DAISYKIT_MODELS_FACIAL_LANDMARK_ESTIMATOR_H_
 
-#include <algorithm>
-#include <chrono>
-#include <stdio.h>
-#include <string>
-#include <vector>
-
-#ifdef __ANDROID__
-#include <android/asset_manager_jni.h>
-#endif
-
-#include <opencv2/opencv.hpp>
+#include "daisykitsdk/common/types.h"
 
 #include <benchmark.h>
 #include <cpu.h>
@@ -19,14 +9,22 @@
 #include <gpu.h>
 #include <net.h>
 #include <platform.h>
-
-#include <daisykitsdk/common/types.h>
+#include <stdio.h>
+#include <algorithm>
+#include <chrono>
+#include <iostream>
+#include <opencv2/opencv.hpp>
+#include <string>
+#include <vector>
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
 
 namespace daisykit {
 namespace models {
 
 class FacialLandmarkEstimator {
-public:
+ public:
   FacialLandmarkEstimator(const std::string &param_file,
                           const std::string &weight_file);
   void LoadModel(const std::string &param_file, const std::string &weight_file);
@@ -37,8 +35,9 @@ public:
                  const std::string &weight_file);
 #endif
   // Detect keypoints for single object
-  std::vector<daisykit::common::Keypoint>
-  Detect(cv::Mat &image, float offset_x = 0, float offset_y = 0);
+  std::vector<daisykit::common::Keypoint> Detect(cv::Mat &image,
+                                                 float offset_x = 0,
+                                                 float offset_y = 0);
   // Detect keypoints for multiple objects
   void DetectMulti(cv::Mat &image,
                    std::vector<daisykit::common::Face> &objects);
@@ -46,14 +45,14 @@ public:
   void DrawKeypoints(const cv::Mat &image,
                      const std::vector<daisykit::common::Keypoint> &keypoints);
 
-private:
+ private:
   const int input_width_ = 112;
   const int input_height_ = 112;
   ncnn::Net *model_ = 0;
   ncnn::Mutex lock_;
 };
 
-} // namespace models
-} // namespace daisykit
+}  // namespace models
+}  // namespace daisykit
 
 #endif

@@ -1,6 +1,11 @@
 #ifndef DAISYKIT_EXAMPLES_PUSHUPS_PUSHUP_ANALYZER_H_
 #define DAISYKIT_EXAMPLES_PUSHUPS_PUSHUP_ANALYZER_H_
 
+#include "daisykitsdk/utils/logging/mjpeg_server.h"
+#include "daisykitsdk/utils/signal_proc/signal_smoothing.h"
+#include "daisykitsdk/utils/signal_proc/z_score_filter.h"
+#include "daisykitsdk/utils/visualizer/viz_utils.h"
+
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -13,11 +18,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-#include "daisykitsdk/utils/logging/mjpeg_server.h"
-#include "daisykitsdk/utils/signal_proc/signal_smoothing.h"
-#include "daisykitsdk/utils/signal_proc/z_score_filter.h"
-#include "daisykitsdk/utils/visualizer/viz_utils.h"
 
 namespace daisykit {
 namespace examples {

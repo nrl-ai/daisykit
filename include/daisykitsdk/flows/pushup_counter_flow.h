@@ -1,24 +1,23 @@
 #ifndef DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
 #define DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
 
+#include "daisykitsdk/common/types.h"
+#include "daisykitsdk/examples/fitness/pushup_analyzer.h"
+#include "daisykitsdk/models/action_classifier.h"
+#include "daisykitsdk/models/body_detector.h"
+#include "daisykitsdk/models/pose_detector.h"
+#include "daisykitsdk/thirdparties/json.hpp"
+#include "daisykitsdk/utils/img_proc/img_utils.h"
+#include "daisykitsdk/utils/visualizer/viz_utils.h"
+
 #include <atomic>
 #include <iostream>
+#include <mutex>
 #include <string>
 #include <vector>
-#include <mutex>
-
 #ifdef __ANDROID__
 #include <android/asset_manager_jni.h>
 #endif
-
-#include <daisykitsdk/common/types.h>
-#include <daisykitsdk/examples/fitness/pushup_analyzer.h>
-#include <daisykitsdk/models/action_classifier.h>
-#include <daisykitsdk/models/body_detector.h>
-#include <daisykitsdk/models/pose_detector.h>
-#include <daisykitsdk/utils/img_proc/img_utils.h>
-#include <daisykitsdk/utils/visualizer/viz_utils.h>
-#include <daisykitsdk/thirdparties/json.hpp>
 
 namespace daisykit {
 namespace flows {
