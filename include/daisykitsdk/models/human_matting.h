@@ -1,18 +1,7 @@
 #ifndef DAISYKIT_MODELS_HUMAN_MATTING_H_
 #define DAISYKIT_MODELS_HUMAN_MATTING_H_
 
-#include <stdio.h>
-#include <algorithm>
-#include <chrono>
-#include <iostream>
-#include <string>
-#include <vector>
-
-#ifdef __ANDROID__
-#include <android/asset_manager_jni.h>
-#endif
-
-#include <opencv2/opencv.hpp>
+#include "daisykitsdk/common/types.h"
 
 #include <benchmark.h>
 #include <cpu.h>
@@ -20,8 +9,16 @@
 #include <gpu.h>
 #include <net.h>
 #include <platform.h>
-
-#include <daisykitsdk/common/types.h>
+#include <stdio.h>
+#include <algorithm>
+#include <chrono>
+#include <iostream>
+#include <opencv2/opencv.hpp>
+#include <string>
+#include <vector>
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
 
 namespace daisykit {
 namespace models {

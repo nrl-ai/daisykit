@@ -1,18 +1,7 @@
 #ifndef DAISYKIT_MODELS_FACE_DETECTOR_WITH_MASK_H_
 #define DAISYKIT_MODELS_FACE_DETECTOR_WITH_MASK_H_
 
-#include <stdio.h>
-#include <algorithm>
-#include <chrono>
-#include <string>
-#include <vector>
-#include <iostream>
-
-#ifdef __ANDROID__
-#include <android/asset_manager_jni.h>
-#endif
-
-#include <opencv2/opencv.hpp>
+#include "daisykitsdk/common/types.h"
 
 #include <benchmark.h>
 #include <cpu.h>
@@ -20,23 +9,33 @@
 #include <gpu.h>
 #include <net.h>
 #include <platform.h>
-
-#include <daisykitsdk/common/types.h>
+#include <stdio.h>
+#include <algorithm>
+#include <chrono>
+#include <iostream>
+#include <opencv2/opencv.hpp>
+#include <string>
+#include <vector>
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
 
 namespace daisykit {
 namespace models {
 
 class FaceDetectorWithMask {
  public:
-  FaceDetectorWithMask(const std::string& param_file, const std::string& weight_file,
-               int input_width = 320, int input_height = 320,
-               float score_threshold = 0.7, float iou_threshold = 0.5);
-  void LoadModel(const std::string& param_file, const std::string& weight_file5);
+  FaceDetectorWithMask(const std::string& param_file,
+                       const std::string& weight_file, int input_width = 320,
+                       int input_height = 320, float score_threshold = 0.7,
+                       float iou_threshold = 0.5);
+  void LoadModel(const std::string& param_file,
+                 const std::string& weight_file5);
 #ifdef __ANDROID__
   FaceDetectorWithMask(AAssetManager* mgr, const std::string& param_file,
-               const std::string& weight_file, int input_width = 320,
-               int input_height = 320, float score_threshold = 0.7,
-               float iou_threshold = 0.5);
+                       const std::string& weight_file, int input_width = 320,
+                       int input_height = 320, float score_threshold = 0.7,
+                       float iou_threshold = 0.5);
   void LoadModel(AAssetManager* mgr, const std::string& param_file,
                  const std::string& weight_file);
 #endif
@@ -59,7 +58,6 @@ class FaceDetectorWithMask {
 
   float score_threshold_;
   float iou_threshold_;
-
 };
 
 }  // namespace models
