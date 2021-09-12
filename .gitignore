@@ -1,4 +1,5 @@
 /build
 /.vscode
+!/.vscode/settings.json
 /assets/*
 !/assets/.gitkeep
