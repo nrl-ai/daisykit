@@ -2,7 +2,7 @@
 
 using namespace daisykit::flows;
 
-FaceDetectorFlow::FaceDetectorFlow(const std::string &config_str) {
+FaceDetectorFlow::FaceDetectorFlow(const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
   face_detector_ = new models::FaceDetector(
       config["face_detection_model"]["model"],
@@ -20,8 +20,8 @@ FaceDetectorFlow::FaceDetectorFlow(const std::string &config_str) {
 }
 
 #ifdef __ANDROID__
-FaceDetectorFlow::FaceDetectorFlow(AAssetManager *mgr,
-                                   const std::string &config_str) {
+FaceDetectorFlow::FaceDetectorFlow(AAssetManager* mgr,
+                                   const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
   face_detector_ = new models::FaceDetector(
       mgr, config["face_detection_model"]["model"],
@@ -46,7 +46,7 @@ FaceDetectorFlow::~FaceDetectorFlow() {
   facial_landmark_estimator_ = nullptr;
 }
 
-void FaceDetectorFlow::Process(cv::Mat &rgb) {
+void FaceDetectorFlow::Process(cv::Mat& rgb) {
   // Detect faces
   std::vector<common::Face> faces = face_detector_->Detect(rgb);
 
@@ -61,7 +61,7 @@ void FaceDetectorFlow::Process(cv::Mat &rgb) {
   }
 }
 
-void FaceDetectorFlow::DrawResult(cv::Mat &rgb) {
+void FaceDetectorFlow::DrawResult(cv::Mat& rgb) {
   // Draw face bounding boxes and keypoints
   {
     const std::lock_guard<std::mutex> lock(faces_lock_);

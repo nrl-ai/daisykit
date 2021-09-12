@@ -9,7 +9,7 @@ using namespace daisykit::common;
 using namespace daisykit::models;
 
 int main(int, char**) {
-  ActionClassifier *model =
+  ActionClassifier* model =
       new ActionClassifier("models/action_classification/is_pushup.param",
                            "models/action_classification/is_pushup.bin");
 

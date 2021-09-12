@@ -42,7 +42,7 @@ int PushupAnalyzer::CountWithNewPoint(double data, bool is_pushing_up) {
   return (int)countPostions.size();
 }
 
-int PushupAnalyzer::CountPushups(const cv::Mat &rgb, bool is_pushing_up) {
+int PushupAnalyzer::CountPushups(const cv::Mat& rgb, bool is_pushing_up) {
   long long int current_time =
       duration_cast<std::chrono::milliseconds>(
           std::chrono::system_clock::now().time_since_epoch())
@@ -62,7 +62,7 @@ int PushupAnalyzer::CountPushups(const cv::Mat &rgb, bool is_pushing_up) {
   return current_count_;
 }
 
-double PushupAnalyzer::CalcOpticalFlow(const cv::Mat &frame2) {
+double PushupAnalyzer::CalcOpticalFlow(const cv::Mat& frame2) {
   Mat next;
   cv::resize(frame2, next, cv::Size(224, 224));
   cvtColor(next, next, COLOR_BGR2GRAY);
