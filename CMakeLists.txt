@@ -41,8 +41,6 @@ set(sources
     src/utils/img_proc/img_utils.cpp
     src/utils/visualizer/viz_utils.cpp
 
-    src/examples/fitness/pushup_analyzer.cpp
-
     src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
     src/flows/face_detector_with_mask_flow.cpp
