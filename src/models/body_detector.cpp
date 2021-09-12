@@ -1,69 +1,31 @@
 #include "daisykitsdk/models/body_detector.h"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
-
-#include <algorithm>
-#include <chrono>
-#include <iostream>
-#include <string>
 #include <vector>
+#include "daisykitsdk/utils/img_proc/img_utils.h"
 
 using namespace daisykit::common;
 using namespace daisykit::models;
 
-BodyDetector::BodyDetector(const std::string& param_file,
-                           const std::string& weight_file) {
-  LoadModel(param_file, weight_file);
+BodyDetector::BodyDetector(const char* param_buffer,
+                           const unsigned char* weight_buffer,
+                           const int& width = 320, const int& height = 320) {
+  LoadModel(param_buffer, weight_buffer);
+  input_width_ = width;
+  input_height_ = height;
 }
 
-void BodyDetector::LoadModel(const std::string& param_file,
-                             const std::string& weight_file) {
-  if (model_) {
-    delete model_;
-    model_ = nullptr;
-  }
-  model_ = new ncnn::Net;
-  int ret_param = model_->load_param(param_file.c_str());
-  int ret_model = model_->load_model(weight_file.c_str());
-  if (ret_param != 0 || ret_model != 0) {
-    exit(1);
-  }
-}
-
-#ifdef __ANDROID__
-BodyDetector::BodyDetector(AAssetManager* mgr, const std::string& param_file,
-                           const std::string& weight_file) {
-  LoadModel(mgr, param_file, weight_file);
-}
-
-void BodyDetector::LoadModel(AAssetManager* mgr, const std::string& param_file,
-                             const std::string& weight_file) {
-  if (model_) {
-    delete model_;
-    model_ = nullptr;
-  }
-  model_ = new ncnn::Net;
-  int ret_param = model_->load_param(mgr, param_file.c_str());
-  int ret_model = model_->load_model(mgr, weight_file.c_str());
-  if (ret_param != 0 || ret_model != 0) {
-    exit(1);
-  }
-}
-#endif
-
-std::vector<Object> BodyDetector::Detect(cv::Mat& image) {
-  cv::Mat rgb = image.clone();
-  int img_w = rgb.cols;
-  int img_h = rgb.rows;
+std::vector<Object> BodyDetector::Predict(cv::Mat& image) {
+  int img_w = image.cols;
+  int img_h = image.rows;
 
   ncnn::Mat in =
-      ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols,
-                                    rgb.rows, input_width_, input_height_);
+      ncnn::Mat::from_pixels_resize(image.data, ncnn::Mat::PIXEL_RGB, img_w,
+                                    img_h, input_width_, input_height_);
 
   const float mean_vals[3] = {0.f, 0.f, 0.f};
   const float norm_vals[3] = {1 / 255.f, 1 / 255.f, 1 / 255.f};
   in.substract_mean_normalize(mean_vals, norm_vals);
 
-  ncnn::Extractor ex = model_->create_extractor();
+  ncnn::Extractor ex = model_.create_extractor();
   ex.input("data", in);
   ncnn::Mat out;
   ex.extract("output", out);
