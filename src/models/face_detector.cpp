@@ -1,4 +1,12 @@
-#include <daisykitsdk/models/face_detector.h>
+#include "daisykitsdk/models/face_detector.h"
+#include "daisykitsdk/utils/img_proc/img_utils.h"
+
+#include <algorithm>
+#include <chrono>
+#include <iostream>
+#include <string>
+#include <vector>
+
 
 #define clip(x, y) (x < 0 ? 0 : (x > y ? y : x))
 

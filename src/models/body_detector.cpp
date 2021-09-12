@@ -1,4 +1,11 @@
-#include <daisykitsdk/models/body_detector.h>
+#include "daisykitsdk/models/body_detector.h"
+#include "daisykitsdk/utils/img_proc/img_utils.h"
+
+#include <algorithm>
+#include <chrono>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using namespace daisykit::common;
 using namespace daisykit::models;

@@ -1,23 +1,20 @@
 #ifndef DAISYKIT_MODELS_BODY_DETECTOR_H_
 #define DAISYKIT_MODELS_BODY_DETECTOR_H_
 
-#include "daisykitsdk/common/types.h"
+#include <daisykitsdk/common/types.h>
 
+#include <opencv2/opencv.hpp>
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
+// Ncnn
 #include <benchmark.h>
 #include <cpu.h>
 #include <datareader.h>
 #include <gpu.h>
 #include <net.h>
 #include <platform.h>
-#include <stdio.h>
-#include <algorithm>
-#include <chrono>
-#include <opencv2/opencv.hpp>
-#include <string>
-#include <vector>
-#ifdef __ANDROID__
-#include <android/asset_manager_jni.h>
-#endif
 
 namespace daisykit {
 namespace models {

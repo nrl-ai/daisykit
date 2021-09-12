@@ -8,8 +8,7 @@ using namespace std;
 using namespace daisykit::common;
 using namespace daisykit::models;
 
-
-int main(int, char **) {
+int main(int, char**) {
   ActionClassifier *model =
       new ActionClassifier("models/action_classification/is_pushup.param",
                            "models/action_classification/is_pushup.bin");
@@ -29,7 +28,8 @@ int main(int, char **) {
     if (confidence < 0.9) {
       color = cv::Scalar(0, 0, 255);
     }
-    cv::putText(frame, std::to_string(confidence), cv::Point(100, 100), cv::FONT_HERSHEY_PLAIN, 1.0, color, 2);
+    cv::putText(frame, std::to_string(confidence), cv::Point(100, 100),
+                cv::FONT_HERSHEY_PLAIN, 1.0, color, 2);
 
     imshow("Image", frame);
     waitKey(1);

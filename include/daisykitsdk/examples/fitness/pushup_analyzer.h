@@ -25,11 +25,11 @@ namespace examples {
 class PushupAnalyzer {
  public:
   PushupAnalyzer();
-  int CountPushups(const cv::Mat &rgb, bool is_pushing_up);
+  int CountPushups(const cv::Mat& rgb, bool is_pushing_up);
 
  private:
   int CountWithNewPoint(double data, bool is_pushing_up);
-  double CalcOpticalFlow(const cv::Mat &img);
+  double CalcOpticalFlow(const cv::Mat& img);
   std::shared_ptr<daisykit::utils::logging::MJPEGServer> debug_img_server_;
   cv::Mat prvs_;
   std::vector<daisykit::utils::signal_proc::ld> input_ = {0, 0, 0, 0,

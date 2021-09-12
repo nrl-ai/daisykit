@@ -40,17 +40,15 @@ std::string BarcodeScannerFlow::Process(cv::Mat& rgb, bool draw) {
   if (results.empty()) results.emplace_back(DecodeStatus::NotFound);
 
   for (auto&& result : results) {
-
     if (!result.isValid()) continue;
-  
+
     if (draw) {
       DrawRect(rgb, result.position());
-      VizUtils::DrawLabel(
-        rgb, ToUtf8(result.text(), angle_escape),
-        cv::Point(10, 40), cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, 10,
-        cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
+      VizUtils::DrawLabel(rgb, ToUtf8(result.text(), angle_escape),
+                          cv::Point(10, 40), cv::FONT_HERSHEY_SIMPLEX, 0.5, 1,
+                          10, cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
     }
-    
+
     ret |= static_cast<int>(result.status());
     result_stream << ToString(result.format());
     if (result.isValid())

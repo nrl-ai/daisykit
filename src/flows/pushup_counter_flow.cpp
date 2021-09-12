@@ -59,9 +59,7 @@ void PushupCounterFlow::Process(cv::Mat& rgb) {
       pushup_analyzer_->CountPushups(rgb, action == common::Action::kPushup);
 }
 
-int PushupCounterFlow::NumPushups() {
-  return num_pushups_;
-}
+int PushupCounterFlow::NumPushups() { return num_pushups_; }
 
 void PushupCounterFlow::DrawResult(cv::Mat& rgb) {
   // Draw body bounding boxes

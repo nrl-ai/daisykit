@@ -14,7 +14,7 @@ using json = nlohmann::json;
 using namespace daisykit::common;
 using namespace daisykit::flows;
 
-int main(int, char **) {
+int main(int, char**) {
   std::ifstream t("configs/face_detector_config.json");
   std::string config_str((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());

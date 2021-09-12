@@ -21,7 +21,8 @@ int PushupAnalyzer::CountWithNewPoint(double data, bool is_pushing_up) {
 
   vector<int> filtered_signals = ZScoreFilter::Filter(signal);
 
-  cv::Mat line_graph = VizUtils::LineGraph(signal, range, filtered_signals, 500);
+  cv::Mat line_graph =
+      VizUtils::LineGraph(signal, range, filtered_signals, 500);
 
   std::vector<int> countPostions;
   for (int i = 0; i < (int)filtered_signals.size() - 1; ++i) {
@@ -41,9 +42,7 @@ int PushupAnalyzer::CountWithNewPoint(double data, bool is_pushing_up) {
   return (int)countPostions.size();
 }
 
-int PushupAnalyzer::CountPushups(const cv::Mat &rgb,
-                                  bool is_pushing_up) {
-
+int PushupAnalyzer::CountPushups(const cv::Mat &rgb, bool is_pushing_up) {
   long long int current_time =
       duration_cast<std::chrono::milliseconds>(
           std::chrono::system_clock::now().time_since_epoch())
@@ -56,7 +55,7 @@ int PushupAnalyzer::CountPushups(const cv::Mat &rgb,
   }
 
   double x = CalcOpticalFlow(rgb);
-  
+
   int count = CountWithNewPoint(x, is_pushing_up);
   current_count_ = count;
 
