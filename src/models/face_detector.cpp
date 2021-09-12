@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-
 #define clip(x, y) (x < 0 ? 0 : (x > y ? y : x))
 
 using namespace daisykit::common;

@@ -14,8 +14,8 @@
 #include <datareader.h>
 #include <gpu.h>
 #include <net.h>
-#include <platform.h>
 #include <omp.h>
+#include <platform.h>
 
 namespace daisykit {
 namespace models {
