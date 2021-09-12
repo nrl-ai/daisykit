@@ -1,4 +1,11 @@
-#include <daisykitsdk/models/pose_detector.h>
+#include "daisykitsdk/models/pose_detector.h"
+#include "daisykitsdk/utils/img_proc/img_utils.h"
+
+#include <algorithm>
+#include <chrono>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using namespace daisykit::common;
 using namespace daisykit::models;
@@ -9,7 +16,7 @@ PoseDetector::PoseDetector(const std::string& param_file,
 }
 
 void PoseDetector::LoadModel(const std::string& param_file,
-                              const std::string& weight_file) {
+                             const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
@@ -29,7 +36,7 @@ PoseDetector::PoseDetector(AAssetManager* mgr, const std::string& param_file,
 }
 
 void PoseDetector::LoadModel(AAssetManager* mgr, const std::string& param_file,
-                              const std::string& weight_file) {
+                             const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
@@ -120,7 +127,7 @@ std::vector<std::vector<Keypoint>> PoseDetector::DetectMulti(
 
 // Draw pose
 void PoseDetector::DrawKeypoints(const cv::Mat& image,
-                             const std::vector<Keypoint>& keypoints) {
+                                 const std::vector<Keypoint>& keypoints) {
   float threshold = 0.2;
   // draw bone
   static const int joint_pairs[16][2] = {
