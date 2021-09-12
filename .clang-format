@@ -7,4 +7,4 @@ BasedOnStyle: Google
 DerivePointerAlignment: false
 PointerAlignment: Left
 
-IncludeBlocks: Merge
+IncludeBlocks: Preserve
