@@ -49,7 +49,7 @@ FaceDetectorWithMaskFlow::~FaceDetectorWithMaskFlow() {
 
 void FaceDetectorWithMaskFlow::Process(cv::Mat& rgb) {
   // Detect faces
-  std::vector<common::Face> faces = face_detector_->Detect(rgb);
+  std::vector<common::Face> faces = face_detector_->Predict(rgb);
 
   // Detect landmarks
   if (with_landmark_) {
