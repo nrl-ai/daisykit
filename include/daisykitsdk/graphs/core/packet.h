@@ -21,27 +21,36 @@
 #include <ctime>
 #include <memory>
 #include <mutex>
+#include <atomic>
 
 namespace daisykit {
 namespace graphs {
 
 class Packet {
  public:
-  Packet(){};
+  Packet() {
+    data_available_ = true;
+  }
   Packet(std::shared_ptr<void> data, utils::TimePoint timestamp) {
     // We dont use SetData() here because using mutex lock
     // in the constructor causes crashing
     data_ = data;
     timestamp_ = timestamp;
+    data_available_ = true;
   }
 
   void SetData(std::shared_ptr<void> data, utils::TimePoint timestamp) {
     const std::lock_guard<std::mutex> lock(data_mutex_);
     data_ = data;
     timestamp_ = timestamp;
+    data_available_ = true;
   }
 
-  void GetData(std::shared_ptr<void>& data, utils::TimePoint& timestamp) {
+  bool GetData(std::shared_ptr<void>& data, utils::TimePoint& timestamp) {
+    // If no data
+    if (!data_available_) {
+      return -1;
+    }
     const std::lock_guard<std::mutex> lock(data_mutex_);
     data = data_;
     timestamp = timestamp_;
@@ -51,6 +60,7 @@ class Packet {
   std::mutex data_mutex_;
   std::shared_ptr<void> data_;
   utils::TimePoint timestamp_;
+  std::atomic<bool> data_available_;
 };
 
 typedef std::shared_ptr<Packet> PacketPtr;
