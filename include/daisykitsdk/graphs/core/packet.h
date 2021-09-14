@@ -17,20 +17,18 @@
 
 #include "daisykitsdk/utils/timer.h"
 
+#include <atomic>
 #include <chrono>
 #include <ctime>
 #include <memory>
 #include <mutex>
-#include <atomic>
 
 namespace daisykit {
 namespace graphs {
 
 class Packet {
  public:
-  Packet() {
-    data_available_ = true;
-  }
+  Packet() { data_available_ = true; }
   Packet(std::shared_ptr<void> data, utils::TimePoint timestamp) {
     // We dont use SetData() here because using mutex lock
     // in the constructor causes crashing
