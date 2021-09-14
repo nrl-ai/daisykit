@@ -1,84 +1,64 @@
+// Copyright 2021 The DaisyKit Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "daisykitsdk/models/face_detector_with_mask.h"
 #include "daisykitsdk/utils/img_proc/img_utils.h"
 
-#include <algorithm>
-#include <chrono>
-#include <iostream>
 #include <string>
 #include <vector>
-
-#define clip(x, y) (x < 0 ? 0 : (x > y ? y : x))
 
 using namespace daisykit::common;
 using namespace daisykit::models;
 
-FaceDetectorWithMask::FaceDetectorWithMask(const std::string& param_file,
-                                           const std::string& weight_file,
+FaceDetectorWithMask::FaceDetectorWithMask(const char* param_buffer,
+                                           const unsigned char* weight_buffer,
                                            int input_width, int input_height,
                                            float score_threshold,
                                            float iou_threshold) {
-  InitParams(input_width, input_height, score_threshold, iou_threshold);
-  LoadModel(param_file, weight_file);
-}
-
-void FaceDetectorWithMask::LoadModel(const std::string& param_file,
-                                     const std::string& weight_file) {
-  if (model_) {
-    delete model_;
-    model_ = nullptr;
-  }
-  model_ = new ncnn::Net;
-  int ret_param = model_->load_param(param_file.c_str());
-  int ret_model = model_->load_model(weight_file.c_str());
-  if (ret_param != 0 || ret_model != 0) {
-    exit(1);
-  }
-}
-
-#ifdef __ANDROID__
-FaceDetectorWithMask::FaceDetectorWithMask(AAssetManager* mgr,
-                                           const std::string& param_file,
-                                           const std::string& weight_file,
-                                           int input_width, int input_height,
-                                           float score_threshold,
-                                           float iou_threshold) {
-  InitParams(input_width, input_height, score_threshold, iou_threshold);
-  LoadModel(mgr, param_file, weight_file);
-}
-
-void FaceDetectorWithMask::LoadModel(AAssetManager* mgr,
-                                     const std::string& param_file,
-                                     const std::string& weight_file) {
-  if (model_) {
-    delete model_;
-    model_ = nullptr;
-  }
-  model_ = new ncnn::Net;
-  int ret_param = model_->load_param(mgr, param_file.c_str());
-  int ret_model = model_->load_model(mgr, weight_file.c_str());
-  if (ret_param != 0 || ret_model != 0) {
-    exit(1);
-  }
-}
-#endif
-
-void FaceDetectorWithMask::InitParams(int input_width, int input_height,
-                                      float score_threshold,
-                                      float iou_threshold) {
+  LoadModel(param_buffer, weight_buffer);
   score_threshold_ = score_threshold;
   iou_threshold_ = iou_threshold;
   input_width_ = input_width;
   input_height_ = input_height;
 }
 
-std::vector<Face> FaceDetectorWithMask::Detect(cv::Mat& image) {
+// Will be deleted when IO module is supported. Keep for old compatibility.
+FaceDetectorWithMask::FaceDetectorWithMask(const std::string& param_file,
+                                           const std::string& weight_file,
+                                           int input_width, int input_height,
+                                           float score_threshold,
+                                           float iou_threshold) {
+  LoadModel(param_file, weight_file);
+  score_threshold_ = score_threshold;
+  iou_threshold_ = iou_threshold;
+  input_width_ = input_width;
+  input_height_ = input_height;
+}
+
+std::vector<Face> FaceDetectorWithMask::Predict(cv::Mat& image) {
+  // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();
+
   // letterbox pad to multiple of 32
   int im_width = rgb.cols;
   int im_height = rgb.rows;
+
   int w = im_width;
   int h = im_height;
+
   float scale = 1.f;
+
   if (w > h) {
     scale = (float)input_width_ / w;
     w = input_width_;
@@ -103,7 +83,7 @@ std::vector<Face> FaceDetectorWithMask::Detect(cv::Mat& image) {
   const float norm_vals[3] = {1 / 255.f, 1 / 255.f, 1 / 255.f};
   in_pad.substract_mean_normalize(0, norm_vals);
 
-  ncnn::Extractor ex = model_->create_extractor();
+  ncnn::Extractor ex = model_.create_extractor();
 
   ex.input("data", in_pad);
   ncnn::Mat out;
