@@ -1,10 +1,24 @@
+// Copyright 2021 The DaisyKit Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #ifndef DAISYKIT_GRAPHS_CORE_CONNECTION_H_
 #define DAISYKIT_GRAPHS_CORE_CONNECTION_H_
 
-#include <daisykitsdk/graphs/core/concurrent_queue.h>
-#include <daisykitsdk/graphs/core/node_type.h>
-#include <daisykitsdk/graphs/core/packet.h>
-#include <daisykitsdk/graphs/core/transmission_profile.h>
+#include "daisykitsdk/graphs/core/node_type.h"
+#include "daisykitsdk/graphs/core/packet.h"
+#include "daisykitsdk/graphs/core/queue.h"
+#include "daisykitsdk/graphs/core/transmission_profile.h"
 
 #include <atomic>
 #include <memory>
@@ -85,7 +99,7 @@ class Connection {
   std::string prev_output_name_;
   T* next_node_;
   std::string next_input_name_;
-  ConcurrentQueue<PacketPtr> queue_;
+  Queue<PacketPtr> queue_;
   TransmissionProfile transmit_profile_;
   std::atomic<bool> require_data_on_tick_;
 };
