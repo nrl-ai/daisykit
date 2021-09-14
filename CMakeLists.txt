@@ -27,6 +27,8 @@ find_package(ncnn REQUIRED ${ncnn_DIR})
 find_package(OpenCV REQUIRED)
 
 set(sources
+    src/models/base_model.cpp
+    src/models/base_model-impl.cpp
     src/models/body_detector.cpp
     src/models/pose_detector.cpp
     src/models/action_classifier.cpp
@@ -81,6 +83,9 @@ target_link_libraries(demo_face_detector_with_mask ${OpenCV_LIBS} daisykitsdk)
 add_executable(demo_human_matting src/examples/demo_human_matting.cpp)
 target_link_libraries(demo_human_matting ${OpenCV_LIBS} daisykitsdk)
 
+add_executable(demo_graph_api src/examples/demo_graph_api.cpp)
+target_link_libraries(demo_graph_api ${OpenCV_LIBS} daisykitsdk)
+
 endif()
 
 
@@ -91,3 +96,26 @@ add_custom_target(models ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/models ${CMAKE_BINARY_DIR}/models)
 add_custom_target(images ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_BINARY_DIR}/images)
+
+
+# Doxygen - For documentation
+# Look for Doxygen package
+find_package(Doxygen)
+if (DOXYGEN_FOUND)
+    # set input and output files
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs_sphinx/Doxyfile.in)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.out)
+
+    # request to configure the file
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    message("Doxygen build started")
+
+    # Note: do not put "ALL" - this builds docs together with application EVERY TIME!
+    add_custom_target(docs
+        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM )
+else (DOXYGEN_FOUND)
+  message("Doxygen need to be installed to generate the doxygen documentation")
+endif (DOXYGEN_FOUND)
