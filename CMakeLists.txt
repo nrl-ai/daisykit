@@ -81,6 +81,9 @@ target_link_libraries(demo_face_detector_with_mask ${OpenCV_LIBS} daisykitsdk)
 add_executable(demo_human_matting src/examples/demo_human_matting.cpp)
 target_link_libraries(demo_human_matting ${OpenCV_LIBS} daisykitsdk)
 
+add_executable(demo_graph_api src/examples/demo_graph_api.cpp)
+target_link_libraries(demo_graph_api ${OpenCV_LIBS} daisykitsdk)
+
 endif()
 
 
