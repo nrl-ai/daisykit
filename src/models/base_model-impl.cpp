@@ -13,8 +13,9 @@
 // limitations under the License.
 
 /*
-Follow https://isocpp.org/wiki/faq/templates#separate-template-class-defn-from-decl
-to enable implement codes of templated abstract class be put in a .cpp file.
+Follow
+https://isocpp.org/wiki/faq/templates#separate-template-class-defn-from-decl to
+enable implement codes of templated abstract class be put in a .cpp file.
 */
 
 /*
