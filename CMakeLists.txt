@@ -27,6 +27,8 @@ find_package(ncnn REQUIRED ${ncnn_DIR})
 find_package(OpenCV REQUIRED)
 
 set(sources
+    src/models/base_model.cpp
+    src/models/base_model-impl.cpp
     src/models/body_detector.cpp
     src/models/pose_detector.cpp
     src/models/action_classifier.cpp

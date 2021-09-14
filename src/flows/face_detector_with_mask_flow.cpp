@@ -3,7 +3,7 @@
 using namespace daisykit::flows;
 
 FaceDetectorWithMaskFlow::FaceDetectorWithMaskFlow(
-    const std::string &config_str) {
+    const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
   face_detector_ = new models::FaceDetectorWithMask(
       config["face_detection_model"]["model"],
@@ -22,7 +22,7 @@ FaceDetectorWithMaskFlow::FaceDetectorWithMaskFlow(
 
 #ifdef __ANDROID__
 FaceDetectorWithMaskFlow::FaceDetectorWithMaskFlow(
-    AAssetManager *mgr, const std::string &config_str) {
+    AAssetManager* mgr, const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
   face_detector_ = new models::FaceDetectorWithMask(
       mgr, config["face_detection_model"]["model"],
@@ -47,9 +47,9 @@ FaceDetectorWithMaskFlow::~FaceDetectorWithMaskFlow() {
   facial_landmark_estimator_ = nullptr;
 }
 
-void FaceDetectorWithMaskFlow::Process(cv::Mat &rgb) {
+void FaceDetectorWithMaskFlow::Process(cv::Mat& rgb) {
   // Detect faces
-  std::vector<common::Face> faces = face_detector_->Detect(rgb);
+  std::vector<common::Face> faces = face_detector_->Predict(rgb);
 
   // Detect landmarks
   if (with_landmark_) {
@@ -62,7 +62,7 @@ void FaceDetectorWithMaskFlow::Process(cv::Mat &rgb) {
   }
 }
 
-void FaceDetectorWithMaskFlow::DrawResult(cv::Mat &rgb) {
+void FaceDetectorWithMaskFlow::DrawResult(cv::Mat& rgb) {
   // Draw face bounding boxes and keypoints
   {
     const std::lock_guard<std::mutex> lock(faces_lock_);

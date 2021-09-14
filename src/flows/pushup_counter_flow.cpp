@@ -37,7 +37,7 @@ PushupCounterFlow::PushupCounterFlow(AAssetManager* mgr,
 
 void PushupCounterFlow::Process(cv::Mat& rgb) {
   // Detect human pose
-  std::vector<common::Object> bodies = body_detector_->Detect(rgb);
+  std::vector<common::Object> bodies = body_detector_->Predict(rgb);
   {
     const std::lock_guard<std::mutex> lock(bodies_lock_);
     bodies_ = bodies;

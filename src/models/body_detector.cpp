@@ -1,24 +1,51 @@
+// Copyright 2021 The DaisyKit Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "daisykitsdk/models/body_detector.h"
-#include <vector>
 #include "daisykitsdk/utils/img_proc/img_utils.h"
+
+#include <string>
+#include <vector>
 
 using namespace daisykit::common;
 using namespace daisykit::models;
 
 BodyDetector::BodyDetector(const char* param_buffer,
                            const unsigned char* weight_buffer,
-                           const int& width = 320, const int& height = 320) {
+                           const int& input_width, const int& input_height) {
   LoadModel(param_buffer, weight_buffer);
-  input_width_ = width;
-  input_height_ = height;
+  input_width_ = input_width;
+  input_height_ = input_height;
+}
+
+// Will be deleted when IO module is supported. Keep for old compatibility.
+BodyDetector::BodyDetector(const std::string& param_file,
+                           const std::string& weight_file,
+                           const int& input_width, const int& input_height) {
+  LoadModel(param_file, weight_file);
+  input_width_ = input_width;
+  input_height_ = input_height;
 }
 
 std::vector<Object> BodyDetector::Predict(cv::Mat& image) {
-  int img_w = image.cols;
-  int img_h = image.rows;
+  // Clone the original cv::Mat to ensure continuous address for memory
+  cv::Mat rgb = image.clone();
+  int img_w = rgb.cols;
+  int img_h = rgb.rows;
 
   ncnn::Mat in =
-      ncnn::Mat::from_pixels_resize(image.data, ncnn::Mat::PIXEL_RGB, img_w,
+      ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, img_w,
                                     img_h, input_width_, input_height_);
 
   const float mean_vals[3] = {0.f, 0.f, 0.f};
