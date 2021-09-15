@@ -12,22 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_GRAPHS_IMG_PROC_IMG_VIZ_NODE_H_
-#define DAISYKIT_GRAPHS_IMG_PROC_IMG_VIZ_NODE_H_
+#ifndef DAISYKIT_GRAPHS_NODES_DISTRIBUTORS_IMAGE_DISTRIBUTOR_NODE_H_
+#define DAISYKIT_GRAPHS_NODES_DISTRIBUTORS_IMAGE_DISTRIBUTOR_NODE_H_
 
 #include "daisykitsdk/graphs/core/node.h"
 #include "daisykitsdk/graphs/core/utils.h"
 
+#include <chrono>
 #include <memory>
 
 namespace daisykit {
 namespace graphs {
 
-class ImgVizNode : public Node {
+class ImageDistributorNode : public Node {
  public:
   using Node::Node;  // For constructor inheritance
-
-  void Process(PacketPtr in_packet, PacketPtr& out_packet) {}
+  void Process(std::shared_ptr<Packet> in_packet,
+               std::shared_ptr<Packet>& out_packet) {}
 
   void Tick() {
     WaitForData();
@@ -38,21 +39,11 @@ class ImgVizNode : public Node {
       return;
     }
 
-    if (inputs.count("binary") > 0) {
-      PacketPtr binary_input = inputs["binary"];
-      cv::Mat binary;
-      Packet2CvMat(binary_input, binary);
-      cv::imshow("Binary", binary);
-      cv::waitKey(1);
-    }
-
-    if (inputs.count("gray") > 0) {
-      PacketPtr gray_input = inputs["gray"];
-      cv::Mat gray;
-      Packet2CvMat(gray_input, gray);
-      cv::imshow("Gray", gray);
-      cv::waitKey(1);
-    }
+    // Copy input to output
+    PacketPtr input = inputs["input"];
+    std::map<std::string, PacketPtr> outputs;
+    outputs.insert(std::make_pair("output", input));
+    Publish(outputs);
   }
 };
 

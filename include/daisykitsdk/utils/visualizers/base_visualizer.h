@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_UTILS_VISUALIZER_VIZ_UTILS_H_
-#define DAISYKIT_UTILS_VISUALIZER_VIZ_UTILS_H_
+#ifndef DAISYKIT_UTILS_VISUALIZERS_BASE_VISUALIZER_H_
+#define DAISYKIT_UTILS_VISUALIZERS_BASE_VISUALIZER_H_
 
 #include <opencv2/opencv.hpp>
 
 namespace daisykit {
 namespace utils {
-namespace visualizer {
+namespace visualizers {
 
-class VizUtils {
+class BaseVisualizer {
  public:
-  static void DrawLabel(cv::Mat& im, const std::string label,
-                        const cv::Point& origin,
-                        int fontface = cv::FONT_HERSHEY_SIMPLEX,
-                        double scale = 0.8, int thickness = 1, int baseline = 0,
-                        cv::Scalar text_color = cv::Scalar(255, 255, 255),
-                        cv::Scalar bg_color = cv::Scalar(255, 0, 0));
+  static void PutText(cv::Mat& im, const std::string label,
+                      const cv::Point& origin,
+                      int fontface = cv::FONT_HERSHEY_SIMPLEX,
+                      double scale = 0.8, int thickness = 1, int baseline = 0,
+                      cv::Scalar text_color = cv::Scalar(255, 255, 255),
+                      cv::Scalar bg_color = cv::Scalar(255, 0, 0));
 
   template <typename T>
   static cv::Mat LineGraph(std::vector<T>& vals, int YRange[2],
@@ -77,7 +77,7 @@ class VizUtils {
   }
 };
 
-}  // namespace visualizer
+}  // namespace visualizers
 }  // namespace utils
 }  // namespace daisykit
 

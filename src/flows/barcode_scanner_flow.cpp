@@ -19,7 +19,7 @@ using namespace std;
 using namespace ZXing;
 using namespace TextUtfEncoding;
 using namespace daisykit::flows;
-using namespace daisykit::utils::visualizer;
+using namespace daisykit::utils::visualizers;
 
 BarcodeScannerFlow::BarcodeScannerFlow(const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
@@ -58,9 +58,10 @@ std::string BarcodeScannerFlow::Process(cv::Mat& rgb, bool draw) {
 
     if (draw) {
       DrawRect(rgb, result.position());
-      VizUtils::DrawLabel(rgb, ToUtf8(result.text(), angle_escape),
-                          cv::Point(10, 40), cv::FONT_HERSHEY_SIMPLEX, 0.5, 1,
-                          10, cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
+      BaseVisualizer::PutText(rgb, ToUtf8(result.text(), angle_escape),
+                              cv::Point(10, 40), cv::FONT_HERSHEY_SIMPLEX, 0.5,
+                              1, 10, cv::Scalar(0, 0, 0),
+                              cv::Scalar(0, 255, 0));
     }
 
     ret |= static_cast<int>(result.status());

@@ -20,7 +20,7 @@ using namespace std::chrono;
 using namespace daisykit::examples;
 using namespace daisykit::utils::logging;
 using namespace daisykit::utils::signal_proc;
-using namespace daisykit::utils::visualizer;
+using namespace daisykit::utils::visualizers;
 
 PushupAnalyzer::PushupAnalyzer() {
   debug_img_server_ = std::make_shared<MJPEGServer>(8080);
@@ -36,7 +36,7 @@ int PushupAnalyzer::CountWithNewPoint(double data, bool is_pushing_up) {
   vector<int> filtered_signals = ZScoreFilter::Filter(signal);
 
   cv::Mat line_graph =
-      VizUtils::LineGraph(signal, range, filtered_signals, 500);
+      BaseVisualizer::LineGraph(signal, range, filtered_signals, 500);
 
   std::vector<int> countPostions;
   for (int i = 0; i < (int)filtered_signals.size() - 1; ++i) {

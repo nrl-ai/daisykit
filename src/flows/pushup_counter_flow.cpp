@@ -95,17 +95,17 @@ void PushupCounterFlow::DrawResult(cv::Mat& rgb) {
 
   // Draw pushups counting
   if (is_pushup_score_ > 0.5) {
-    utils::visualizer::VizUtils::DrawLabel(
+    utils::visualizers::BaseVisualizer::PutText(
         rgb, "Is pushing: " + std::to_string(is_pushup_score_),
         cv::Point(20, 40), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
         cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
   } else {
-    utils::visualizer::VizUtils::DrawLabel(
+    utils::visualizers::BaseVisualizer::PutText(
         rgb, "Is pushing: " + std::to_string(is_pushup_score_),
         cv::Point(20, 40), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
         cv::Scalar(0, 0, 0), cv::Scalar(220, 220, 220));
   }
-  utils::visualizer::VizUtils::DrawLabel(
+  utils::visualizers::BaseVisualizer::PutText(
       rgb, std::string("PushUps: ") + std::to_string(num_pushups_),
       cv::Point(20, 80), cv::FONT_HERSHEY_SIMPLEX, 1.2, 2, 10,
       cv::Scalar(255, 255, 255), cv::Scalar(255, 0, 0));
