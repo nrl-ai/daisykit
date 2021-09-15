@@ -12,32 +12,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_GRAPHS_IMG_PROC_GRAYSCALE_NODE_H_
-#define DAISYKIT_GRAPHS_IMG_PROC_GRAYSCALE_NODE_H_
+#ifndef DAISYKIT_GRAPHS_NODES_FACE_DETECTOR_NODE_H_
+#define DAISYKIT_GRAPHS_NODES_FACE_DETECTOR_NODE_H_
 
 #include "daisykitsdk/graphs/core/node.h"
 #include "daisykitsdk/graphs/core/utils.h"
 
+#include "daisykitsdk/models/face_detector_with_mask.h"
+
+#include <chrono>
 #include <memory>
 
 namespace daisykit {
 namespace graphs {
 
-class GrayScaleNode : public Node {
+class FaceDetectorNode : public Node {
  public:
-  using Node::Node;  // For constructor inheritance
-
-  void Process(PacketPtr in_packet, PacketPtr& out_packet) {
+  FaceDetectorNode(const std::string& node_name, const std::string& param_file,
+                   const std::string& weight_file,
+                   NodeType node_type = NodeType::kSyncNode)
+      : Node(node_name, node_type) {
+    // Init model
+    face_detector_ =
+        std::make_shared<models::FaceDetectorWithMask>(param_file, weight_file);
+  }
+  void Process(std::shared_ptr<Packet> in_packet,
+               std::shared_ptr<Packet>& out_packet) {
     // Convert packet to processing format: cv::Mat
     cv::Mat img;
     Packet2CvMat(in_packet, img);
 
     // Process
-    cv::Mat gray;
-    cv::cvtColor(img, gray, cv::COLOR_BGR2GRAY);
+    std::shared_ptr<std::vector<daisykit::common::Face>> result =
+        std::make_shared<std::vector<daisykit::common::Face>>();
+    *result = face_detector_->Predict(img);
 
-    // Convert & assign output to the output packet
-    CvMat2Packet(gray, out_packet);
+    // Convert to output packet
+    utils::TimePoint timestamp = utils::Timer::GetCurrentTime();
+    out_packet = std::make_shared<Packet>(
+        std::static_pointer_cast<void>(result), timestamp);
   }
 
   void Tick() {
@@ -55,9 +68,11 @@ class GrayScaleNode : public Node {
 
     std::map<std::string, PacketPtr> outputs;
     outputs.insert(std::make_pair("output", output));
-
     Publish(outputs);
   }
+
+ private:
+  std::shared_ptr<models::FaceDetectorWithMask> face_detector_;
 };
 
 }  // namespace graphs

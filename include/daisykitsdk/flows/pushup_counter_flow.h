@@ -22,7 +22,7 @@
 #include "daisykitsdk/models/pose_detector.h"
 #include "daisykitsdk/thirdparties/json.hpp"
 #include "daisykitsdk/utils/img_proc/img_utils.h"
-#include "daisykitsdk/utils/visualizer/viz_utils.h"
+#include "daisykitsdk/utils/visualizers/base_visualizer.h"
 
 #include <atomic>
 #include <iostream>

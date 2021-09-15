@@ -18,7 +18,7 @@
 #include "daisykitsdk/utils/logging/mjpeg_server.h"
 #include "daisykitsdk/utils/signal_proc/signal_smoothing.h"
 #include "daisykitsdk/utils/signal_proc/z_score_filter.h"
-#include "daisykitsdk/utils/visualizer/viz_utils.h"
+#include "daisykitsdk/utils/visualizers/base_visualizer.h"
 
 #include <algorithm>
 #include <chrono>

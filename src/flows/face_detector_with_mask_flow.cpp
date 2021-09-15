@@ -86,7 +86,7 @@ void FaceDetectorWithMaskFlow::DrawResult(cv::Mat& rgb) {
         color = cv::Scalar(255, 0, 0);
       }
       cv::rectangle(rgb, cv::Rect(face.x, face.y, face.w, face.h), color, 2);
-      utils::visualizer::VizUtils::DrawLabel(
+      utils::visualizers::BaseVisualizer::PutText(
           rgb, face.wearing_mask_prob < 0.5 ? "No Mask" : "Mask",
           cv::Point(face.x, face.y), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
           cv::Scalar(0, 0, 0), color);

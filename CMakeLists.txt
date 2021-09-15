@@ -41,7 +41,8 @@ set(sources
     src/utils/signal_proc/signal_smoothing.cpp
     src/utils/signal_proc/z_score_filter.cpp
     src/utils/img_proc/img_utils.cpp
-    src/utils/visualizer/viz_utils.cpp
+
+    src/utils/visualizers/base_visualizer.cpp
 
     src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
@@ -85,6 +86,9 @@ target_link_libraries(demo_human_matting ${OpenCV_LIBS} daisykitsdk)
 
 add_executable(demo_graph_api src/examples/demo_graph_api.cpp)
 target_link_libraries(demo_graph_api ${OpenCV_LIBS} daisykitsdk)
+
+add_executable(demo_face_detector_graph src/examples/demo_face_detector_graph.cpp)
+target_link_libraries(demo_face_detector_graph ${OpenCV_LIBS} daisykitsdk)
 
 endif()
 
