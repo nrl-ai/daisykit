@@ -53,7 +53,7 @@ class FaceVisualizer {
       const common::Keypoint& keypoint = keypoints[i];
       if (keypoint.prob < threshold) continue;
       cv::circle(img, cv::Point(keypoint.x, keypoint.y), 2,
-                 cv::Scalar(255, 0, 0), -1);
+                 cv::Scalar(0, 255, 0), -1);
     }
   }
 };
