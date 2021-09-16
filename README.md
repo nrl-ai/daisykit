@@ -1,6 +1,11 @@
 # Daisykit SDK
 
-AI Kit for mobile and embedded devices.
+**DaisyKit SDK** is the core of models and algorithms, which can be used to develop wrappers and applications for different platforms: mobile, embedded or web browsers.
+
+**Website:** <https://daisykit.org/>.
+
+![DaisyKit SDK](docs/images/daisykit-architecture.png)
+
 ## Environment Setup
 
 - Install OpenCV. In Ubuntu:
