@@ -28,18 +28,18 @@ namespace graphs {
 
 class FacialLandmarkEstimatorNode : public Node {
  public:
-  FacialLandmarkEstimatorNode(const std::string& node_name, const std::string& param_file,
-                   const std::string& weight_file,
-                   NodeType node_type = NodeType::kSyncNode)
+  FacialLandmarkEstimatorNode(const std::string& node_name,
+                              const std::string& param_file,
+                              const std::string& weight_file,
+                              NodeType node_type = NodeType::kSyncNode)
       : Node(node_name, node_type) {
     // Init model
     facial_landmark_estimator_ =
-        std::make_shared<models::FacialLandmarkEstimator>(param_file, weight_file);
+        std::make_shared<models::FacialLandmarkEstimator>(param_file,
+                                                          weight_file);
   }
   void Process(std::shared_ptr<Packet> in_packet,
-               std::shared_ptr<Packet>& out_packet) {
-
-  }
+               std::shared_ptr<Packet>& out_packet) {}
 
   void Tick() {
     WaitForData();
@@ -64,8 +64,8 @@ class FacialLandmarkEstimatorNode : public Node {
     // Convert to output packet
     PacketPtr output;
     utils::TimePoint timestamp = utils::Timer::GetCurrentTime();
-    output = std::make_shared<Packet>(
-        std::static_pointer_cast<void>(faces), timestamp);
+    output = std::make_shared<Packet>(std::static_pointer_cast<void>(faces),
+                                      timestamp);
 
     std::map<std::string, PacketPtr> outputs;
     outputs.insert(std::make_pair("output", output));
