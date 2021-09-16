@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_GRAPHS_NODES_MODELS_FACE_DETECTOR_NODE_H_
-#define DAISYKIT_GRAPHS_NODES_MODELS_FACE_DETECTOR_NODE_H_
+#ifndef DAISYKIT_GRAPHS_NODES_MODELS_FACIAL_LANDMARK_ESTIMATOR_NODE_H_
+#define DAISYKIT_GRAPHS_NODES_MODELS_FACIAL_LANDMARK_ESTIMATOR_NODE_H_
 
 #include "daisykitsdk/graphs/core/node.h"
 #include "daisykitsdk/graphs/core/utils.h"
 
-#include "daisykitsdk/models/face_detector_with_mask.h"
+#include "daisykitsdk/models/facial_landmark_estimator.h"
 
 #include <chrono>
 #include <memory>
@@ -26,31 +26,19 @@
 namespace daisykit {
 namespace graphs {
 
-class FaceDetectorNode : public Node {
+class FacialLandmarkEstimatorNode : public Node {
  public:
-  FaceDetectorNode(const std::string& node_name, const std::string& param_file,
+  FacialLandmarkEstimatorNode(const std::string& node_name, const std::string& param_file,
                    const std::string& weight_file,
                    NodeType node_type = NodeType::kSyncNode)
       : Node(node_name, node_type) {
     // Init model
-    face_detector_ =
-        std::make_shared<models::FaceDetectorWithMask>(param_file, weight_file);
+    facial_landmark_estimator_ =
+        std::make_shared<models::FacialLandmarkEstimator>(param_file, weight_file);
   }
   void Process(std::shared_ptr<Packet> in_packet,
                std::shared_ptr<Packet>& out_packet) {
-    // Convert packet to processing format: cv::Mat
-    cv::Mat img;
-    Packet2CvMat(in_packet, img);
 
-    // Process
-    std::shared_ptr<std::vector<daisykit::common::Face>> result =
-        std::make_shared<std::vector<daisykit::common::Face>>();
-    *result = face_detector_->Predict(img);
-
-    // Convert to output packet
-    utils::TimePoint timestamp = utils::Timer::GetCurrentTime();
-    out_packet = std::make_shared<Packet>(
-        std::static_pointer_cast<void>(result), timestamp);
   }
 
   void Tick() {
@@ -62,17 +50,44 @@ class FaceDetectorNode : public Node {
       return;
     }
 
-    PacketPtr input = inputs["input"];
+    // Get faces result
+    std::shared_ptr<std::vector<daisykit::common::Face>> faces;
+    faces = ParseFacePacket(inputs["faces"]);
+
+    // Get image
+    cv::Mat img;
+    Packet2CvMat(inputs["image"], img);
+
+    // Modify faces to add landmark info
+    facial_landmark_estimator_->DetectMulti(img, *faces);
+
+    // Convert to output packet
     PacketPtr output;
-    Process(input, output);
+    utils::TimePoint timestamp = utils::Timer::GetCurrentTime();
+    output = std::make_shared<Packet>(
+        std::static_pointer_cast<void>(faces), timestamp);
 
     std::map<std::string, PacketPtr> outputs;
     outputs.insert(std::make_pair("output", output));
     Publish(outputs);
   }
 
+  std::shared_ptr<std::vector<daisykit::common::Face>> ParseFacePacket(
+      PacketPtr packet) {
+    // Get data
+    std::shared_ptr<void> data;
+    utils::TimePoint timestamp;
+    packet->GetData(data, timestamp);
+
+    // Cast to faces
+    std::shared_ptr<std::vector<daisykit::common::Face>> faces =
+        std::static_pointer_cast<std::vector<daisykit::common::Face>>(data);
+
+    return faces;
+  }
+
  private:
-  std::shared_ptr<models::FaceDetectorWithMask> face_detector_;
+  std::shared_ptr<models::FacialLandmarkEstimator> facial_landmark_estimator_;
 };
 
 }  // namespace graphs

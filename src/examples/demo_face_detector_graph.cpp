@@ -17,6 +17,7 @@
 #include "daisykitsdk/graphs/core/utils.h"
 #include "daisykitsdk/graphs/nodes/distributors/image_distributor_node.h"
 #include "daisykitsdk/graphs/nodes/models/face_detector_node.h"
+#include "daisykitsdk/graphs/nodes/models/face_landmark_estimator_node.h"
 #include "daisykitsdk/graphs/nodes/visualizers/face_visualizer_node.h"
 #include "daisykitsdk/thirdparties/json.hpp"
 
@@ -40,32 +41,49 @@ int main(int, char**) {
                                              NodeType::kAsyncNode);
   std::shared_ptr<FaceDetectorNode> face_detector_node =
       std::make_shared<FaceDetectorNode>(
-          "face_detection",
+          "face_detector",
           "../assets/models/face_detection/yolo_fastest_with_mask/"
           "yolo-fastest-opt.param",
           "../assets/models/face_detection/yolo_fastest_with_mask/"
           "yolo-fastest-opt.bin",
           NodeType::kAsyncNode);
+  std::shared_ptr<FacialLandmarkEstimatorNode> facial_landmark_estimator_node =
+      std::make_shared<FacialLandmarkEstimatorNode>(
+          "facial_landmark_estimator",
+          "../assets/models/facial_landmark/pfld-sim.param",
+          "../assets/models/facial_landmark/pfld-sim.bin",
+          NodeType::kAsyncNode);
   std::shared_ptr<FaceVisualizerNode> face_visualizer_node =
       std::make_shared<FaceVisualizerNode>("face_visualizer",
-                                           NodeType::kAsyncNode);
+                                           NodeType::kAsyncNode, true);
 
   // Create connections between nodes
   Graph::Connect(nullptr, "", image_distributor_node.get(), "input",
                  TransmissionProfile(5, true), true);
-  Graph::Connect(image_distributor_node.get(), "output",
-                 face_visualizer_node.get(), "image",
-                 TransmissionProfile(5, true), true);
+
   Graph::Connect(image_distributor_node.get(), "output",
                  face_detector_node.get(), "input",
                  TransmissionProfile(5, true), true);
-  Graph::Connect(face_detector_node.get(), "output", face_visualizer_node.get(),
-                 "faces", TransmissionProfile(5, true), true);
+
+  Graph::Connect(image_distributor_node.get(), "output",
+                 facial_landmark_estimator_node.get(), "image",
+                 TransmissionProfile(5, true), true);
+  Graph::Connect(face_detector_node.get(), "output",
+                 facial_landmark_estimator_node.get(), "faces",
+                 TransmissionProfile(5, true), true);
+
+  Graph::Connect(image_distributor_node.get(), "output",
+                 face_visualizer_node.get(), "image",
+                 TransmissionProfile(5, true), true);
+  Graph::Connect(facial_landmark_estimator_node.get(), "output",
+                 face_visualizer_node.get(), "faces",
+                 TransmissionProfile(5, true), true);
 
   // Need to init these nodes before use
   // This method also start worker threads of asynchronous node
   image_distributor_node->Activate();
   face_detector_node->Activate();
+  facial_landmark_estimator_node->Activate();
   face_visualizer_node->Activate();
 
   VideoCapture cap(0);
@@ -74,7 +92,7 @@ int main(int, char**) {
     std::shared_ptr<Packet> in_packet;
     Mat frame;
     cap >> frame;
-    cv::cvtColor(frame, frame, cv::COLOR_RGB2BGR);
+    cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
     CvMat2Packet(frame, in_packet);
     image_distributor_node->Input("input", in_packet);
   }
