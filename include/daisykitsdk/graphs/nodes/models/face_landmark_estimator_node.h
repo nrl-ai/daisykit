@@ -16,7 +16,6 @@
 #define DAISYKIT_GRAPHS_NODES_MODELS_FACIAL_LANDMARK_ESTIMATOR_NODE_H_
 
 #include "daisykitsdk/graphs/core/node.h"
-#include "daisykitsdk/graphs/core/utils.h"
 
 #include "daisykitsdk/models/facial_landmark_estimator.h"
 
@@ -26,6 +25,9 @@
 namespace daisykit {
 namespace graphs {
 
+// Face landmark estimator node.
+// Receives an image from "image" and face bounding boxes from "faces", add
+// landmark info to "faces" packet and push the output through "output".
 class FacialLandmarkEstimatorNode : public Node {
  public:
   FacialLandmarkEstimatorNode(const std::string& node_name,
@@ -38,25 +40,21 @@ class FacialLandmarkEstimatorNode : public Node {
         std::make_shared<models::FacialLandmarkEstimator>(param_file,
                                                           weight_file);
   }
-  void Process(std::shared_ptr<Packet> in_packet,
-               std::shared_ptr<Packet>& out_packet) {}
 
   void Tick() {
+    // Wait for data
     WaitForData();
 
+    // Prepare input packets
     std::map<std::string, PacketPtr> inputs;
-    if (PrepareInputs(inputs) != 0) {
-      std::cerr << GetNodeName() << ": Error on preparing inputs." << std::endl;
-      return;
-    }
+    PrepareInputs(inputs);
 
     // Get faces result
     std::shared_ptr<std::vector<daisykit::common::Face>> faces;
-    faces = ParseFacePacket(inputs["faces"]);
+    faces = inputs["faces"]->GetData<std::vector<daisykit::common::Face>>();
 
     // Get image
-    cv::Mat img;
-    Packet2CvMat(inputs["image"], img);
+    cv::Mat img = *inputs["image"]->GetData<cv::Mat>();
 
     // Modify faces to add landmark info
     facial_landmark_estimator_->DetectMulti(img, *faces);
@@ -70,20 +68,6 @@ class FacialLandmarkEstimatorNode : public Node {
     std::map<std::string, PacketPtr> outputs;
     outputs.insert(std::make_pair("output", output));
     Publish(outputs);
-  }
-
-  std::shared_ptr<std::vector<daisykit::common::Face>> ParseFacePacket(
-      PacketPtr packet) {
-    // Get data
-    std::shared_ptr<void> data;
-    utils::TimePoint timestamp;
-    packet->GetData(data, timestamp);
-
-    // Cast to faces
-    std::shared_ptr<std::vector<daisykit::common::Face>> faces =
-        std::static_pointer_cast<std::vector<daisykit::common::Face>>(data);
-
-    return faces;
   }
 
  private:

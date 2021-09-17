@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_GRAPHS_NODES_DISTRIBUTORS_IMAGE_DISTRIBUTOR_NODE_H_
-#define DAISYKIT_GRAPHS_NODES_DISTRIBUTORS_IMAGE_DISTRIBUTOR_NODE_H_
+#ifndef DAISYKIT_GRAPHS_NODES_PACKET_DISTRIBUTOR_NODE_H_
+#define DAISYKIT_GRAPHS_NODES_PACKET_DISTRIBUTOR_NODE_H_
 
 #include "daisykitsdk/graphs/core/node.h"
-#include "daisykitsdk/graphs/core/utils.h"
 
 #include <chrono>
 #include <memory>
@@ -24,20 +23,19 @@
 namespace daisykit {
 namespace graphs {
 
-class ImageDistributorNode : public Node {
+// This node copy packet from "input" and distribute to "output"
+// Used to copy and distribute packets between nodes
+class PacketDistributorNode : public Node {
  public:
   using Node::Node;  // For constructor inheritance
-  void Process(std::shared_ptr<Packet> in_packet,
-               std::shared_ptr<Packet>& out_packet) {}
 
   void Tick() {
+    // Wait for data
     WaitForData();
 
+    // Prepare input packets
     std::map<std::string, PacketPtr> inputs;
-    if (PrepareInputs(inputs) != 0) {
-      std::cerr << GetNodeName() << ": Error on preparing inputs." << std::endl;
-      return;
-    }
+    PrepareInputs(inputs);
 
     // Copy input to output
     PacketPtr input = inputs["input"];

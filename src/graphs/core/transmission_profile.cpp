@@ -12,20 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_GRAPHS_CORE_NODE_TYPE_H_
-#define DAISYKIT_GRAPHS_CORE_NODE_TYPE_H_
+#include "daisykitsdk/graphs/core/transmission_profile.h"
 
 namespace daisykit {
 namespace graphs {
 
-// There are too node types in DaisyKit framework:
-// Synchronous nodes (kSyncNode) processing function Tick() is activated by the
-// previous node, which means all processing pipeline runs node by node.
-// Asynchronous node (kAsyncNode) has a processing thread inside to run
-// processing Tick() in a loop. Thus, these node can run paralelly.
-enum NodeType { kSyncNode = 0, kAsyncNode = 1 };
+TransmissionProfile::TransmissionProfile(int max_queue_size, bool allow_drop) {
+  max_queue_size_ = max_queue_size;
+  allow_drop_ = allow_drop;
+};
+
+int TransmissionProfile::GetMaxQueueSize() { return max_queue_size_; }
+
+bool TransmissionProfile::AllowDrop() { return allow_drop_; }
 
 }  // namespace graphs
 }  // namespace daisykit
-
-#endif

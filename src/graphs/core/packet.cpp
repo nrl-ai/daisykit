@@ -12,20 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_GRAPHS_CORE_NODE_TYPE_H_
-#define DAISYKIT_GRAPHS_CORE_NODE_TYPE_H_
+#include "daisykitsdk/graphs/core/packet.h"
+#include "daisykitsdk/utils/timer.h"
+
+#include <atomic>
+#include <chrono>
+#include <ctime>
+#include <memory>
+#include <mutex>
 
 namespace daisykit {
 namespace graphs {
 
-// There are too node types in DaisyKit framework:
-// Synchronous nodes (kSyncNode) processing function Tick() is activated by the
-// previous node, which means all processing pipeline runs node by node.
-// Asynchronous node (kAsyncNode) has a processing thread inside to run
-// processing Tick() in a loop. Thus, these node can run paralelly.
-enum NodeType { kSyncNode = 0, kAsyncNode = 1 };
+Packet::Packet() { data_available_ = false; }
+
+Packet::Packet(std::shared_ptr<void> data, utils::TimePoint timestamp) {
+  // We dont use SetData() here because using mutex lock
+  // in the constructor causes unpredicted behaviors
+  data_ = data;
+  timestamp_ = timestamp;
+  data_available_ = true;
+}
 
 }  // namespace graphs
 }  // namespace daisykit
-
-#endif

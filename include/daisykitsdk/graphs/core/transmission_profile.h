@@ -18,14 +18,19 @@
 namespace daisykit {
 namespace graphs {
 
+// Transmission Profile for connections between nodes in DaisyKit.
+// Defines the queue size, dropping and other transmission properties.
+// Used in transmission rules to handle packets.
 class TransmissionProfile {
  public:
-  TransmissionProfile(int max_queue_size = 5, bool allow_drop = true) {
-    max_queue_size_ = max_queue_size;
-    allow_drop_ = allow_drop;
-  };
-  int GetMaxQueueSize() { return max_queue_size_; }
-  bool AllowDrop() { return allow_drop_; }
+  // Constructor for transmission profile.
+  TransmissionProfile(int max_queue_size = 5, bool allow_drop = true);
+
+  // Get max queue size of transmission.
+  int GetMaxQueueSize();
+
+  // Alow drop packets when queue is full?
+  bool AllowDrop();
 
  private:
   int max_queue_size_;  // Max queue size for the connection

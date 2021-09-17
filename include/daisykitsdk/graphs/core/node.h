@@ -20,6 +20,7 @@
 #include "daisykitsdk/graphs/core/node_type.h"
 #include "daisykitsdk/graphs/core/packet.h"
 
+#include <atomic>
 #include <chrono>
 #include <map>
 #include <memory>
@@ -29,123 +30,70 @@
 namespace daisykit {
 namespace graphs {
 
+// A node is a processing unit which handle a task such as inferecing a model,
+// running an image processing operation, or visualizing data.
 class Node {
  public:
-  Node(const std::string& node_name, NodeType node_type = NodeType::kSyncNode) {
-    node_name_ = node_name;
-    node_type_ = node_type;
-  }
-  ~Node() {}
+  // Node constructor. Passing a name and node type here.
+  // Synchronous nodes (kSyncNode) processing function Tick() is activated by
+  // the previous node, which means all processing pipeline runs node by node.
+  // Asynchronous node (kAsyncNode) has a processing thread inside to run
+  // processing Tick() in a loop. Thus, these node can run paralelly.
+  Node(const std::string& node_name, NodeType node_type = NodeType::kSyncNode);
 
-  void Activate() {
-    if (is_initialized_) return;
-    if (node_type_ == NodeType::kAsyncNode) {
-      worker_thread_ = SpawnWorker();
-      worker_thread_.detach();
-    }
-    is_initialized_ = true;
-  }
+  // Activate a node. This function create and activate processing thread for
+  // asynchronous node.
+  void Activate();
 
-  void Input(const std::string& input_name, PacketPtr packet) {
-    if (!is_initialized_) {
-      std::cerr << "The node has not been initialized! Exiting..." << std::endl;
-      exit(1);
-    }
-    for (auto const& conn : in_connections_) {
-      if (conn->GetNextInputName() == input_name) {
-        conn->Transmit(packet);
-      }
-    }
-  }
+  // Feed data to a node. This function can be used to feed data to the input
+  // node of a graph, where there is no connection in.
+  void Input(const std::string& input_name, PacketPtr packet);
 
-  virtual void Process(PacketPtr in_packet, PacketPtr& out_packet) = 0;
+  // Add an input connection to the node.
+  // Input connections are used to get input to this node.
+  void AddInputConnection(std::shared_ptr<Connection> connection);
 
-  void Output(PacketPtr& packet) {
-    // Reimplement
-  }
+  // Add an output connection from the node.
+  // Output connections are used to push processing results to next nodes.
+  void AddOutputConnection(std::shared_ptr<Connection> connection);
 
-  NodeType GetNodeType() { return node_type_; }
+  // Check and verify all required data is available before run processing
+  // pipeline of this node
+  bool IsAllDataAvailable();
 
-  void AddInputConnection(std::shared_ptr<Connection<Node>> connection) {
-    in_connections_.push_back(connection);
-  }
+  // Wait for all required data.
+  void WaitForData();
 
-  void AddOutputConnection(std::shared_ptr<Connection<Node>> connection) {
-    out_connections_.push_back(connection);
-  }
-
-  bool IsAllDataAvailable() {
-    if (in_connections_.empty()) {
-      std::cerr << node_name_ << ": No input connection." << std::endl;
-      return false;
-    }
-    for (auto const& conn : in_connections_) {
-      if (conn->RequireDataOnTick() && conn->QueueSize() == 0) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  void WaitForData() {
-    if (in_connections_.empty()) {
-      std::cerr << node_name_ << ": No input connection." << std::endl;
-      return;
-    }
-    for (auto const& conn : in_connections_) {
-      if (conn->RequireDataOnTick() && conn->QueueSize() == 0) {
-        conn->WaitForData();
-      }
-    }
-  }
-
-  void WorkerThread() {
-    while (1) {
-      if (!is_initialized_) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        continue;
-      };
-      Tick();
-    }
-  };
-
+  // Virtual method for processing data, needs to be implemented by derived
+  // classes. This method checks and gets all required data, processes data and
+  // outputs to out connections.
   virtual void Tick() = 0;
 
-  std::thread SpawnWorker() { return std::thread(&Node::WorkerThread, this); }
+  // Getters for node info
+  std::string GetNodeName();
+  NodeType GetNodeType();
 
-  int PrepareInputs(std::map<std::string, PacketPtr>& input_map) {
-    for (auto const& conn : in_connections_) {
-      PacketPtr packet;
-      if (conn->RequireDataOnTick()) {
-        packet = conn->WaitPopPacket();
-      } else if (conn->TryPopPacket(packet) != 0) {
-        continue;
-      }
-      input_map.insert(std::make_pair(conn->GetNextInputName(), packet));
-    }
-    return 0;
-  }
+ protected:
+  // Prepare all needed input as a map for processing function.
+  void PrepareInputs(std::map<std::string, PacketPtr>& input_map);
 
-  void Publish(const std::map<std::string, PacketPtr>& outputs) {
-    for (auto const& conn : out_connections_) {
-      std::string input_name = conn->GetPrevOutputName();
-      for (auto const& output : outputs) {
-        if (output.first == input_name) {
-          conn->Transmit(output.second);
-        }
-      }
-    }
-  }
-
-  std::string GetNodeName() { return node_name_; }
+  // Publish outputs to output connections.
+  void Publish(const std::map<std::string, PacketPtr>& outputs);
 
  private:
-  bool is_initialized_ = false;
+  // Worker thread for each node.
+  // This thread runs Tick() function in a loop
+  void WorkerThread();
+
+  // Start processing thread.
+  std::thread SpawnWorker();
+
+  std::atomic<bool> is_activated_;
   std::thread worker_thread_;
   std::string node_name_;
   NodeType node_type_;
-  std::vector<std::shared_ptr<Connection<Node>>> in_connections_;
-  std::vector<std::shared_ptr<Connection<Node>>> out_connections_;
+  std::vector<std::shared_ptr<Connection>> in_connections_;
+  std::vector<std::shared_ptr<Connection>> out_connections_;
   std::thread processing_worker_;
 };
 

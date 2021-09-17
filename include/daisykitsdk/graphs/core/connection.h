@@ -27,78 +27,67 @@
 namespace daisykit {
 namespace graphs {
 
-template <typename T>
+// Add this line for cross including
+// between node.h and connection.h
+class Node;
+
+// Connection provides immediate transmission pipe between nodes.
+// It connects 2 nodes, handles packet transmission tasks, for example packet
+// queue, pushing, popping packets.
 class Connection {
  public:
-  Connection(T* prev_node, const std::string& prev_output_name, T* next_node,
-             const std::string& next_input_name,
+  // Initialize a connection between 2 nodes. Receives the node pointers and
+  // input/output names. `prev_output_name` is the output of `prev_node`, which
+  // is connected with input `next_input_name` of `next_node` by this
+  // connection.
+  // `transmit_profile` keeps the policies for packet transmission between 2
+  // node, such as queue size or dropping option.
+  // When `require_data_on_tick` is set to `true`, `next_node` need to wait for
+  // the packet from `prev_node` for data at the beginning of each processing
+  // round.
+  Connection(Node* prev_node, const std::string& prev_output_name,
+             Node* next_node, const std::string& next_input_name,
              TransmissionProfile transmit_profile = TransmissionProfile(),
-             bool require_data_on_tick = true) {
-    prev_node_ = prev_node;
-    prev_output_name_ = prev_output_name;
-    next_node_ = next_node;
-    next_input_name_ = next_input_name;
-    transmit_profile_ = transmit_profile;
-    require_data_on_tick_ = require_data_on_tick;
-  }
+             bool require_data_on_tick = true);
 
-  void Transmit(PacketPtr packet) {
-    if (next_node_->GetNodeType() == NodeType::kSyncNode) {
-      // If the output node is a synchronous node,
-      // push packet and run Tick() of the next node
-      // for processing
-      PushPacket(packet);
-      next_node_->Tick();
-    } else if (next_node_->GetNodeType() == NodeType::kAsyncNode) {
-      // If the output node is an asynchronous node,
-      // we only have to push
-      PushPacket(packet);
-    } else {
-      std::cerr << "Not supported node type!" << std::endl;
-      exit(1);
-    }
-  }
+  // Transmit a packet from previous node to the next node.
+  void Transmit(PacketPtr packet);
 
-  int QueueSize() { return queue_.Size(); }
+  // Get transmission queue size.
+  int QueueSize();
 
-  void WaitForData() { queue_.WaitForData(); }
+  // Blocking function to wait until all data is available for the input node
+  // with `require_data_on_tick` equal to `true`.
+  void WaitForData();
 
-  void PushPacket(PacketPtr& packet) {
-    // If queue is full, do a special processing to reduce
-    // the number of element before further processing
-    if (queue_.Size() >= transmit_profile_.GetMaxQueueSize()) {
-      // If allow drop packets then
-      // pop the front element and push
-      if (transmit_profile_.AllowDrop()) {
-        queue_.WaitPop();
-        queue_.Push(packet);
-      } else {
-        // If dropping is not allowed then
-        // wait the consumer node to process more packets before
-        // push a new one in
-        while (queue_.Size() >= transmit_profile_.GetMaxQueueSize()) {
-          std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
-        queue_.Push(packet);
-      }
-    } else {
-      queue_.Push(packet);
-    }
-  }
+  // Wait until data is available and pop a packet from the connection
+  PacketPtr WaitPopPacket();
 
-  PacketPtr WaitPopPacket() { return queue_.WaitPop(); }
-  int TryPopPacket(PacketPtr& packet) { return queue_.Pop(packet); }
+  // Try to pop a packet.
+  // Return a packet if successfully, otherwise return a nullptr;
+  PacketPtr TryPopPacket();
 
-  std::string GetPrevOutputName() { return prev_output_name_; }
-  std::string GetNextInputName() { return next_input_name_; }
+  // Getters for node names
+  std::string GetPrevOutputName();
+  std::string GetNextInputName();
 
-  bool RequireDataOnTick() { return require_data_on_tick_; }
+  // Return true if the next node require data on tick,
+  // otherwise return false
+  bool RequireDataOnTick();
 
  private:
-  T* prev_node_;
+  // Push packet to the transmission queue.
+  void PushPacket(PacketPtr& packet);
+
+  // Previous node
+  Node* prev_node_;
+  // The output name of the previous node
   std::string prev_output_name_;
-  T* next_node_;
+  // Next node
+  Node* next_node_;
+  // The input name of the next node
   std::string next_input_name_;
+  // Transmission queue
   Queue<PacketPtr> queue_;
   TransmissionProfile transmit_profile_;
   std::atomic<bool> require_data_on_tick_;

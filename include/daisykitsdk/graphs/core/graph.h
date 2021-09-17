@@ -23,20 +23,22 @@
 namespace daisykit {
 namespace graphs {
 
+// Graph class is used to manage nodes, connections and execution tasks in
+// DaisyKit framework
 class Graph {
  public:
+  // Connect 2 nodes by a connection.
+  // This utility function create a connection between 2 node in a graph and add
+  // that connection to the input/output connection list of each node.
+  //
+  // When `require_data_on_tick` is set to `true`, `next_node` need to wait for
+  // the packet from `prev_node` for data at the beginning of each processing
+  // round.
   static void Connect(
       Node* prev_node, const std::string& output_name, Node* next_node,
       const std::string& input_name,
       TransmissionProfile transmit_profile = TransmissionProfile(),
-      bool require_data_on_tick = true) {
-    std::shared_ptr<Connection<Node>> connection =
-        std::make_shared<Connection<Node>>(prev_node, output_name, next_node,
-                                           input_name, transmit_profile,
-                                           require_data_on_tick);
-    if (prev_node) prev_node->AddOutputConnection(connection);
-    if (next_node) next_node->AddInputConnection(connection);
-  }
+      bool require_data_on_tick = true);
 };
 
 }  // namespace graphs
