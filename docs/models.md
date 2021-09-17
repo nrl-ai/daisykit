@@ -1,4 +1,4 @@
-# Model list
+# Model references
 
 - 1. Action classifier: Pretrained from [Pushup Counter App](https://github.com/VNOpenAI/pushup-counter-app) - Not the best model.
 - 2. Person detection (person_detector) and Human pose (Ultralight-Nano-SimplePose): Pretrained from <https://github.com/dog-qiuqiu/Ultralight-SimplePose>.

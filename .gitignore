@@ -2,5 +2,4 @@
 /.vscode
 !/.vscode/settings.json
 /assets/*
-!/assets/.gitkeep
-/docs_sphinx/_build
+/docs/_build
