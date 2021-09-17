@@ -16,7 +16,6 @@
 #define DAISYKIT_GRAPHS_NODES_MODELS_FACE_DETECTOR_NODE_H_
 
 #include "daisykitsdk/graphs/core/node.h"
-#include "daisykitsdk/graphs/core/utils.h"
 
 #include "daisykitsdk/models/face_detector_with_mask.h"
 
@@ -26,6 +25,9 @@
 namespace daisykit {
 namespace graphs {
 
+// Face detector node.
+// Receives an image from "input" connection, detects all faces in that image
+// and pushes the result through "output".
 class FaceDetectorNode : public Node {
  public:
   FaceDetectorNode(const std::string& node_name, const std::string& param_file,
@@ -39,8 +41,7 @@ class FaceDetectorNode : public Node {
   void Process(std::shared_ptr<Packet> in_packet,
                std::shared_ptr<Packet>& out_packet) {
     // Convert packet to processing format: cv::Mat
-    cv::Mat img;
-    Packet2CvMat(in_packet, img);
+    cv::Mat img = *in_packet->GetData<cv::Mat>();
 
     // Process
     std::shared_ptr<std::vector<daisykit::common::Face>> result =
@@ -49,18 +50,17 @@ class FaceDetectorNode : public Node {
 
     // Convert to output packet
     utils::TimePoint timestamp = utils::Timer::GetCurrentTime();
-    out_packet = std::make_shared<Packet>(
-        std::static_pointer_cast<void>(result), timestamp);
+    out_packet =
+        Packet::MakePacket<std::vector<daisykit::common::Face>>(result);
   }
 
   void Tick() {
+    // Wait for data
     WaitForData();
 
+    // Prepare input packets
     std::map<std::string, PacketPtr> inputs;
-    if (PrepareInputs(inputs) != 0) {
-      std::cerr << GetNodeName() << ": Error on preparing inputs." << std::endl;
-      return;
-    }
+    PrepareInputs(inputs);
 
     PacketPtr input = inputs["input"];
     PacketPtr output;

@@ -23,6 +23,7 @@
 namespace daisykit {
 namespace graphs {
 
+// Thread-safe queue class for data.
 template <typename T>
 class Queue {
  public:

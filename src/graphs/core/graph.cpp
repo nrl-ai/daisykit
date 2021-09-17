@@ -12,20 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_GRAPHS_CORE_NODE_TYPE_H_
-#define DAISYKIT_GRAPHS_CORE_NODE_TYPE_H_
+#include "daisykitsdk/graphs/core/graph.h"
+#include "daisykitsdk/graphs/core/node.h"
+
+#include <map>
+#include <string>
 
 namespace daisykit {
 namespace graphs {
 
-// There are too node types in DaisyKit framework:
-// Synchronous nodes (kSyncNode) processing function Tick() is activated by the
-// previous node, which means all processing pipeline runs node by node.
-// Asynchronous node (kAsyncNode) has a processing thread inside to run
-// processing Tick() in a loop. Thus, these node can run paralelly.
-enum NodeType { kSyncNode = 0, kAsyncNode = 1 };
+void Graph::Connect(Node* prev_node, const std::string& output_name,
+                    Node* next_node, const std::string& input_name,
+                    TransmissionProfile transmit_profile,
+                    bool require_data_on_tick) {
+  std::shared_ptr<Connection> connection = std::make_shared<Connection>(
+      prev_node, output_name, next_node, input_name, transmit_profile,
+      require_data_on_tick);
+  if (prev_node) prev_node->AddOutputConnection(connection);
+  if (next_node) next_node->AddInputConnection(connection);
+}
 
 }  // namespace graphs
 }  // namespace daisykit
-
-#endif

@@ -44,6 +44,12 @@ set(sources
 
     src/utils/visualizers/base_visualizer.cpp
 
+    src/graphs/core/node.cpp
+    src/graphs/core/connection.cpp
+    src/graphs/core/graph.cpp
+    src/graphs/core/packet.cpp
+    src/graphs/core/transmission_profile.cpp
+
     src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
     src/flows/face_detector_with_mask_flow.cpp

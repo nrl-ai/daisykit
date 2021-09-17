@@ -17,7 +17,6 @@
 
 #include "daisykitsdk/common/types.h"
 #include "daisykitsdk/graphs/core/node.h"
-#include "daisykitsdk/graphs/core/utils.h"
 #include "daisykitsdk/utils/visualizers/face_visualizer.h"
 
 #include <chrono>
@@ -26,6 +25,9 @@
 namespace daisykit {
 namespace graphs {
 
+// Face visualizer.
+// Receives "image" and "faces" as inputs. Draw faces and landmarks to the image
+// and show the final result in an OpenCV imshow window.
 class FaceVisualizerNode : public Node {
  public:
   FaceVisualizerNode(const std::string& node_name,
@@ -42,24 +44,20 @@ class FaceVisualizerNode : public Node {
     WaitForData();
 
     std::map<std::string, PacketPtr> inputs;
-    if (PrepareInputs(inputs) != 0) {
-      std::cerr << GetNodeName() << ": Error on preparing inputs." << std::endl;
-      return;
-    }
+    PrepareInputs(inputs);
 
     // Get new faces result
     // or take the last result
     std::shared_ptr<std::vector<daisykit::common::Face>> faces;
     if (inputs.count("faces") > 0) {
-      faces = ParseFacePacket(inputs["faces"]);
+      faces = inputs["faces"]->GetData<std::vector<daisykit::common::Face>>();
       faces_ = faces;
     } else {
       faces = faces_;
     }
 
     // Get image
-    cv::Mat img;
-    Packet2CvMat(inputs["image"], img);
+    cv::Mat img = *inputs["image"]->GetData<cv::Mat>();
 
     // Clone image to draw on
     cv::Mat draw = img.clone();
@@ -73,20 +71,6 @@ class FaceVisualizerNode : public Node {
     cv::cvtColor(draw, draw, cv::COLOR_RGB2BGR);
     cv::imshow("Face detection", draw);
     cv::waitKey(1);
-  }
-
-  std::shared_ptr<std::vector<daisykit::common::Face>> ParseFacePacket(
-      PacketPtr packet) {
-    // Get data
-    std::shared_ptr<void> data;
-    utils::TimePoint timestamp;
-    packet->GetData(data, timestamp);
-
-    // Cast to faces
-    std::shared_ptr<std::vector<daisykit::common::Face>> faces =
-        std::static_pointer_cast<std::vector<daisykit::common::Face>>(data);
-
-    return faces;
   }
 
  private:

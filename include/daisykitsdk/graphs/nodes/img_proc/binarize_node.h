@@ -16,7 +16,6 @@
 #define DAISYKIT_GRAPHS_NODES_IMG_PROC_BINARIZE_NODE_H_
 
 #include "daisykitsdk/graphs/core/node.h"
-#include "daisykitsdk/graphs/core/utils.h"
 
 #include <chrono>
 #include <memory>
@@ -24,14 +23,15 @@
 namespace daisykit {
 namespace graphs {
 
+// Binarization node.
+// Used for graph API development
 class BinarizeNode : public Node {
  public:
   using Node::Node;  // For constructor inheritance
   void Process(std::shared_ptr<Packet> in_packet,
                std::shared_ptr<Packet>& out_packet) {
     // Convert packet to processing format: cv::Mat
-    cv::Mat img;
-    Packet2CvMat(in_packet, img);
+    cv::Mat img = *in_packet->GetData<cv::Mat>();
 
     // Process
     cv::Mat thres;
@@ -41,17 +41,16 @@ class BinarizeNode : public Node {
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     // Convert & assign output to the output packet
-    CvMat2Packet(thres, out_packet);
+    out_packet = Packet::MakePacket<cv::Mat>(thres);
   }
 
   void Tick() {
+    // Wait for data
     WaitForData();
 
+    // Prepare input packets
     std::map<std::string, PacketPtr> inputs;
-    if (PrepareInputs(inputs) != 0) {
-      std::cerr << GetNodeName() << ": Error on preparing inputs." << std::endl;
-      return;
-    }
+    PrepareInputs(inputs);
 
     PacketPtr input = inputs["input"];
     PacketPtr output;
