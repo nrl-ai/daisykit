@@ -1,8 +1,9 @@
-# Daisykit SDK
+# DaisyKit SDK
 
 **DaisyKit SDK** is the core of models and algorithms, which can be used to develop wrappers and applications for different platforms: mobile, embedded or web browsers.
 
-**Website:** <https://daisykit.org/>.
+- **Website:** <https://daisykit.org/>.
+- **SDK Repository:** <https://github.com/VNOpenAI/daisykit>.
 
 ![DaisyKit SDK](docs/images/daisykit-architecture.png)
 
@@ -48,18 +49,4 @@ Follow [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.htm
 - Source code file names: `.cpp` for source file and `.h` for header files.
 - Accept `using namespace` in `.cpp` files.
 
-## Build documentation
-
-- Step 1: Install **doxygen** first.
-
-- Step 2: Build the documentation:
-
-```
-cd docs
-doxygen Doxyfile.in
-```
-
-- Step 3: Deploy html documentation from `docs/_build/html`.
-
-- Step 4: Our lastest documentation is deployed at <https://docs.daisykit.org>.
 
