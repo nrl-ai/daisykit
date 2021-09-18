@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/models/pose_detector.h"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
+#include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <algorithm>
 #include <chrono>
@@ -21,8 +21,8 @@
 #include <string>
 #include <vector>
 
-using namespace daisykit::common;
-using namespace daisykit::models;
+namespace daisykit {
+namespace models {
 
 PoseDetector::PoseDetector(const std::string& param_file,
                            const std::string& weight_file) {
@@ -65,9 +65,10 @@ void PoseDetector::LoadModel(AAssetManager* mgr, const std::string& param_file,
 #endif
 
 // Detect keypoints for single object
-std::vector<Keypoint> PoseDetector::Detect(cv::Mat& image, float offset_x,
-                                           float offset_y) {
-  std::vector<Keypoint> keypoints;
+std::vector<types::Keypoint> PoseDetector::Detect(cv::Mat& image,
+                                                  float offset_x,
+                                                  float offset_y) {
+  std::vector<types::Keypoint> keypoints;
   int w = image.cols;
   int h = image.rows;
   ncnn::Mat in = ncnn::Mat::from_pixels_resize(image.data, ncnn::Mat::PIXEL_RGB,
@@ -100,7 +101,7 @@ std::vector<Keypoint> PoseDetector::Detect(cv::Mat& image, float offset_x,
       }
     }
 
-    Keypoint keypoint;
+    types::Keypoint keypoint;
     keypoint.x = max_x * w / (float)out.w + offset_x;
     keypoint.y = max_y * h / (float)out.h + offset_y;
     keypoint.prob = max_prob;
@@ -110,13 +111,13 @@ std::vector<Keypoint> PoseDetector::Detect(cv::Mat& image, float offset_x,
 }
 
 // Detect keypoints for multiple objects
-std::vector<std::vector<Keypoint>> PoseDetector::DetectMulti(
-    cv::Mat& image, const std::vector<Object>& objects) {
+std::vector<std::vector<types::Keypoint>> PoseDetector::DetectMulti(
+    cv::Mat& image, const std::vector<types::Object>& objects) {
   int img_w = image.cols;
   int img_h = image.rows;
   int x1, y1, x2, y2;
 
-  std::vector<std::vector<Keypoint>> keypoints;
+  std::vector<std::vector<types::Keypoint>> keypoints;
   for (size_t i = 0; i < objects.size(); ++i) {
     x1 = objects[i].x;
     y1 = objects[i].y;
@@ -132,7 +133,7 @@ std::vector<std::vector<Keypoint>> PoseDetector::DetectMulti(
     if (y2 > img_h) y2 = img_h;
 
     cv::Mat roi = image(cv::Rect(x1, y1, x2 - x1, y2 - y1)).clone();
-    std::vector<Keypoint> keypoints_single = Detect(roi, x1, y1);
+    std::vector<types::Keypoint> keypoints_single = Detect(roi, x1, y1);
     keypoints.push_back(keypoints_single);
   }
 
@@ -140,8 +141,8 @@ std::vector<std::vector<Keypoint>> PoseDetector::DetectMulti(
 }
 
 // Draw pose
-void PoseDetector::DrawKeypoints(const cv::Mat& image,
-                                 const std::vector<Keypoint>& keypoints) {
+void PoseDetector::DrawKeypoints(
+    const cv::Mat& image, const std::vector<types::Keypoint>& keypoints) {
   float threshold = 0.2;
   // draw bone
   static const int joint_pairs[16][2] = {
@@ -149,19 +150,20 @@ void PoseDetector::DrawKeypoints(const cv::Mat& image,
       {7, 9},   {6, 8},   {8, 10},  {5, 11}, {6, 12}, {11, 12},
       {11, 13}, {12, 14}, {13, 15}, {14, 16}};
   for (int i = 0; i < 16; i++) {
-    const Keypoint& p1 = keypoints[joint_pairs[i][0]];
-    const Keypoint& p2 = keypoints[joint_pairs[i][1]];
+    const types::Keypoint& p1 = keypoints[joint_pairs[i][0]];
+    const types::Keypoint& p2 = keypoints[joint_pairs[i][1]];
     if (p1.prob < threshold || p2.prob < threshold) continue;
     cv::line(image, cv::Point(p1.x, p1.y), cv::Point(p2.x, p2.y),
              cv::Scalar(255, 0, 0), 2);
   }
   // draw joint
   for (size_t i = 0; i < keypoints.size(); i++) {
-    const Keypoint& keypoint = keypoints[i];
-    // fprintf(stderr, "%.2f %.2f = %.5f\n", keypoint.p.x, keypoint.p.y,
-    // keypoint.prob);
+    const types::Keypoint& keypoint = keypoints[i];
     if (keypoint.prob < threshold) continue;
     cv::circle(image, cv::Point(keypoint.x, keypoint.y), 3,
                cv::Scalar(0, 255, 0), -1);
   }
 }
+
+}  // namespace models
+}  // namespace daisykit

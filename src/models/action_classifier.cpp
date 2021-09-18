@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/models/action_classifier.h"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
+#include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <algorithm>
 #include <chrono>
@@ -21,9 +21,8 @@
 #include <string>
 #include <vector>
 
-using namespace daisykit::common;
-using namespace daisykit::models;
-using namespace daisykit::utils::img_proc;
+namespace daisykit {
+namespace models {
 
 ActionClassifier::ActionClassifier(const std::string& param_file,
                                    const std::string& weight_file,
@@ -71,9 +70,9 @@ void ActionClassifier::LoadModel(AAssetManager* mgr,
 }
 #endif
 
-Action ActionClassifier::Classify(cv::Mat& image, float& confidence) {
+types::Action ActionClassifier::Classify(cv::Mat& image, float& confidence) {
   cv::Mat rgb = image.clone();
-  rgb = ImgUtils::SquarePadding(rgb, input_width_).clone();
+  rgb = processors::ImgUtils::SquarePadding(rgb, input_width_).clone();
   ncnn::Mat in =
       ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols,
                                     rgb.rows, input_width_, input_height_);
@@ -91,7 +90,7 @@ Action ActionClassifier::Classify(cv::Mat& image, float& confidence) {
   bool is_pushup = confidence > 0.9;
 
   if (!_smooth) {
-    return is_pushup ? Action::kPushup : Action::kUnknown;
+    return is_pushup ? types::Action::kPushup : types::Action::kUnknown;
   }
 
   // Check and recognize pushup
@@ -105,13 +104,16 @@ Action ActionClassifier::Classify(cv::Mat& image, float& confidence) {
 
   // Return smoothed result
   if (current_time - last_pushup_time_ < 2000) {
-    return Action::kPushup;
+    return types::Action::kPushup;
   }
 
-  return Action::kUnknown;
+  return types::Action::kUnknown;
 }
 
-Action ActionClassifier::Classify(cv::Mat& image) {
+types::Action ActionClassifier::Classify(cv::Mat& image) {
   float confidence;
   return Classify(image, confidence);
 }
+
+}  // namespace models
+}  // namespace daisykit

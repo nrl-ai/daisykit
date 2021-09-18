@@ -23,7 +23,7 @@ namespace daisykit {
 namespace models {
 
 class FaceDetectorWithMask
-    : public BaseModel<cv::Mat, std::vector<daisykit::common::Face>> {
+    : public BaseModel<cv::Mat, std::vector<daisykit::types::Face>> {
  public:
   FaceDetectorWithMask(const char* param_buffer,
                        const unsigned char* weight_buffer,
@@ -37,7 +37,7 @@ class FaceDetectorWithMask
                        float iou_threshold = 0.5);
 
   // Override abstract Predict
-  virtual std::vector<daisykit::common::Face> Predict(cv::Mat& image);
+  virtual std::vector<daisykit::types::Face> Predict(cv::Mat& image);
 
  private:
   int input_width_;

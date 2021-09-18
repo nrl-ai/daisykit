@@ -13,19 +13,28 @@
 // limitations under the License.
 
 #include "daisykitsdk/flows/barcode_scanner_flow.h"
+#include "GTIN.h"
+#include "ReadBarcode.h"
+#include "TextUtfEncoding.h"
+#include "daisykitsdk/common/visualizers/base_visualizer.h"
+#include "daisykitsdk/thirdparties/json.hpp"
 
-using namespace cv;
-using namespace std;
-using namespace ZXing;
-using namespace TextUtfEncoding;
-using namespace daisykit::flows;
-using namespace daisykit::utils::visualizers;
+#include <atomic>
+#include <iostream>
+#include <mutex>
+#include <opencv2/opencv.hpp>
+#include <sstream>
+#include <string>
+#include <vector>
+
+namespace daisykit {
+namespace flows {
 
 BarcodeScannerFlow::BarcodeScannerFlow(const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
 
   // Setting for barcode reader
-  hints_.setEanAddOnSymbol(EanAddOnSymbol::Read);
+  hints_.setEanAddOnSymbol(ZXing::EanAddOnSymbol::Read);
   hints_.setTryHarder(config["try_harder"]);
   hints_.setTryRotate(config["try_rotate"]);
 }
@@ -42,8 +51,8 @@ BarcodeScannerFlow::BarcodeScannerFlow(AAssetManager* mgr,
 #endif
 
 std::string BarcodeScannerFlow::Process(cv::Mat& rgb, bool draw) {
-  ImageView image{rgb.data, rgb.cols, rgb.rows, ImageFormat::RGB};
-  auto results = ReadBarcodes(image, hints_);
+  ZXing::ImageView image{rgb.data, rgb.cols, rgb.rows, ZXing::ImageFormat::RGB};
+  auto results = ZXing::ReadBarcodes(image, hints_);
 
   int ret;
   bool angle_escape = false;
@@ -51,36 +60,42 @@ std::string BarcodeScannerFlow::Process(cv::Mat& rgb, bool draw) {
 
   // if we did not find anything, insert a dummy to produce some output for each
   // file
-  if (results.empty()) results.emplace_back(DecodeStatus::NotFound);
+  if (results.empty()) results.emplace_back(ZXing::DecodeStatus::NotFound);
 
   for (auto&& result : results) {
     if (!result.isValid()) continue;
 
     if (draw) {
       DrawRect(rgb, result.position());
-      BaseVisualizer::PutText(rgb, ToUtf8(result.text(), angle_escape),
-                              cv::Point(10, 40), cv::FONT_HERSHEY_SIMPLEX, 0.5,
-                              1, 10, cv::Scalar(0, 0, 0),
-                              cv::Scalar(0, 255, 0));
+      visualizers::BaseVisualizer::PutText(
+          rgb, ZXing::TextUtfEncoding::ToUtf8(result.text(), angle_escape),
+          cv::Point(10, 40), cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, 10,
+          cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
     }
 
     ret |= static_cast<int>(result.status());
-    result_stream << ToString(result.format());
+    result_stream << ZXing::ToString(result.format());
     if (result.isValid())
-      result_stream << " \"" << ToUtf8(result.text(), angle_escape) << "\"";
-    else if (result.format() != BarcodeFormat::None)
-      result_stream << " " << ToString(result.status());
+      result_stream << " \""
+                    << ZXing::TextUtfEncoding::ToUtf8(result.text(),
+                                                      angle_escape)
+                    << "\"";
+    else if (result.format() != ZXing::BarcodeFormat::None)
+      result_stream << " " << ZXing::ToString(result.status());
     result_stream << "\n";
   }
 
   return result_stream.str();
 }
 
-void BarcodeScannerFlow::DrawRect(cv::Mat& rgb, const Position& pos) {
+void BarcodeScannerFlow::DrawRect(cv::Mat& rgb, const ZXing::Position& pos) {
   for (int i = 0; i < 4; ++i) {
-    PointI a = pos[i];
-    PointI b = pos[(i + 1) % 4];
+    ZXing::PointI a = pos[i];
+    ZXing::PointI b = pos[(i + 1) % 4];
     cv::line(rgb, cv::Point(a.x, a.y), cv::Point(b.x, b.y),
              cv::Scalar(0, 255, 0), 2);
   }
 }
+
+}  // namespace flows
+}  // namespace daisykit

@@ -14,7 +14,8 @@
 
 #include "daisykitsdk/flows/face_detector_flow.h"
 
-using namespace daisykit::flows;
+namespace daisykit {
+namespace flows {
 
 FaceDetectorFlow::FaceDetectorFlow(const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
@@ -62,7 +63,7 @@ FaceDetectorFlow::~FaceDetectorFlow() {
 
 void FaceDetectorFlow::Process(cv::Mat& rgb) {
   // Detect faces
-  std::vector<common::Face> faces = face_detector_->Detect(rgb);
+  std::vector<types::Face> faces = face_detector_->Detect(rgb);
 
   // Detect landmarks
   if (with_landmark_) {
@@ -89,3 +90,6 @@ void FaceDetectorFlow::DrawResult(cv::Mat& rgb) {
     }
   }
 }
+
+}  // namespace flows
+}  // namespace daisykit

@@ -37,12 +37,13 @@ set(sources
     src/models/facial_landmark_estimator.cpp
     src/models/human_matting.cpp
 
-    src/utils/logging/mjpeg_writer.cpp
-    src/utils/signal_proc/signal_smoothing.cpp
-    src/utils/signal_proc/z_score_filter.cpp
-    src/utils/img_proc/img_utils.cpp
+    src/common/logging/mjpeg_writer.cpp
+    src/common/visualizers/base_visualizer.cpp
 
-    src/utils/visualizers/base_visualizer.cpp
+    src/processors/signal_processors/signal_smoothing.cpp
+    src/processors/signal_processors/z_score_filter.cpp
+    src/processors/image_processors/img_utils.cpp
+    src/processors/fitness/pushup_analyzer.cpp
 
     src/graphs/core/node.cpp
     src/graphs/core/connection.cpp
@@ -55,7 +56,6 @@ set(sources
     src/flows/face_detector_with_mask_flow.cpp
     src/flows/human_matting_flow.cpp
 
-    src/examples/fitness/pushup_analyzer.cpp
 )
 
 if (ENABLE_BARCODE_SCANNER)

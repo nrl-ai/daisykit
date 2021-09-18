@@ -44,15 +44,14 @@ class PoseDetector {
                  const std::string& weight_file);
 #endif
   // Detect keypoints for single object
-  std::vector<daisykit::common::Keypoint> Detect(cv::Mat& image,
-                                                 float offset_x = 0,
-                                                 float offset_y = 0);
+  std::vector<types::Keypoint> Detect(cv::Mat& image, float offset_x = 0,
+                                      float offset_y = 0);
   // Detect keypoints for multiple objects
-  std::vector<std::vector<daisykit::common::Keypoint>> DetectMulti(
-      cv::Mat& image, const std::vector<daisykit::common::Object>& objects);
+  std::vector<std::vector<types::Keypoint>> DetectMulti(
+      cv::Mat& image, const std::vector<types::Object>& objects);
   // Draw pose
   void DrawKeypoints(const cv::Mat& image,
-                     const std::vector<daisykit::common::Keypoint>& keypoints);
+                     const std::vector<types::Keypoint>& keypoints);
 
  private:
   const int input_width_ = 192;

@@ -13,13 +13,13 @@
 // limitations under the License.
 
 #include "daisykitsdk/models/body_detector.h"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
+#include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <string>
 #include <vector>
 
-using namespace daisykit::common;
-using namespace daisykit::models;
+namespace daisykit {
+namespace models {
 
 BodyDetector::BodyDetector(const char* param_buffer,
                            const unsigned char* weight_buffer,
@@ -38,7 +38,7 @@ BodyDetector::BodyDetector(const std::string& param_file,
   input_height_ = input_height;
 }
 
-std::vector<Object> BodyDetector::Predict(cv::Mat& image) {
+std::vector<types::Object> BodyDetector::Predict(cv::Mat& image) {
   // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();
   int img_w = rgb.cols;
@@ -57,9 +57,9 @@ std::vector<Object> BodyDetector::Predict(cv::Mat& image) {
   ncnn::Mat out;
   ex.extract("output", out);
 
-  std::vector<Object> objects;
+  std::vector<types::Object> objects;
   for (int i = 0; i < out.h; i++) {
-    Object object;
+    types::Object object;
     float x1, y1, x2, y2, score, label;
     float pw, ph, cx, cy;
     const float* values = out.row(i);
@@ -91,3 +91,6 @@ std::vector<Object> BodyDetector::Predict(cv::Mat& image) {
 
   return objects;
 }
+
+}  // namespace models
+}  // namespace daisykit

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/models/human_matting.h"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
+#include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <algorithm>
 #include <chrono>
@@ -21,8 +21,8 @@
 #include <string>
 #include <vector>
 
-using namespace daisykit::common;
-using namespace daisykit::models;
+namespace daisykit {
+namespace models {
 
 HumanMatting::HumanMatting(const std::string& param_file,
                            const std::string& weight_file) {
@@ -114,3 +114,6 @@ void HumanMatting::BindWithBackground(cv::Mat& rgb, const cv::Mat& bg,
     }
   }
 }
+
+}  // namespace models
+}  // namespace daisykit

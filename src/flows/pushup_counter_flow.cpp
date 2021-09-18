@@ -14,7 +14,8 @@
 
 #include "daisykitsdk/flows/pushup_counter_flow.h"
 
-using namespace daisykit::flows;
+namespace daisykit {
+namespace flows {
 
 PushupCounterFlow::PushupCounterFlow(const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
@@ -27,7 +28,7 @@ PushupCounterFlow::PushupCounterFlow(const std::string& config_str) {
   action_classifier_ = new models::ActionClassifier(
       config["action_recognition_model"]["model"],
       config["action_recognition_model"]["weights"], true);
-  pushup_analyzer_ = new examples::PushupAnalyzer();
+  pushup_analyzer_ = new processors::PushupAnalyzer();
   num_pushups_ = 0;
 }
 
@@ -51,14 +52,14 @@ PushupCounterFlow::PushupCounterFlow(AAssetManager* mgr,
 
 void PushupCounterFlow::Process(cv::Mat& rgb) {
   // Detect human pose
-  std::vector<common::Object> bodies = body_detector_->Predict(rgb);
+  std::vector<types::Object> bodies = body_detector_->Predict(rgb);
   {
     const std::lock_guard<std::mutex> lock(bodies_lock_);
     bodies_ = bodies;
   }
 
   // Detect keypoints
-  std::vector<std::vector<common::Keypoint>> keypoints =
+  std::vector<std::vector<types::Keypoint>> keypoints =
       pose_detector_->DetectMulti(rgb, bodies);
   {
     const std::lock_guard<std::mutex> lock(keypoints_lock_);
@@ -67,10 +68,10 @@ void PushupCounterFlow::Process(cv::Mat& rgb) {
 
   // Recognize action and count pushups
   float score;
-  common::Action action = action_classifier_->Classify(rgb, score);
+  types::Action action = action_classifier_->Classify(rgb, score);
   is_pushup_score_ = score;
   num_pushups_ =
-      pushup_analyzer_->CountPushups(rgb, action == common::Action::kPushup);
+      pushup_analyzer_->CountPushups(rgb, action == types::Action::kPushup);
 }
 
 int PushupCounterFlow::NumPushups() { return num_pushups_; }
@@ -95,18 +96,21 @@ void PushupCounterFlow::DrawResult(cv::Mat& rgb) {
 
   // Draw pushups counting
   if (is_pushup_score_ > 0.5) {
-    utils::visualizers::BaseVisualizer::PutText(
+    visualizers::BaseVisualizer::PutText(
         rgb, "Is pushing: " + std::to_string(is_pushup_score_),
         cv::Point(20, 40), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
         cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
   } else {
-    utils::visualizers::BaseVisualizer::PutText(
+    visualizers::BaseVisualizer::PutText(
         rgb, "Is pushing: " + std::to_string(is_pushup_score_),
         cv::Point(20, 40), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
         cv::Scalar(0, 0, 0), cv::Scalar(220, 220, 220));
   }
-  utils::visualizers::BaseVisualizer::PutText(
+  visualizers::BaseVisualizer::PutText(
       rgb, std::string("PushUps: ") + std::to_string(num_pushups_),
       cv::Point(20, 80), cv::FONT_HERSHEY_SIMPLEX, 1.2, 2, 10,
       cv::Scalar(255, 255, 255), cv::Scalar(255, 0, 0));
 }
+
+}  // namespace flows
+}  // namespace daisykit

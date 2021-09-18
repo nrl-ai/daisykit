@@ -25,9 +25,11 @@
 namespace daisykit {
 namespace graphs {
 
-// Face detector node.
-// Receives an image from "input" connection, detects all faces in that image
-// and pushes the result through "output".
+namespace nodes {
+
+/// Face detector node.
+/// Receives an image from "input" connection, detects all faces in that image
+/// and pushes the result through "output".
 class FaceDetectorNode : public Node {
  public:
   FaceDetectorNode(const std::string& node_name, const std::string& param_file,
@@ -44,14 +46,13 @@ class FaceDetectorNode : public Node {
     cv::Mat img = *in_packet->GetData<cv::Mat>();
 
     // Process
-    std::shared_ptr<std::vector<daisykit::common::Face>> result =
-        std::make_shared<std::vector<daisykit::common::Face>>();
+    std::shared_ptr<std::vector<daisykit::types::Face>> result =
+        std::make_shared<std::vector<daisykit::types::Face>>();
     *result = face_detector_->Predict(img);
 
     // Convert to output packet
     utils::TimePoint timestamp = utils::Timer::GetCurrentTime();
-    out_packet =
-        Packet::MakePacket<std::vector<daisykit::common::Face>>(result);
+    out_packet = Packet::MakePacket<std::vector<daisykit::types::Face>>(result);
   }
 
   void Tick() {
@@ -75,6 +76,7 @@ class FaceDetectorNode : public Node {
   std::shared_ptr<models::FaceDetectorWithMask> face_detector_;
 };
 
+}  // namespace nodes
 }  // namespace graphs
 }  // namespace daisykit
 

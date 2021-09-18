@@ -16,14 +16,16 @@
 #define DAISYKIT_GRAPHS_NODES_FACE_VISUALIZER_NODE_H_
 
 #include "daisykitsdk/common/types.h"
+#include "daisykitsdk/common/visualizers/face_visualizer.h"
 #include "daisykitsdk/graphs/core/node.h"
-#include "daisykitsdk/utils/visualizers/face_visualizer.h"
 
 #include <chrono>
 #include <memory>
 
 namespace daisykit {
 namespace graphs {
+
+namespace nodes {
 
 // Face visualizer.
 // Receives "image" and "faces" as inputs. Draw faces and landmarks to the image
@@ -48,9 +50,9 @@ class FaceVisualizerNode : public Node {
 
     // Get new faces result
     // or take the last result
-    std::shared_ptr<std::vector<daisykit::common::Face>> faces;
+    std::shared_ptr<std::vector<daisykit::types::Face>> faces;
     if (inputs.count("faces") > 0) {
-      faces = inputs["faces"]->GetData<std::vector<daisykit::common::Face>>();
+      faces = inputs["faces"]->GetData<std::vector<daisykit::types::Face>>();
       faces_ = faces;
     } else {
       faces = faces_;
@@ -64,8 +66,7 @@ class FaceVisualizerNode : public Node {
 
     // Draw face to image
     if (faces != nullptr) {
-      utils::visualizers::FaceVisualizer::DrawFace(draw, *faces,
-                                                   with_landmark_);
+      visualizers::FaceVisualizer::DrawFace(draw, *faces, with_landmark_);
     }
 
     cv::cvtColor(draw, draw, cv::COLOR_RGB2BGR);
@@ -75,9 +76,10 @@ class FaceVisualizerNode : public Node {
 
  private:
   bool with_landmark_;
-  std::shared_ptr<std::vector<daisykit::common::Face>> faces_;
+  std::shared_ptr<std::vector<daisykit::types::Face>> faces_;
 };
 
+}  // namespace nodes
 }  // namespace graphs
 }  // namespace daisykit
 

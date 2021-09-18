@@ -25,9 +25,11 @@
 namespace daisykit {
 namespace graphs {
 
-// Face landmark estimator node.
-// Receives an image from "image" and face bounding boxes from "faces", add
-// landmark info to "faces" packet and push the output through "output".
+namespace nodes {
+
+/// Face landmark estimator node.
+/// Receives an image from "image" and face bounding boxes from "faces", add
+/// landmark info to "faces" packet and push the output through "output".
 class FacialLandmarkEstimatorNode : public Node {
  public:
   FacialLandmarkEstimatorNode(const std::string& node_name,
@@ -50,8 +52,8 @@ class FacialLandmarkEstimatorNode : public Node {
     PrepareInputs(inputs);
 
     // Get faces result
-    std::shared_ptr<std::vector<daisykit::common::Face>> faces;
-    faces = inputs["faces"]->GetData<std::vector<daisykit::common::Face>>();
+    std::shared_ptr<std::vector<daisykit::types::Face>> faces;
+    faces = inputs["faces"]->GetData<std::vector<daisykit::types::Face>>();
 
     // Get image
     cv::Mat img = *inputs["image"]->GetData<cv::Mat>();
@@ -74,6 +76,7 @@ class FacialLandmarkEstimatorNode : public Node {
   std::shared_ptr<models::FacialLandmarkEstimator> facial_landmark_estimator_;
 };
 
+}  // namespace nodes
 }  // namespace graphs
 }  // namespace daisykit
 

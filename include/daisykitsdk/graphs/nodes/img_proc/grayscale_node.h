@@ -22,8 +22,10 @@
 namespace daisykit {
 namespace graphs {
 
-// Binarization node.
-// Used for graph API development
+namespace nodes {
+
+/// Binarization node.
+/// Used for graph API development
 class GrayScaleNode : public Node {
  public:
   using Node::Node;  // For constructor inheritance
@@ -59,6 +61,7 @@ class GrayScaleNode : public Node {
   }
 };
 
+}  // namespace nodes
 }  // namespace graphs
 }  // namespace daisykit
 

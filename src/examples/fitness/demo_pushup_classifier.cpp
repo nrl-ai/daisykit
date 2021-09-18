@@ -20,7 +20,7 @@
 
 using namespace cv;
 using namespace std;
-using namespace daisykit::common;
+using namespace daisykit::types;
 using namespace daisykit::models;
 
 int main(int, char**) {

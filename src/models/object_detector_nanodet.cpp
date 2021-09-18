@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/models/object_detector_nanodet.h"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
+#include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <algorithm>
 #include <chrono>
@@ -21,8 +21,8 @@
 #include <string>
 #include <vector>
 
-using namespace daisykit::common;
-using namespace daisykit::models;
+namespace daisykit {
+namespace models {
 
 ObjectDetectorNanodet::ObjectDetectorNanodet(const std::string& param_file,
                                              const std::string& weight_file) {
@@ -66,7 +66,7 @@ void ObjectDetectorNanodet::LoadModel(AAssetManager* mgr,
 }
 #endif
 
-std::vector<Object> ObjectDetectorNanodet::Detect(cv::Mat& image) {
+std::vector<types::Object> ObjectDetectorNanodet::Detect(cv::Mat& image) {
   cv::Mat rgb = image.clone();
   int img_w = rgb.cols;
   int img_h = rgb.rows;
@@ -107,7 +107,7 @@ std::vector<Object> ObjectDetectorNanodet::Detect(cv::Mat& image) {
 
   ex.input("input.1", in_pad);
 
-  std::vector<Object> proposals;
+  std::vector<types::Object> proposals;
 
   // stride 8
   {
@@ -116,7 +116,7 @@ std::vector<Object> ObjectDetectorNanodet::Detect(cv::Mat& image) {
     ex.extract("cls_pred_stride_8", cls_pred);
     ex.extract("dis_pred_stride_8", dis_pred);
 
-    std::vector<Object> objects8;
+    std::vector<types::Object> objects8;
     GenerateProposals(cls_pred, dis_pred, 8, in_pad, prob_threshold, objects8);
 
     proposals.insert(proposals.end(), objects8.begin(), objects8.end());
@@ -129,7 +129,7 @@ std::vector<Object> ObjectDetectorNanodet::Detect(cv::Mat& image) {
     ex.extract("cls_pred_stride_16", cls_pred);
     ex.extract("dis_pred_stride_16", dis_pred);
 
-    std::vector<Object> objects16;
+    std::vector<types::Object> objects16;
     GenerateProposals(cls_pred, dis_pred, 16, in_pad, prob_threshold,
                       objects16);
 
@@ -143,7 +143,7 @@ std::vector<Object> ObjectDetectorNanodet::Detect(cv::Mat& image) {
     ex.extract("cls_pred_stride_32", cls_pred);
     ex.extract("dis_pred_stride_32", dis_pred);
 
-    std::vector<Object> objects32;
+    std::vector<types::Object> objects32;
     GenerateProposals(cls_pred, dis_pred, 32, in_pad, prob_threshold,
                       objects32);
 
@@ -159,7 +159,7 @@ std::vector<Object> ObjectDetectorNanodet::Detect(cv::Mat& image) {
 
   int count = picked.size();
 
-  std::vector<common::Object> objects;
+  std::vector<types::Object> objects;
   objects.resize(count);
   for (int i = 0; i < count; i++) {
     objects[i] = proposals[picked[i]];
@@ -192,8 +192,8 @@ float ObjectDetectorNanodet::IntersectionArea(const Object& a,
   return inter.area();
 }
 
-void ObjectDetectorNanodet::QsortDescentInplace(std::vector<Object>& objects,
-                                                int left, int right) {
+void ObjectDetectorNanodet::QsortDescentInplace(
+    std::vector<types::Object>& objects, int left, int right) {
   int i = left;
   int j = right;
   float p = objects[(left + right) / 2].confidence;
@@ -225,14 +225,15 @@ void ObjectDetectorNanodet::QsortDescentInplace(std::vector<Object>& objects,
   }
 }
 
-void ObjectDetectorNanodet::QsortDescentInplace(std::vector<Object>& objects) {
+void ObjectDetectorNanodet::QsortDescentInplace(
+    std::vector<types::Object>& objects) {
   if (objects.empty()) return;
   QsortDescentInplace(objects, 0, objects.size() - 1);
 }
 
-void ObjectDetectorNanodet::NmsSortedBboxes(const std::vector<Object>& objects,
-                                            std::vector<int>& picked,
-                                            float nms_threshold) {
+void ObjectDetectorNanodet::NmsSortedBboxes(
+    const std::vector<types::Object>& objects, std::vector<int>& picked,
+    float nms_threshold) {
   picked.clear();
 
   const int n = objects.size();
@@ -260,12 +261,10 @@ void ObjectDetectorNanodet::NmsSortedBboxes(const std::vector<Object>& objects,
   }
 }
 
-void ObjectDetectorNanodet::GenerateProposals(const ncnn::Mat& cls_pred,
-                                              const ncnn::Mat& dis_pred,
-                                              int stride,
-                                              const ncnn::Mat& in_pad,
-                                              float prob_threshold,
-                                              std::vector<Object>& objects) {
+void ObjectDetectorNanodet::GenerateProposals(
+    const ncnn::Mat& cls_pred, const ncnn::Mat& dis_pred, int stride,
+    const ncnn::Mat& in_pad, float prob_threshold,
+    std::vector<types::Object>& objects) {
   const int num_grid = cls_pred.h;
 
   int num_grid_x;
@@ -350,3 +349,6 @@ void ObjectDetectorNanodet::GenerateProposals(const ncnn::Mat& cls_pred,
     }
   }
 }
+
+}  // namespace models
+}  // namespace daisykit

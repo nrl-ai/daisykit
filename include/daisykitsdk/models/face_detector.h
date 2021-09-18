@@ -54,16 +54,16 @@ class FaceDetector {
                  const std::string& weight_file);
 #endif
 
-  std::vector<daisykit::common::Face> Detect(cv::Mat& image);
+  std::vector<daisykit::types::Face> Detect(cv::Mat& image);
 
  private:
   void InitParams(int input_width = 320, int input_height = 240,
                   float score_threshold = 0.7, float iou_threshold = 0.5);
-  void GenerateBBox(std::vector<common::Face>& bbox_collection,
-                    ncnn::Mat scores, ncnn::Mat boxes, float score_threshold,
-                    int num_anchors, int image_width, int image_height);
+  void GenerateBBox(std::vector<types::Face>& bbox_collection, ncnn::Mat scores,
+                    ncnn::Mat boxes, float score_threshold, int num_anchors,
+                    int image_width, int image_height);
 
-  void Nms(std::vector<common::Face>& input, std::vector<common::Face>& output,
+  void Nms(std::vector<types::Face>& input, std::vector<types::Face>& output,
            int type = 2);
 
   ncnn::Net* model_ = 0;

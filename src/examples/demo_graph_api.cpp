@@ -29,17 +29,17 @@
 using namespace cv;
 using namespace std;
 using json = nlohmann::json;
-using namespace daisykit::common;
+using namespace daisykit;
 using namespace daisykit::graphs;
 
 int main(int, char**) {
   // Create processing nodes
-  std::shared_ptr<GrayScaleNode> grayscale_node =
-      std::make_shared<GrayScaleNode>("grayscale", NodeType::kAsyncNode);
-  std::shared_ptr<BinarizeNode> binarize_node =
-      std::make_shared<BinarizeNode>("binary", NodeType::kAsyncNode);
-  std::shared_ptr<ImgVizNode> visualize_node =
-      std::make_shared<ImgVizNode>("binary", NodeType::kAsyncNode);
+  std::shared_ptr<nodes::GrayScaleNode> grayscale_node =
+      std::make_shared<nodes::GrayScaleNode>("grayscale", NodeType::kAsyncNode);
+  std::shared_ptr<nodes::BinarizeNode> binarize_node =
+      std::make_shared<nodes::BinarizeNode>("binary", NodeType::kAsyncNode);
+  std::shared_ptr<nodes::ImgVizNode> visualize_node =
+      std::make_shared<nodes::ImgVizNode>("binary", NodeType::kAsyncNode);
 
   // Create connections between nodes
   Graph::Connect(nullptr, "", grayscale_node.get(), "input",

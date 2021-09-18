@@ -13,13 +13,13 @@
 // limitations under the License.
 
 #include "daisykitsdk/models/face_detector_with_mask.h"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
+#include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <string>
 #include <vector>
 
-using namespace daisykit::common;
-using namespace daisykit::models;
+namespace daisykit {
+namespace models {
 
 FaceDetectorWithMask::FaceDetectorWithMask(const char* param_buffer,
                                            const unsigned char* weight_buffer,
@@ -46,7 +46,7 @@ FaceDetectorWithMask::FaceDetectorWithMask(const std::string& param_file,
   input_height_ = input_height;
 }
 
-std::vector<Face> FaceDetectorWithMask::Predict(cv::Mat& image) {
+std::vector<types::Face> FaceDetectorWithMask::Predict(cv::Mat& image) {
   // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();
 
@@ -91,7 +91,7 @@ std::vector<Face> FaceDetectorWithMask::Predict(cv::Mat& image) {
 
   int count = out.h;
 
-  std::vector<Face> objects;
+  std::vector<types::Face> objects;
   objects.resize(count);
   for (int i = 0; i < count; i++) {
     int label;
@@ -127,3 +127,6 @@ std::vector<Face> FaceDetectorWithMask::Predict(cv::Mat& image) {
 
   return objects;
 }
+
+}  // namespace models
+}  // namespace daisykit

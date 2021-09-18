@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/graphs/core/packet.h"
-#include "daisykitsdk/utils/timer.h"
+#include "daisykitsdk/common/utils/timer.h"
 
 #include <atomic>
 #include <chrono>

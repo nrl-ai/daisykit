@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/models/face_detector.h"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
+#include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <algorithm>
 #include <chrono>
@@ -23,8 +23,8 @@
 
 #define clip(x, y) (x < 0 ? 0 : (x > y ? y : x))
 
-using namespace daisykit::common;
-using namespace daisykit::models;
+namespace daisykit {
+namespace models {
 
 FaceDetector::FaceDetector(const std::string& param_file,
                            const std::string& weight_file, int input_width,
@@ -113,7 +113,7 @@ void FaceDetector::InitParams(int input_width, int input_height,
   num_anchors_ = priors_.size();
 }
 
-std::vector<Face> FaceDetector::Detect(cv::Mat& image) {
+std::vector<types::Face> FaceDetector::Detect(cv::Mat& image) {
   cv::Mat rgb = image.clone();
   ncnn::Mat inmat = ncnn::Mat::from_pixels(rgb.data, ncnn::Mat::PIXEL_RGB,
                                            rgb.cols, rgb.rows);
@@ -125,8 +125,8 @@ std::vector<Face> FaceDetector::Detect(cv::Mat& image) {
   ncnn::Mat ncnn_img = in;
   ncnn_img.substract_mean_normalize(mean_vals_, norm_vals_);
 
-  std::vector<Face> bbox_collection;
-  std::vector<Face> face_list;
+  std::vector<types::Face> bbox_collection;
+  std::vector<types::Face> face_list;
 
   ncnn::Extractor ex = model_->create_extractor();
   ex.input("input", ncnn_img);
@@ -142,13 +142,13 @@ std::vector<Face> FaceDetector::Detect(cv::Mat& image) {
   return face_list;
 }
 
-void FaceDetector::GenerateBBox(std::vector<Face>& bbox_collection,
+void FaceDetector::GenerateBBox(std::vector<types::Face>& bbox_collection,
                                 ncnn::Mat scores, ncnn::Mat boxes,
                                 float score_threshold, int num_anchors,
                                 int image_width, int image_height) {
   for (int i = 0; i < num_anchors; i++) {
     if (scores.channel(0)[i * 2 + 1] > score_threshold) {
-      Face face;
+      types::Face face;
       float x_center =
           boxes.channel(0)[i * 4] * center_variance_ * priors_[i][2] +
           priors_[i][0];
@@ -173,11 +173,12 @@ void FaceDetector::GenerateBBox(std::vector<Face>& bbox_collection,
   }
 }
 
-void FaceDetector::Nms(std::vector<Face>& input, std::vector<Face>& output,
-                       int type) {
-  std::sort(input.begin(), input.end(), [](const Face& a, const Face& b) {
-    return a.confidence > b.confidence;
-  });
+void FaceDetector::Nms(std::vector<types::Face>& input,
+                       std::vector<types::Face>& output, int type) {
+  std::sort(input.begin(), input.end(),
+            [](const types::Face& a, const types::Face& b) {
+              return a.confidence > b.confidence;
+            });
 
   int box_num = input.size();
 
@@ -185,7 +186,7 @@ void FaceDetector::Nms(std::vector<Face>& input, std::vector<Face>& output,
 
   for (int i = 0; i < box_num; i++) {
     if (merged[i]) continue;
-    std::vector<Face> buf;
+    std::vector<types::Face> buf;
 
     buf.push_back(input[i]);
     merged[i] = 1;
@@ -237,7 +238,7 @@ void FaceDetector::Nms(std::vector<Face>& input, std::vector<Face>& output,
         for (int i = 0; i < buf.size(); i++) {
           total += exp(buf[i].confidence);
         }
-        Face rects;
+        types::Face rects;
         memset(&rects, 0, sizeof(rects));
         for (int i = 0; i < buf.size(); i++) {
           float rate = exp(buf[i].confidence) / total;
@@ -257,3 +258,6 @@ void FaceDetector::Nms(std::vector<Face>& input, std::vector<Face>& output,
     }
   }
 }
+
+}  // namespace models
+}  // namespace daisykit
