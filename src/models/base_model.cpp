@@ -22,7 +22,8 @@ the operation of loading model, predicting model and other basics.
 
 #include <string>
 
-using namespace daisykit::models;
+namespace daisykit {
+namespace models {
 
 template <typename TInput, typename TOutput>
 BaseModel<TInput, TOutput>::~BaseModel() {
@@ -61,3 +62,6 @@ int BaseModel<TInput, TOutput>::LoadModel(const std::string& param_file,
 // Subclasses need to overrid this function
 template <typename TInput, typename TOutput>
 TOutput BaseModel<TInput, TOutput>::Predict(const TInput& input) {}
+
+}  // namespace models
+}  // namespace daisykit

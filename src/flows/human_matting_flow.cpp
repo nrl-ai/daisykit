@@ -14,7 +14,8 @@
 
 #include "daisykitsdk/flows/human_matting_flow.h"
 
-using namespace daisykit::flows;
+namespace daisykit {
+namespace flows {
 
 HumanMattingFlow::HumanMattingFlow(const std::string& config_str,
                                    const cv::Mat& default_background) {
@@ -58,3 +59,6 @@ void HumanMattingFlow::DrawResult(cv::Mat& rgb) {
     human_matting_model_->BindWithBackground(rgb, background_, mask_);
   }
 }
+
+}  // namespace flows
+}  // namespace daisykit

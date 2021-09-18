@@ -16,10 +16,10 @@
 #define DAISYKIT_FLOWS_HUMAN_MATTING_FLOW_H_
 
 #include "daisykitsdk/common/types.h"
+#include "daisykitsdk/common/visualizers/base_visualizer.h"
 #include "daisykitsdk/models/human_matting.h"
+#include "daisykitsdk/processors/image_processors/img_utils.h"
 #include "daisykitsdk/thirdparties/json.hpp"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
-#include "daisykitsdk/utils/visualizers/base_visualizer.h"
 
 #include <atomic>
 #include <iostream>

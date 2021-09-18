@@ -23,8 +23,10 @@
 namespace daisykit {
 namespace graphs {
 
-// This node copy packet from "input" and distribute to "output"
-// Used to copy and distribute packets between nodes
+namespace nodes {
+
+/// This node copy packet from "input" and distribute to "output"
+/// Used to copy and distribute packets between nodes
 class PacketDistributorNode : public Node {
  public:
   using Node::Node;  // For constructor inheritance
@@ -45,6 +47,7 @@ class PacketDistributorNode : public Node {
   }
 };
 
+}  // namespace nodes
 }  // namespace graphs
 }  // namespace daisykit
 

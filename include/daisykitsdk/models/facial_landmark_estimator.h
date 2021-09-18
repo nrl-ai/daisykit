@@ -44,15 +44,14 @@ class FacialLandmarkEstimator {
                  const std::string& weight_file);
 #endif
   // Detect keypoints for single object
-  std::vector<daisykit::common::Keypoint> Detect(cv::Mat& image,
-                                                 float offset_x = 0,
-                                                 float offset_y = 0);
+  std::vector<daisykit::types::Keypoint> Detect(cv::Mat& image,
+                                                float offset_x = 0,
+                                                float offset_y = 0);
   // Detect keypoints for multiple objects
-  void DetectMulti(cv::Mat& image,
-                   std::vector<daisykit::common::Face>& objects);
+  void DetectMulti(cv::Mat& image, std::vector<daisykit::types::Face>& objects);
   // Draw pose
   void DrawKeypoints(const cv::Mat& image,
-                     const std::vector<daisykit::common::Keypoint>& keypoints);
+                     const std::vector<daisykit::types::Keypoint>& keypoints);
 
  private:
   const int input_width_ = 112;

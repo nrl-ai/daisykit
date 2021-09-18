@@ -16,13 +16,13 @@
 #define DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
 
 #include "daisykitsdk/common/types.h"
-#include "daisykitsdk/examples/fitness/pushup_analyzer.h"
+#include "daisykitsdk/common/visualizers/base_visualizer.h"
 #include "daisykitsdk/models/action_classifier.h"
 #include "daisykitsdk/models/body_detector.h"
 #include "daisykitsdk/models/pose_detector.h"
+#include "daisykitsdk/processors/fitness/pushup_analyzer.h"
+#include "daisykitsdk/processors/image_processors/img_utils.h"
 #include "daisykitsdk/thirdparties/json.hpp"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
-#include "daisykitsdk/utils/visualizers/base_visualizer.h"
 
 #include <atomic>
 #include <iostream>
@@ -46,10 +46,10 @@ class PushupCounterFlow {
   void DrawResult(cv::Mat& rgb);
 
  private:
-  std::vector<common::Object> bodies_;
+  std::vector<types::Object> bodies_;
   std::mutex bodies_lock_;
 
-  std::vector<std::vector<common::Keypoint>> keypoints_;
+  std::vector<std::vector<types::Keypoint>> keypoints_;
   std::mutex keypoints_lock_;
 
   std::atomic<int> num_pushups_;
@@ -58,7 +58,7 @@ class PushupCounterFlow {
   models::BodyDetector* body_detector_;
   models::PoseDetector* pose_detector_;
   models::ActionClassifier* action_classifier_;
-  examples::PushupAnalyzer* pushup_analyzer_;
+  processors::PushupAnalyzer* pushup_analyzer_;
 };
 
 }  // namespace flows

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/models/facial_landmark_estimator.h"
-#include "daisykitsdk/utils/img_proc/img_utils.h"
+#include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <algorithm>
 #include <chrono>
@@ -21,8 +21,8 @@
 #include <string>
 #include <vector>
 
-using namespace daisykit::common;
-using namespace daisykit::models;
+namespace daisykit {
+namespace models {
 
 FacialLandmarkEstimator::FacialLandmarkEstimator(
     const std::string& param_file, const std::string& weight_file) {
@@ -67,10 +67,10 @@ void FacialLandmarkEstimator::LoadModel(AAssetManager* mgr,
 #endif
 
 // Detect keypoints for single object
-std::vector<Keypoint> FacialLandmarkEstimator::Detect(cv::Mat& image,
-                                                      float offset_x,
-                                                      float offset_y) {
-  std::vector<Keypoint> keypoints;
+std::vector<types::Keypoint> FacialLandmarkEstimator::Detect(cv::Mat& image,
+                                                             float offset_x,
+                                                             float offset_y) {
+  std::vector<types::Keypoint> keypoints;
   int w = image.cols;
   int h = image.rows;
   ncnn::Mat in = ncnn::Mat::from_pixels_resize(image.data, ncnn::Mat::PIXEL_RGB,
@@ -87,7 +87,7 @@ std::vector<Keypoint> FacialLandmarkEstimator::Detect(cv::Mat& image,
   for (int i = 0; i < (int)(out.w / 2); ++i) {
     float x = out[i * 2];
     float y = out[i * 2 + 1];
-    Keypoint keypoint;
+    types::Keypoint keypoint;
     keypoint.x = x * w + offset_x;
     keypoint.y = y * h + offset_y;
     keypoint.prob = 1.0;
@@ -98,7 +98,7 @@ std::vector<Keypoint> FacialLandmarkEstimator::Detect(cv::Mat& image,
 
 // Detect keypoints for multiple objects
 void FacialLandmarkEstimator::DetectMulti(cv::Mat& image,
-                                          std::vector<Face>& objects) {
+                                          std::vector<types::Face>& objects) {
   int img_w = image.cols;
   int img_h = image.rows;
   int x1, y1, x2, y2;
@@ -125,15 +125,16 @@ void FacialLandmarkEstimator::DetectMulti(cv::Mat& image,
 
 // Draw pose
 void FacialLandmarkEstimator::DrawKeypoints(
-    const cv::Mat& image, const std::vector<Keypoint>& keypoints) {
+    const cv::Mat& image, const std::vector<types::Keypoint>& keypoints) {
   float threshold = 0.2;
   // draw joint
   for (size_t i = 0; i < keypoints.size(); i++) {
-    const Keypoint& keypoint = keypoints[i];
-    // fprintf(stderr, "%.2f %.2f = %.5f\n", keypoint.p.x, keypoint.p.y,
-    // keypoint.prob);
+    const types::Keypoint& keypoint = keypoints[i];
     if (keypoint.prob < threshold) continue;
     cv::circle(image, cv::Point(keypoint.x, keypoint.y), 2,
                cv::Scalar(255, 0, 0), -1);
   }
 }
+
+}  // namespace models
+}  // namespace daisykit

@@ -18,8 +18,8 @@
 #include "GTIN.h"
 #include "ReadBarcode.h"
 #include "TextUtfEncoding.h"
+#include "daisykitsdk/common/visualizers/base_visualizer.h"
 #include "daisykitsdk/thirdparties/json.hpp"
-#include "daisykitsdk/utils/visualizers/base_visualizer.h"
 
 #include <atomic>
 #include <iostream>

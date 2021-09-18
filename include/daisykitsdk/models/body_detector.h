@@ -26,7 +26,7 @@ namespace daisykit {
 namespace models {
 
 class BodyDetector
-    : public BaseModel<cv::Mat, std::vector<daisykit::common::Object>> {
+    : public BaseModel<cv::Mat, std::vector<daisykit::types::Object>> {
  public:
   BodyDetector(const char* param_buffer, const unsigned char* weight_buffer,
                const int& input_width = 320, const int& input_height = 320);
@@ -36,7 +36,7 @@ class BodyDetector
                const int& width = 320, const int& height = 320);
 
   // Overide abstract Predict
-  virtual std::vector<daisykit::common::Object> Predict(cv::Mat& image);
+  virtual std::vector<daisykit::types::Object> Predict(cv::Mat& image);
 
  private:
   int input_width_;

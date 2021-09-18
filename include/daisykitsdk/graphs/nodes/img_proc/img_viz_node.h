@@ -21,9 +21,10 @@
 
 namespace daisykit {
 namespace graphs {
+namespace nodes {
 
-// Image visualizer node.
-// Used for graph API development
+/// Image visualizer node.
+/// Used for graph API development
 class ImgVizNode : public Node {
  public:
   using Node::Node;  // For constructor inheritance
@@ -52,6 +53,7 @@ class ImgVizNode : public Node {
   }
 };
 
+}  // namespace nodes
 }  // namespace graphs
 }  // namespace daisykit
 

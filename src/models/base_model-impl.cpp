@@ -27,8 +27,12 @@ New implemented BaseModel need to be listed here
 
 #include <opencv2/opencv.hpp>
 
-using namespace daisykit::common;
+namespace daisykit {
+namespace models {
 
 // Belows for template implementation
-template class BaseModel<cv::Mat, std::vector<Object>>;
-template class BaseModel<cv::Mat, std::vector<Face>>;
+template class BaseModel<cv::Mat, std::vector<types::Object>>;
+template class BaseModel<cv::Mat, std::vector<types::Face>>;
+
+}  // namespace models
+}  // namespace daisykit

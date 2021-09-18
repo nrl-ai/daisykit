@@ -46,20 +46,19 @@ class ObjectDetectorNanodet {
                  const std::string& weight_file);
 #endif
 
-  std::vector<daisykit::common::Object> Detect(cv::Mat& image);
+  std::vector<daisykit::types::Object> Detect(cv::Mat& image);
 
  private:
-  static float IntersectionArea(const common::Object& a,
-                                const common::Object& b);
-  static void QsortDescentInplace(std::vector<common::Object>& objects,
-                                  int left, int right);
-  static void QsortDescentInplace(std::vector<common::Object>& objects);
-  static void NmsSortedBboxes(const std::vector<common::Object>& objects,
+  static float IntersectionArea(const types::Object& a, const types::Object& b);
+  static void QsortDescentInplace(std::vector<types::Object>& objects, int left,
+                                  int right);
+  static void QsortDescentInplace(std::vector<types::Object>& objects);
+  static void NmsSortedBboxes(const std::vector<types::Object>& objects,
                               std::vector<int>& picked, float nms_threshold);
   static void GenerateProposals(const ncnn::Mat& cls_pred,
                                 const ncnn::Mat& dis_pred, int stride,
                                 const ncnn::Mat& in_pad, float prob_threshold,
-                                std::vector<common::Object>& objects);
+                                std::vector<types::Object>& objects);
 
   const int input_width_ = 320;
   const int input_height_ = 320;

@@ -14,7 +14,8 @@
 
 #include "daisykitsdk/flows/face_detector_with_mask_flow.h"
 
-using namespace daisykit::flows;
+namespace daisykit {
+namespace flows {
 
 FaceDetectorWithMaskFlow::FaceDetectorWithMaskFlow(
     const std::string& config_str) {
@@ -63,7 +64,7 @@ FaceDetectorWithMaskFlow::~FaceDetectorWithMaskFlow() {
 
 void FaceDetectorWithMaskFlow::Process(cv::Mat& rgb) {
   // Detect faces
-  std::vector<common::Face> faces = face_detector_->Predict(rgb);
+  std::vector<types::Face> faces = face_detector_->Predict(rgb);
 
   // Detect landmarks
   if (with_landmark_) {
@@ -86,7 +87,7 @@ void FaceDetectorWithMaskFlow::DrawResult(cv::Mat& rgb) {
         color = cv::Scalar(255, 0, 0);
       }
       cv::rectangle(rgb, cv::Rect(face.x, face.y, face.w, face.h), color, 2);
-      utils::visualizers::BaseVisualizer::PutText(
+      visualizers::BaseVisualizer::PutText(
           rgb, face.wearing_mask_prob < 0.5 ? "No Mask" : "Mask",
           cv::Point(face.x, face.y), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
           cv::Scalar(0, 0, 0), color);
@@ -100,3 +101,6 @@ void FaceDetectorWithMaskFlow::DrawResult(cv::Mat& rgb) {
     }
   }
 }
+
+}  // namespace flows
+}  // namespace daisykit

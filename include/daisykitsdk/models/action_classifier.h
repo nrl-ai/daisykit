@@ -43,8 +43,8 @@ class ActionClassifier {
   void LoadModel(AAssetManager* mgr, const std::string& param_file,
                  const std::string& weight_file);
 #endif
-  daisykit::common::Action Classify(cv::Mat& image);
-  daisykit::common::Action Classify(cv::Mat& image, float& confidence);
+  daisykit::types::Action Classify(cv::Mat& image);
+  daisykit::types::Action Classify(cv::Mat& image, float& confidence);
 
  private:
   const int input_width_ = 224;

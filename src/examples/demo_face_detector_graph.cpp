@@ -29,32 +29,32 @@
 
 using namespace cv;
 using namespace std;
-using json = nlohmann::json;
-using namespace daisykit::common;
+using namespace daisykit;
 using namespace daisykit::graphs;
 
 int main(int, char**) {
   // Create processing nodes
-  std::shared_ptr<PacketDistributorNode> packet_distributor_node =
-      std::make_shared<PacketDistributorNode>("packet_distributor",
-                                              NodeType::kAsyncNode);
-  std::shared_ptr<FaceDetectorNode> face_detector_node =
-      std::make_shared<FaceDetectorNode>(
+  std::shared_ptr<nodes::PacketDistributorNode> packet_distributor_node =
+      std::make_shared<nodes::PacketDistributorNode>("packet_distributor",
+                                                     NodeType::kAsyncNode);
+  std::shared_ptr<nodes::FaceDetectorNode> face_detector_node =
+      std::make_shared<nodes::FaceDetectorNode>(
           "face_detector",
           "../assets/models/face_detection/yolo_fastest_with_mask/"
           "yolo-fastest-opt.param",
           "../assets/models/face_detection/yolo_fastest_with_mask/"
           "yolo-fastest-opt.bin",
           NodeType::kAsyncNode);
-  std::shared_ptr<FacialLandmarkEstimatorNode> facial_landmark_estimator_node =
-      std::make_shared<FacialLandmarkEstimatorNode>(
-          "facial_landmark_estimator",
-          "../assets/models/facial_landmark/pfld-sim.param",
-          "../assets/models/facial_landmark/pfld-sim.bin",
-          NodeType::kAsyncNode);
-  std::shared_ptr<FaceVisualizerNode> face_visualizer_node =
-      std::make_shared<FaceVisualizerNode>("face_visualizer",
-                                           NodeType::kAsyncNode, true);
+  std::shared_ptr<nodes::FacialLandmarkEstimatorNode>
+      facial_landmark_estimator_node =
+          std::make_shared<nodes::FacialLandmarkEstimatorNode>(
+              "facial_landmark_estimator",
+              "../assets/models/facial_landmark/pfld-sim.param",
+              "../assets/models/facial_landmark/pfld-sim.bin",
+              NodeType::kAsyncNode);
+  std::shared_ptr<nodes::FaceVisualizerNode> face_visualizer_node =
+      std::make_shared<nodes::FaceVisualizerNode>("face_visualizer",
+                                                  NodeType::kAsyncNode, true);
 
   // Create connections between nodes
   Graph::Connect(nullptr, "", packet_distributor_node.get(), "input",

@@ -30,62 +30,62 @@
 namespace daisykit {
 namespace graphs {
 
-// A node is a processing unit which handle a task such as inferecing a model,
-// running an image processing operation, or visualizing data.
+/// A node is a processing unit which handle a task such as inferecing a model,
+/// running an image processing operation, or visualizing data.
 class Node {
  public:
-  // Node constructor. Passing a name and node type here.
-  // Synchronous nodes (kSyncNode) processing function Tick() is activated by
-  // the previous node, which means all processing pipeline runs node by node.
-  // Asynchronous node (kAsyncNode) has a processing thread inside to run
-  // processing Tick() in a loop. Thus, these node can run paralelly.
+  /// Node constructor. Passing a name and node type here.
+  /// Synchronous nodes (kSyncNode) processing function Tick() is activated by
+  /// the previous node, which means all processing pipeline runs node by node.
+  /// Asynchronous node (kAsyncNode) has a processing thread inside to run
+  /// processing Tick() in a loop. Thus, these node can run paralelly.
   Node(const std::string& node_name, NodeType node_type = NodeType::kSyncNode);
 
-  // Activate a node. This function create and activate processing thread for
-  // asynchronous node.
+  /// Activate a node. This function create and activate processing thread for
+  /// asynchronous node.
   void Activate();
 
-  // Feed data to a node. This function can be used to feed data to the input
-  // node of a graph, where there is no connection in.
+  /// Feed data to a node. This function can be used to feed data to the input
+  /// node of a graph, where there is no connection in.
   void Input(const std::string& input_name, PacketPtr packet);
 
-  // Add an input connection to the node.
-  // Input connections are used to get input to this node.
+  /// Add an input connection to the node.
+  /// Input connections are used to get input to this node.
   void AddInputConnection(std::shared_ptr<Connection> connection);
 
-  // Add an output connection from the node.
-  // Output connections are used to push processing results to next nodes.
+  /// Add an output connection from the node.
+  /// Output connections are used to push processing results to next nodes.
   void AddOutputConnection(std::shared_ptr<Connection> connection);
 
-  // Check and verify all required data is available before run processing
-  // pipeline of this node
+  /// Check and verify all required data is available before run processing
+  /// pipeline of this node
   bool IsAllDataAvailable();
 
-  // Wait for all required data.
+  /// Wait for all required data.
   void WaitForData();
 
-  // Virtual method for processing data, needs to be implemented by derived
-  // classes. This method checks and gets all required data, processes data and
-  // outputs to out connections.
+  /// Virtual method for processing data, needs to be implemented by derived
+  /// classes. This method checks and gets all required data, processes data and
+  /// outputs to out connections.
   virtual void Tick() = 0;
 
-  // Getters for node info
+  /// Getters for node info
   std::string GetNodeName();
   NodeType GetNodeType();
 
  protected:
-  // Prepare all needed input as a map for processing function.
+  /// Prepare all needed input as a map for processing function.
   void PrepareInputs(std::map<std::string, PacketPtr>& input_map);
 
-  // Publish outputs to output connections.
+  /// Publish outputs to output connections.
   void Publish(const std::map<std::string, PacketPtr>& outputs);
 
  private:
-  // Worker thread for each node.
-  // This thread runs Tick() function in a loop
+  /// Worker thread for each node.
+  /// This thread runs Tick() function in a loop
   void WorkerThread();
 
-  // Start processing thread.
+  /// Start processing thread.
   std::thread SpawnWorker();
 
   std::atomic<bool> is_activated_;
