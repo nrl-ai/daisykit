@@ -13,39 +13,31 @@
 // limitations under the License.
 
 #include "daisykitsdk/flows/face_detector_with_mask_flow.h"
+#include "daisykitsdk/common/io/data_reader.h"
 
 namespace daisykit {
 namespace flows {
 
 FaceDetectorWithMaskFlow::FaceDetectorWithMaskFlow(
-    const std::string& config_str) {
+    const std::string& config_str, const io::DataReader& data_reader) {
   nlohmann::json config = nlohmann::json::parse(config_str);
-  face_detector_ = new models::FaceDetectorWithMask(
-      config["face_detection_model"]["model"],
-      config["face_detection_model"]["weights"],
-      config["face_detection_model"]["input_width"],
-      config["face_detection_model"]["input_height"],
-      config["face_detection_model"]["score_threshold"],
-      config["face_detection_model"]["iou_threshold"]);
-  with_landmark_ = config["with_landmark"];
-  if (with_landmark_) {
-    facial_landmark_estimator_ = new models::FacialLandmarkEstimator(
-        config["facial_landmark_model"]["model"],
-        config["facial_landmark_model"]["weights"]);
-  }
-}
 
-#ifdef __ANDROID__
-FaceDetectorWithMaskFlow::FaceDetectorWithMaskFlow(
-    AAssetManager* mgr, const std::string& config_str) {
-  nlohmann::json config = nlohmann::json::parse(config_str);
+  char* model;
+  char* weights;
+  data_reader.ReadFile(config["face_detection_model"]["model"], &model);
+  data_reader.ReadFile(config["face_detection_model"]["weights"], &weights);
+
   face_detector_ = new models::FaceDetectorWithMask(
-      mgr, config["face_detection_model"]["model"],
-      config["face_detection_model"]["weights"],
+      model, (unsigned char*)weights,
       config["face_detection_model"]["input_width"],
       config["face_detection_model"]["input_height"],
       config["face_detection_model"]["score_threshold"],
       config["face_detection_model"]["iou_threshold"]);
+
+  // Free models and weights to prevent memory leak
+  free(model);
+  free(weights);
+
   with_landmark_ = config["with_landmark"];
   if (with_landmark_) {
     facial_landmark_estimator_ = new models::FacialLandmarkEstimator(
@@ -53,7 +45,6 @@ FaceDetectorWithMaskFlow::FaceDetectorWithMaskFlow(
         config["facial_landmark_model"]["weights"]);
   }
 }
-#endif
 
 FaceDetectorWithMaskFlow::~FaceDetectorWithMaskFlow() {
   delete face_detector_;
@@ -79,6 +70,7 @@ void FaceDetectorWithMaskFlow::Process(cv::Mat& rgb) {
 
 void FaceDetectorWithMaskFlow::DrawResult(cv::Mat& rgb) {
   // Draw face bounding boxes and keypoints
+  double fps = profiler.Tick();
   {
     const std::lock_guard<std::mutex> lock(faces_lock_);
     for (auto face : faces_) {
@@ -98,6 +90,10 @@ void FaceDetectorWithMaskFlow::DrawResult(cv::Mat& rgb) {
                     cv::Scalar(0, 255, 0), 2);
         facial_landmark_estimator_->DrawKeypoints(rgb, face.landmark);
       }
+
+      visualizers::BaseVisualizer::PutText(
+          rgb, std::to_string(fps), cv::Point(100, 100),
+          cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10, cv::Scalar(0, 0, 0), color);
     }
   }
 }

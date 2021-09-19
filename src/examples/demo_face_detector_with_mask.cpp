@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "daisykitsdk/common/io/data_reader.h"
 #include "daisykitsdk/flows/face_detector_with_mask_flow.h"
 #include "daisykitsdk/thirdparties/json.hpp"
 
@@ -25,7 +26,7 @@
 using namespace cv;
 using namespace std;
 using json = nlohmann::json;
-using namespace daisykit::types;
+using namespace daisykit;
 using namespace daisykit::flows;
 
 int main(int, char**) {
@@ -33,7 +34,8 @@ int main(int, char**) {
   std::string config_str((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());
 
-  FaceDetectorWithMaskFlow flow(config_str);
+  io::DataReader data_reader;
+  FaceDetectorWithMaskFlow flow(config_str, data_reader);
 
   Mat frame;
   VideoCapture cap(0);

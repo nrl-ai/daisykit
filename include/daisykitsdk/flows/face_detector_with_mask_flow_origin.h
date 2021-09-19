@@ -15,8 +15,6 @@
 #ifndef DAISYKIT_FLOWS_FACE_DETECTOR_WITH_MASK_FLOW_H_
 #define DAISYKIT_FLOWS_FACE_DETECTOR_WITH_MASK_FLOW_H_
 
-#include "daisykitsdk/common/io/data_reader.h"
-#include "daisykitsdk/common/profiler.h"
 #include "daisykitsdk/common/types.h"
 #include "daisykitsdk/common/visualizers/base_visualizer.h"
 #include "daisykitsdk/models/face_detector_with_mask.h"
@@ -37,8 +35,10 @@ namespace daisykit {
 namespace flows {
 class FaceDetectorWithMaskFlow {
  public:
-  FaceDetectorWithMaskFlow(const std::string& config_str,
-                           const io::DataReader& data_reader);
+  FaceDetectorWithMaskFlow(const std::string& config_str);
+#ifdef __ANDROID__
+  FaceDetectorWithMaskFlow(AAssetManager* mgr, const std::string& config_str);
+#endif
   ~FaceDetectorWithMaskFlow();
   void Process(cv::Mat& rgb);
   void DrawResult(cv::Mat& rgb);
@@ -50,8 +50,6 @@ class FaceDetectorWithMaskFlow {
   bool with_landmark_ = false;
   models::FaceDetectorWithMask* face_detector_;
   models::FacialLandmarkEstimator* facial_landmark_estimator_;
-
-  Profiler profiler;
 };
 
 }  // namespace flows

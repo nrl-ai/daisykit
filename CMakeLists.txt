@@ -39,6 +39,7 @@ set(sources
 
     src/common/logging/mjpeg_writer.cpp
     src/common/visualizers/base_visualizer.cpp
+    src/common/io/data_reader.cpp
 
     src/processors/signal_processors/signal_smoothing.cpp
     src/processors/signal_processors/z_score_filter.cpp
@@ -58,6 +59,13 @@ set(sources
 
 )
 
+# Add platform specific source files
+if (ANDROID)
+set(sources ${sources} 
+    src/common/io/android_assets_stream.cpp)
+endif()
+
+# Add barcode scanner
 if (ENABLE_BARCODE_SCANNER)
 add_subdirectory(src/thirdparties/zxing-cpp)
 include_directories(src/thirdparties/zxing-cpp/core/src)
@@ -67,9 +75,16 @@ set(sources ${sources}
 endif()
 
 add_library(daisykitsdk SHARED ${sources})
-target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS} ZXing::ZXing)
+target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS})
+
+if (ENABLE_BARCODE_SCANNER)
+target_link_libraries(daisykitsdk ZXing::ZXing)
+endif()
 
 
+# ==================================================
+# Examples
+# ==================================================
 if ((NOT ANDROID) AND COMPILE_EXAMPLES)
 
 add_executable(demo_pushup_classifier src/examples/fitness/demo_pushup_classifier.cpp)
@@ -99,7 +114,9 @@ target_link_libraries(demo_face_detector_graph ${OpenCV_LIBS} daisykitsdk)
 endif()
 
 
+# ==================================================
 # Copy asset folders
+# ==================================================
 add_custom_target(configs ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_BINARY_DIR}/configs)
 add_custom_target(models ALL
@@ -108,7 +125,9 @@ add_custom_target(images ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_BINARY_DIR}/images)
 
 
+# ==================================================
 # Doxygen - For documentation
+# ==================================================
 # Look for Doxygen package
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
