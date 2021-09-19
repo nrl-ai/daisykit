@@ -17,22 +17,16 @@
 
 #include "daisykitsdk/common/io/data_reader.h"
 #include "daisykitsdk/common/profiler.h"
-#include "daisykitsdk/common/types.h"
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
 #include "daisykitsdk/models/face_detector_with_mask.h"
 #include "daisykitsdk/models/facial_landmark_estimator.h"
-#include "daisykitsdk/processors/image_processors/img_utils.h"
-#include "daisykitsdk/thirdparties/json.hpp"
 
-#include <atomic>
-#include <iostream>
 #include <mutex>
+#include <opencv2/opencv.hpp>
 #include <string>
-#include <vector>
+
 #ifdef __ANDROID__
 #include <android/asset_manager_jni.h>
 #endif
-
 namespace daisykit {
 namespace flows {
 class FaceDetectorWithMaskFlow {

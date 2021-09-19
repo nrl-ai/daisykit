@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/models/human_matting.h"
+#include "daisykitsdk/models/background_matting.h"
 #include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <algorithm>
@@ -24,13 +24,13 @@
 namespace daisykit {
 namespace models {
 
-HumanMatting::HumanMatting(const std::string& param_file,
-                           const std::string& weight_file) {
+BackgroundMatting::BackgroundMatting(const std::string& param_file,
+                                     const std::string& weight_file) {
   LoadModel(param_file, weight_file);
 }
 
-void HumanMatting::LoadModel(const std::string& param_file,
-                             const std::string& weight_file) {
+void BackgroundMatting::LoadModel(const std::string& param_file,
+                                  const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
@@ -44,13 +44,15 @@ void HumanMatting::LoadModel(const std::string& param_file,
 }
 
 #ifdef __ANDROID__
-HumanMatting::HumanMatting(AAssetManager* mgr, const std::string& param_file,
-                           const std::string& weight_file) {
+BackgroundMatting::BackgroundMatting(AAssetManager* mgr,
+                                     const std::string& param_file,
+                                     const std::string& weight_file) {
   LoadModel(mgr, param_file, weight_file);
 }
 
-void HumanMatting::LoadModel(AAssetManager* mgr, const std::string& param_file,
-                             const std::string& weight_file) {
+void BackgroundMatting::LoadModel(AAssetManager* mgr,
+                                  const std::string& param_file,
+                                  const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
@@ -64,7 +66,7 @@ void HumanMatting::LoadModel(AAssetManager* mgr, const std::string& param_file,
 }
 #endif
 
-void HumanMatting::Segmentation(cv::Mat& image, cv::Mat& mask) {
+void BackgroundMatting::Segmentation(cv::Mat& image, cv::Mat& mask) {
   cv::Mat rgb = image.clone();
   const int w = rgb.cols;
   const int h = rgb.rows;
@@ -88,8 +90,8 @@ void HumanMatting::Segmentation(cv::Mat& image, cv::Mat& mask) {
   out.to_pixels_resize(mask.data, ncnn::Mat::PIXEL_GRAY, w, h);
 }
 
-void HumanMatting::BindWithBackground(cv::Mat& rgb, const cv::Mat& bg,
-                                      const cv::Mat& mask) {
+void BackgroundMatting::BindWithBackground(cv::Mat& rgb, const cv::Mat& bg,
+                                           const cv::Mat& mask) {
   const int w = rgb.cols;
   const int h = rgb.rows;
 

@@ -13,7 +13,8 @@
 // limitations under the License.
 
 #include "daisykitsdk/flows/face_detector_with_mask_flow.h"
-#include "daisykitsdk/common/io/data_reader.h"
+#include "daisykitsdk/common/visualizers/face_visualizer.h"
+#include "daisykitsdk/thirdparties/json.hpp"
 
 namespace daisykit {
 namespace flows {

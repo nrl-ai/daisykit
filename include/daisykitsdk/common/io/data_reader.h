@@ -15,15 +15,10 @@
 #ifndef DAISYKIT_IO_DATA_READER_H_
 #define DAISYKIT_IO_DATA_READER_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
 #include <string>
 
 #ifdef __ANDROID__
 #include <android/asset_manager_jni.h>
-
-#include "daisykitsdk/common/io/android_assets_stream.h"
 #endif
 
 namespace daisykit {

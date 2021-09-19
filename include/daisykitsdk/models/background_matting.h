@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_MODELS_HUMAN_MATTING_H_
-#define DAISYKIT_MODELS_HUMAN_MATTING_H_
+#ifndef DAISYKIT_MODELS_BACKGROUND_MATTING_H_
+#define DAISYKIT_MODELS_BACKGROUND_MATTING_H_
 
 #include <daisykitsdk/common/types.h>
 
@@ -32,13 +32,14 @@
 namespace daisykit {
 namespace models {
 
-class HumanMatting {
+class BackgroundMatting {
  public:
-  HumanMatting(const std::string& param_file, const std::string& weight_file);
+  BackgroundMatting(const std::string& param_file,
+                    const std::string& weight_file);
   void LoadModel(const std::string& param_file, const std::string& weight_file);
 #ifdef __ANDROID__
-  HumanMatting(AAssetManager* mgr, const std::string& param_file,
-               const std::string& weight_file);
+  BackgroundMatting(AAssetManager* mgr, const std::string& param_file,
+                    const std::string& weight_file);
   void LoadModel(AAssetManager* mgr, const std::string& param_file,
                  const std::string& weight_file);
 #endif

@@ -19,13 +19,10 @@
 #include "daisykitsdk/common/visualizers/base_visualizer.h"
 #include "daisykitsdk/thirdparties/json.hpp"
 
-#include <atomic>
 #include <iostream>
-#include <mutex>
 #include <opencv2/opencv.hpp>
 #include <sstream>
 #include <string>
-#include <vector>
 
 namespace daisykit {
 namespace flows {

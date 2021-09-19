@@ -14,6 +14,8 @@
 
 #include "daisykitsdk/common/io/data_reader.h"
 
+#include <iostream>
+
 namespace daisykit {
 namespace io {
 

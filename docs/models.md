@@ -5,4 +5,4 @@
 - 3. Face detection: <https://github.com/Linzaer/Ultra-Light-Fast-Generic-Face-Detector-1MB>.
 - 4. Facial landmark: <https://github.com/polarisZhao/PFLD-pytorch>; <https://github.com/nilseuropa/pfld_ncnn/>.
 - 5. Face detection (with wearing_mask output): <https://github.com/waittim/mask-detector>.
-- 6. Human matting: <https://github.com/lizhengwei1992/Fast_Portrait_Segmentation>, <https://github.com/nihui/ncnn-webassembly-portrait-segmentation>.
+- 6. Background matting: <https://github.com/lizhengwei1992/Fast_Portrait_Segmentation>, <https://github.com/nihui/ncnn-webassembly-portrait-segmentation>.

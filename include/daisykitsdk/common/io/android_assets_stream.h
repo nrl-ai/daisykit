@@ -15,8 +15,6 @@
 #ifndef DAISYKIT_IO_ANDROID_ASSETS_STREAM_H_
 #define DAISYKIT_IO_ANDROID_ASSETS_STREAM_H_
 
-#include <stdio.h>
-#include <algorithm>
 #include <fstream>
 #include <streambuf>
 #include <string>
@@ -24,11 +22,6 @@
 
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
-#include <android/log.h>
-#include <android/native_window.h>
-#include <android/native_window_jni.h>
-#include <jni.h>
-#include <opencv2/opencv.hpp>
 
 class AssetStreambuf : public std::streambuf {
  public:

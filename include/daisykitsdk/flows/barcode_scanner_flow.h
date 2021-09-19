@@ -15,19 +15,10 @@
 #ifndef DAISYKIT_FLOWS_BARCODE_SCANNER_FLOW_H_
 #define DAISYKIT_FLOWS_BARCODE_SCANNER_FLOW_H_
 
-#include "GTIN.h"
 #include "ReadBarcode.h"
-#include "TextUtfEncoding.h"
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
-#include "daisykitsdk/thirdparties/json.hpp"
 
-#include <atomic>
-#include <iostream>
-#include <mutex>
 #include <opencv2/opencv.hpp>
-#include <sstream>
 #include <string>
-#include <vector>
 
 #ifdef __ANDROID__
 #include <android/asset_manager_jni.h>

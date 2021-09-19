@@ -15,20 +15,16 @@
 #ifndef DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
 #define DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
 
-#include "daisykitsdk/common/types.h"
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
 #include "daisykitsdk/models/action_classifier.h"
 #include "daisykitsdk/models/body_detector.h"
 #include "daisykitsdk/models/pose_detector.h"
 #include "daisykitsdk/processors/fitness/pushup_analyzer.h"
-#include "daisykitsdk/processors/image_processors/img_utils.h"
-#include "daisykitsdk/thirdparties/json.hpp"
 
 #include <atomic>
-#include <iostream>
 #include <mutex>
+#include <opencv2/opencv.hpp>
 #include <string>
-#include <vector>
+
 #ifdef __ANDROID__
 #include <android/asset_manager_jni.h>
 #endif
