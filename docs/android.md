@@ -9,7 +9,7 @@ DaisyKit Android is built on top of [DaisyKit SDK](/docs/getting-started/sdk/). 
 **Very first Android demo:**
 
 \htmlonly
-<iframe src="https://www.youtube.com/embed/fla2a5D9W6g" style="position: relative; top: 0; left: 0; width: 100%; height: 400px; border:0;" allowfullscreen="" title="YouTube Video"></iframe>
+<iframe loading="lazy" width="900" height="400" src="https://www.youtube.com/embed/fla2a5D9W6g" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 \endhtmlonly
 
 ## I. Build and Run
