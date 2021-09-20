@@ -61,7 +61,15 @@
     "cfenv": "cpp",
     "cinttypes": "cpp",
     "typeinfo": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "hash_map": "c",
+    "hash_set": "c",
+    "random": "c",
+    "future": "c",
+    "typeindex": "c",
+    "variant": "c",
+    "bit": "c",
+    "netfwd": "c"
   },
   "C_Cpp.clang_format_style": "{BasedOnStyle: Google, PointerAlignment: Left, IncludeBlocks: Preserve, DerivePointerAlignment: false}"
 }
