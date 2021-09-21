@@ -21,6 +21,7 @@
 #include "daisykitsdk/models/facial_landmark_estimator.h"
 #include "daisykitsdk/processors/image_processors/img_utils.h"
 #include "daisykitsdk/thirdparties/json.hpp"
+#include "daisykitsdk/common/visualizers/face_visualizer.h"
 
 #include <atomic>
 #include <iostream>

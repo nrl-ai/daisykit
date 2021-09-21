@@ -15,9 +15,6 @@
 #include "daisykitsdk/models/facial_landmark_estimator.h"
 #include "daisykitsdk/processors/image_processors/img_utils.h"
 
-#include <algorithm>
-#include <chrono>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -25,51 +22,25 @@ namespace daisykit {
 namespace models {
 
 FacialLandmarkEstimator::FacialLandmarkEstimator(
-    const std::string& param_file, const std::string& weight_file) {
+    const char* param_buffer, const unsigned char* weight_buffer,
+    int input_width, int input_height) {
+  LoadModel(param_buffer, weight_buffer);
+  input_width_ = input_width;
+  input_height_ = input_height;
+}
+
+// Will be deleted when IO module is supported. Keep for old compatibility.
+FacialLandmarkEstimator::FacialLandmarkEstimator(const std::string& param_file,
+                                                 const std::string& weight_file,
+                                                 int input_width,
+                                                 int input_height) {
   LoadModel(param_file, weight_file);
+  input_width_ = input_width;
+  input_height_ = input_height;
 }
 
-void FacialLandmarkEstimator::LoadModel(const std::string& param_file,
-                                        const std::string& weight_file) {
-  if (model_) {
-    delete model_;
-    model_ = nullptr;
-  }
-  model_ = new ncnn::Net;
-  int ret_param = model_->load_param(param_file.c_str());
-  int ret_model = model_->load_model(weight_file.c_str());
-  if (ret_param != 0 || ret_model != 0) {
-    exit(1);
-  }
-}
-
-#ifdef __ANDROID__
-FacialLandmarkEstimator::FacialLandmarkEstimator(
-    AAssetManager* mgr, const std::string& param_file,
-    const std::string& weight_file) {
-  LoadModel(mgr, param_file, weight_file);
-}
-
-void FacialLandmarkEstimator::LoadModel(AAssetManager* mgr,
-                                        const std::string& param_file,
-                                        const std::string& weight_file) {
-  if (model_) {
-    delete model_;
-    model_ = nullptr;
-  }
-  model_ = new ncnn::Net;
-  int ret_param = model_->load_param(mgr, param_file.c_str());
-  int ret_model = model_->load_model(mgr, weight_file.c_str());
-  if (ret_param != 0 || ret_model != 0) {
-    exit(1);
-  }
-}
-#endif
-
-// Detect keypoints for single object
-std::vector<types::Keypoint> FacialLandmarkEstimator::Detect(cv::Mat& image,
-                                                             float offset_x,
-                                                             float offset_y) {
+std::vector<types::Keypoint> FacialLandmarkEstimator::Predict(
+    const cv::Mat& image) {
   std::vector<types::Keypoint> keypoints;
   int w = image.cols;
   int h = image.rows;
@@ -79,7 +50,35 @@ std::vector<types::Keypoint> FacialLandmarkEstimator::Detect(cv::Mat& image,
   const float norm_vals[3] = {1 / 255.f, 1 / 255.f, 1 / 255.f};
   in.substract_mean_normalize(0, norm_vals);
   ncnn::MutexLockGuard g(lock_);
-  ncnn::Extractor ex = model_->create_extractor();
+  ncnn::Extractor ex = model_.create_extractor();
+  ncnn::Mat out;
+  ex.input("input_1", in);
+  ex.extract("415", out);
+  keypoints.clear();
+  for (int i = 0; i < (int)(out.w / 2); ++i) {
+    float x = out[i * 2];
+    float y = out[i * 2 + 1];
+    types::Keypoint keypoint;
+    keypoint.x = x * w;
+    keypoint.y = y * h;
+    keypoint.prob = 1.0;
+    keypoints.push_back(keypoint);
+  }
+  return keypoints;
+}
+
+std::vector<types::Keypoint> FacialLandmarkEstimator::Predict(
+    const cv::Mat& image, float offset_x, float offset_y) {
+  std::vector<types::Keypoint> keypoints;
+  int w = image.cols;
+  int h = image.rows;
+  ncnn::Mat in = ncnn::Mat::from_pixels_resize(image.data, ncnn::Mat::PIXEL_RGB,
+                                               image.cols, image.rows,
+                                               input_width_, input_height_);
+  const float norm_vals[3] = {1 / 255.f, 1 / 255.f, 1 / 255.f};
+  in.substract_mean_normalize(0, norm_vals);
+  ncnn::MutexLockGuard g(lock_);
+  ncnn::Extractor ex = model_.create_extractor();
   ncnn::Mat out;
   ex.input("input_1", in);
   ex.extract("415", out);
@@ -96,9 +95,8 @@ std::vector<types::Keypoint> FacialLandmarkEstimator::Detect(cv::Mat& image,
   return keypoints;
 }
 
-// Detect keypoints for multiple objects
-void FacialLandmarkEstimator::DetectMulti(cv::Mat& image,
-                                          std::vector<types::Face>& objects) {
+void FacialLandmarkEstimator::PredictMulti(const cv::Mat& image,
+                                           std::vector<types::Face>& objects) {
   int img_w = image.cols;
   int img_h = image.rows;
   int x1, y1, x2, y2;
@@ -119,20 +117,7 @@ void FacialLandmarkEstimator::DetectMulti(cv::Mat& image,
     if (y2 > img_h) y2 = img_h;
 
     cv::Mat roi = image(cv::Rect(x1, y1, x2 - x1, y2 - y1)).clone();
-    objects[i].landmark = Detect(roi, x1, y1);
-  }
-}
-
-// Draw pose
-void FacialLandmarkEstimator::DrawKeypoints(
-    const cv::Mat& image, const std::vector<types::Keypoint>& keypoints) {
-  float threshold = 0.2;
-  // draw joint
-  for (size_t i = 0; i < keypoints.size(); i++) {
-    const types::Keypoint& keypoint = keypoints[i];
-    if (keypoint.prob < threshold) continue;
-    cv::circle(image, cv::Point(keypoint.x, keypoint.y), 2,
-               cv::Scalar(255, 0, 0), -1);
+    objects[i].landmark = Predict(roi, x1, y1);
   }
 }
 

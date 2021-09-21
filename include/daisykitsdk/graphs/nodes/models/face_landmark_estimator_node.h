@@ -59,7 +59,7 @@ class FacialLandmarkEstimatorNode : public Node {
     cv::Mat img = *inputs["image"]->GetData<cv::Mat>();
 
     // Modify faces to add landmark info
-    facial_landmark_estimator_->DetectMulti(img, *faces);
+    facial_landmark_estimator_->PredictMulti(img, *faces);
 
     // Convert to output packet
     PacketPtr output;

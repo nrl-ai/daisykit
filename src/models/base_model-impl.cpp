@@ -33,6 +33,7 @@ namespace models {
 // Belows for template implementation
 template class BaseModel<cv::Mat, std::vector<types::Object>>;
 template class BaseModel<cv::Mat, std::vector<types::Face>>;
+template class BaseModel<cv::Mat, std::vector<types::Keypoint>>;
 
 }  // namespace models
 }  // namespace daisykit
