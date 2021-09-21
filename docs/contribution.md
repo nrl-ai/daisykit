@@ -146,23 +146,23 @@ class Node {
 - The development flow should be:
 
 ```
-Create a new branch for development => Write some code => Test your new code => Create a pull request to master branch and add teammate to review => Revise if needed => Your teammate approve and merge your pull request.
+Create a new branch for development => Write some code => Test your new code => Create a pull request to master branch and add your teammates to review => Revise if needed => A teammate approves and merges your pull request after all reviewer approved.
 ```
 
 ## III. Contribute to DaisyKit SDK
 
-Create a pull request to <https://github.com/VNOpenAI/daisykit>. Visit repository for the setup instruction.
+Create a pull request to <https://github.com/VNOpenAI/daisykit>. Visit repository for the setup instructions.
 
 **Next tasks:** Build model training code, inference code, design and build flow architecture, write documentation and tutorials.
 
 ## IV. Contribute to DaisyKit Android
 
-Create a pull request to <https://github.com/VNOpenAI/daisykit-android>. Visit repository for the setup instruction.
+Create a pull request to <https://github.com/VNOpenAI/daisykit-android>. Visit repository for the setup instructions.
 
 **Next tasks:** Build wrappers for Kotlin, Java and example applications.
 
 ## V. Contribute to Daisykit iOS
 
-Create a pull request to <https://github.com/VNOpenAI/daisykit-ios>. Visit repository for the setup instruction.
+Create a pull request to <https://github.com/VNOpenAI/daisykit-ios>. Visit repository for the setup instructions.
 
 **Next tasks:** Build base app, wrappers for Swift, Objective-C and example applications.
