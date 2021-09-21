@@ -51,8 +51,6 @@ class FacialLandmarkEstimator
  private:
   int input_width_;
   int input_height_;
-
-  ncnn::Mutex lock_;
 };
 
 }  // namespace models
