@@ -25,6 +25,19 @@
 namespace daisykit {
 namespace models {
 
+<<<<<<< HEAD
+class FaceExtractor 
+    : public BaseModel<cv::Mat, std::vector<daisykit::types::Feature>> {
+ public:
+  FaceExtractor(const std::string& param_file,const std::string& weight_file);
+  void LoadModel(const std::string& param_file, const std::string& weight_file);
+  void preprocess(cv::Mat& image, ncnn::Mat& in);
+  virtual std::vector<daisykit::types::Feature> extract(cv::Mat image);
+ 
+ private:
+  ncnn::Net* model_ = 0;
+  ncnn::Mutex lock_;
+=======
 class FaceFeature{
     public:
         FaceExtractor(const std::string& param_file,const std::string& weight_file);
@@ -38,6 +51,7 @@ class FaceFeature{
 
         ncnn::Net* model_ = 0;
         ncnn::Mutex lock_;
+>>>>>>> 8435931ae78fb88bbd2686605ab5de617f371c55
 
 };
 

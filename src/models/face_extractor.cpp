@@ -16,7 +16,6 @@
 
 
 #include "face_extractor.h"
-#include <benchmark.h>
 #include "daisykitsdk/models/face_extractor.h"
 
 
@@ -30,14 +29,14 @@
 namespace daisykit {
 namespace models {
 
-FaceExtractor::FaceExtractor(
-    const std::string& param_file, const std::string& weight_file) {
+FaceExtractor::FaceExtractor(const std::string& param_file, 
+                             const std::string& weight_file) {
   LoadModel(param_file, weight_file);
 }
 
 
 void FaceExtractor::LoadModel(const std::string& param_file,
-                                        const std::string& weight_file) {
+                              const std::string& weight_file) {
   if (model_) {
     delete model_;
     model_ = nullptr;
@@ -53,8 +52,7 @@ void FaceExtractor::LoadModel(const std::string& param_file,
 
 
 
-void FaceFeature::preprocess(cv::Mat& image, ncnn::Mat& in)
-{
+void preprocess(cv::Mat& image, ncnn::Mat& in){
     int img_w = image.cols;
     int img_h = image.rows;
     in = ncnn::Mat::from_pixels(image.data, ncnn::Mat::PIXEL_BGR, img_w, img_h);
@@ -65,16 +63,15 @@ void FaceFeature::preprocess(cv::Mat& image, ncnn::Mat& in)
 }
 
 
-std::vector<types::Feature> FaceFeature::extract(cv::Mat& image,std::vector<types::Feature>& objects)
-{
-
-    std::vector<types::Feature> feature;
+types::Feature FaceExtractor::extract(cv::Mat& image,std::vector<types::Feature>& objects){
     float fnum[512];
     float* prob=fnum;
     types::Feature feature_out;
     ncnn::Mat input;
     ncnn::Mat out;
+
     preprocess(image, input);
+
     ncnn::MutexLockGuard g(lock_);
     auto ex = this->Net->create_extractor();
     ex.input("input", input);
@@ -84,7 +81,6 @@ std::vector<types::Feature> FaceFeature::extract(cv::Mat& image,std::vector<type
         fnum[j] = out[j];
     }   
     cv::Mat out_m(512, 1, CV_32FC1, prob);
-    cv::Mat out_norm;
     cv::normalize(out_m, feature_out.f);
-    return out_norm;
+    return feature_out;
 }
