@@ -35,11 +35,11 @@ class FacialLandmarkEstimator
                           int input_height = 112);
 
   // Override abstract Predict
-  // Predict keypoints for a single face.
+  // Predict keypoints for a single object
   virtual std::vector<daisykit::types::Keypoint> Predict(const cv::Mat& image);
 
-  // Predict keypoints for a single face with modifiable offset 
-  // (Supports for predict multi faces in an image)
+  // Predict keypoints for a single object with modifiable offset
+  // (Supports for predict multi objects in an image)
   std::vector<daisykit::types::Keypoint> Predict(const cv::Mat& image,
                                                  float offset_x = 0,
                                                  float offset_y = 0);

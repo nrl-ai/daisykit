@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "daisykitsdk/models/facial_landmark_estimator.h"
-#include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <string>
 #include <vector>
