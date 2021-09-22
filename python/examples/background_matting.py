@@ -1,11 +1,13 @@
 import cv2
-import daisykit
+from daisykit import BackgroundMattingFlow
 
-config_file = "./assets/configs/face_detector_config.json"
+config_file = "./assets/configs/background_matting_config.json"
 with open(config_file, "r") as f:
     config = f.read()
+background = cv2.imread("./assets/images/background.jpg")
+background = cv2.cvtColor(background, cv2.COLOR_BGR2RGB)
 
-face_detector_flow = daisykit.FaceDetectorFlow(config)
+background_matting_flow = BackgroundMattingFlow(config, background)
 
 # Open video stream from webcam
 vid = cv2.VideoCapture(0)
@@ -17,12 +19,9 @@ while(True):
 
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    faces = face_detector_flow.Process(frame)
-    # for face in faces:
-    #     print([face.x, face.y, face.w, face.h,
-    #           face.confidence, face.wearing_mask_prob])
-    face_detector_flow.DrawResult(frame, faces)
-
+    mask = background_matting_flow.Process(frame)
+    background_matting_flow.DrawResult(frame, mask)
+    
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
     # Display the resulting frame

@@ -44,19 +44,14 @@ BackgroundMattingFlow::~BackgroundMattingFlow() {
   background_matting_model_ = nullptr;
 }
 
-void BackgroundMattingFlow::Process(cv::Mat& rgb) {
+cv::Mat BackgroundMattingFlow::Process(const cv::Mat& rgb) {
   cv::Mat mask = background_matting_model_->Predict(rgb);
-  {
-    const std::lock_guard<std::mutex> lock(mask_lock_);
-    mask_ = mask;
-  }
+  return mask;
 }
 
-void BackgroundMattingFlow::DrawResult(cv::Mat& rgb) {
-  {
-    const std::lock_guard<std::mutex> lock(mask_lock_);
-    background_matting_model_->BindWithBackground(rgb, background_, mask_);
-  }
+void BackgroundMattingFlow::DrawResult(cv::Mat& rgb,
+                                       const cv::Mat& mask) {
+  background_matting_model_->BindWithBackground(rgb, background_, mask);
 }
 
 }  // namespace flows

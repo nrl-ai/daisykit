@@ -7,6 +7,7 @@
 #include <string>
 
 #include "daisykitsdk/common/types.h"
+#include "daisykitsdk/flows/background_matting_flow.h"
 #include "daisykitsdk/flows/face_detector_flow.h"
 #include "ndarray_converter.h"
 
@@ -31,9 +32,16 @@ PYBIND11_MODULE(daisykit, m) {
       .def_readwrite("confidence", &types::Keypoint::confidence);
 
   py::class_<flows::FaceDetectorFlow>(m, "FaceDetectorFlow")
-      .def(py::init<const std::string &>(), py::arg("modelpath"))
+      .def(py::init<const std::string&>(), py::arg("config_path"))
       .def("Process", &flows::FaceDetectorFlow::Process)
       .def("DrawResult", &flows::FaceDetectorFlow::DrawResult,
+           py::return_value_policy::reference_internal);
+
+  py::class_<flows::BackgroundMattingFlow>(m, "BackgroundMattingFlow")
+      .def(py::init<const std::string&, const cv::Mat&>(),
+           py::arg("config_path"), py::arg("default_background"))
+      .def("Process", &flows::BackgroundMattingFlow::Process)
+      .def("DrawResult", &flows::BackgroundMattingFlow::DrawResult,
            py::return_value_policy::reference_internal);
 
   m.doc() = R"pbdoc(

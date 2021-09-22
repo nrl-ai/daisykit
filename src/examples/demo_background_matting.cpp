@@ -44,12 +44,12 @@ int main(int, char**) {
     cap >> frame;
     cv::Mat rgb;
     cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
+    cv::Mat draw = rgb.clone();
 
-    flow.Process(rgb);
-    flow.DrawResult(rgb);
+    cv::Mat mask = flow.Process(rgb);
+    flow.DrawResult(draw, mask);
 
-    cv::Mat draw;
-    cv::cvtColor(rgb, draw, cv::COLOR_RGB2BGR);
+    cv::cvtColor(draw, draw, cv::COLOR_RGB2BGR);
     imshow("Image", draw);
     waitKey(1);
   }

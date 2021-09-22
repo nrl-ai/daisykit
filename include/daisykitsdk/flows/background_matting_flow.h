@@ -36,14 +36,11 @@ class BackgroundMattingFlow {
                         const cv::Mat& default_background);
 #endif
   ~BackgroundMattingFlow();
-  void Process(cv::Mat& rgb);
-  void DrawResult(cv::Mat& rgb);
+  cv::Mat Process(const cv::Mat& rgb);
+  void DrawResult(cv::Mat& rgb, const cv::Mat& mask);
 
  private:
-  cv::Mat mask_;
-  std::mutex mask_lock_;
   cv::Mat background_;
-
   models::BackgroundMatting* background_matting_model_;
 };
 
