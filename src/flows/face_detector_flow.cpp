@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/flows/face_detector_flow.h"
+#include "daisykitsdk/common/visualizers/face_visualizer.h"
 #include "daisykitsdk/thirdparties/json.hpp"
 
 namespace daisykit {
@@ -81,21 +82,7 @@ void FaceDetectorFlow::DrawResult(cv::Mat& rgb) {
   // Draw face bounding boxes and keypoints
   {
     const std::lock_guard<std::mutex> lock(faces_lock_);
-    for (auto face : faces_) {
-      cv::Scalar color(0, 255, 0);
-      if (face.wearing_mask_prob < 0.5) {
-        color = cv::Scalar(255, 0, 0);
-      }
-      cv::rectangle(rgb, cv::Rect(face.x, face.y, face.w, face.h), color, 2);
-      visualizers::BaseVisualizer::PutText(
-          rgb, face.wearing_mask_prob < 0.5 ? "No Mask" : "Mask",
-          cv::Point(face.x, face.y), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
-          cv::Scalar(0, 0, 0), color);
-
-      if (with_landmark_) {
-        visualizers::FaceVisualizer::DrawLandmark(rgb, face.landmark);
-      }
-    }
+    visualizers::FaceVisualizer::DrawFace(rgb, faces_, true);
   }
 }
 

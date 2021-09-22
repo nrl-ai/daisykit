@@ -17,6 +17,7 @@
 
 #include "daisykitsdk/common/logging/mjpeg_server.h"
 
+#include <memory>
 #include <opencv2/opencv.hpp>
 
 namespace daisykit {

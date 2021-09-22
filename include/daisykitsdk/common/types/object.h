@@ -15,16 +15,14 @@
 #ifndef DAISYKIT_COMMON_TYPES_OBJECT_H_
 #define DAISYKIT_COMMON_TYPES_OBJECT_H_
 
+#include "daisykitsdk/common/types/box.h"
+
 namespace daisykit {
 namespace types {
 
 /// Object data type.
 /// Used in object detection models
-struct Object {
-  float x;           /// Top left x
-  float y;           /// Top left y
-  float w;           /// Bounding box width
-  float h;           /// Bounding box height
+struct Object : Box {
   int class_id;      /// Object class ID
   float confidence;  /// Detection score
 };

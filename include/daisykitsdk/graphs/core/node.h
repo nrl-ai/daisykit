@@ -39,7 +39,13 @@ class Node {
   /// the previous node, which means all processing pipeline runs node by node.
   /// Asynchronous node (kAsyncNode) has a processing thread inside to run
   /// processing Tick() in a loop. Thus, these node can run paralelly.
-  Node(const std::string& node_name, NodeType node_type = NodeType::kSyncNode);
+  Node(
+      const std::string& node_name,  /// Node name
+      NodeType node_type =
+          NodeType::kAsyncNode  /// Node type / operation mode.
+                                /// NodeType::kSyncNode for synchronous node,
+                                /// NodeType::kAsyncNode for multithreading node
+  );
 
   /// Activate a node. This function create and activate processing thread for
   /// asynchronous node.

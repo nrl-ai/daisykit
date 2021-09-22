@@ -15,6 +15,7 @@
 #ifndef DAISYKIT_COMMON_TYPES_FACE_H_
 #define DAISYKIT_COMMON_TYPES_FACE_H_
 
+#include "daisykitsdk/common/types/box.h"
 #include "daisykitsdk/common/types/keypoint.h"
 
 #include <vector>
@@ -24,11 +25,7 @@ namespace types {
 
 /// Human face data type.
 /// Also includes other information such as wearing mask or not, facial landmark
-struct Face {
-  float x;                                /// Top left x
-  float y;                                /// Top left y
-  float w;                                /// Bounding box width
-  float h;                                /// Bounding box height
+struct Face : Box {
   float confidence;                       /// Confidence of face
   float wearing_mask_prob;                /// Probability of wearing a mask
   std::vector<types::Keypoint> landmark;  /// Keypoints

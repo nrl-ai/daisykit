@@ -28,5 +28,19 @@ void BaseVisualizer::PutText(cv::Mat& im, const std::string label,
   cv::putText(im, label, origin, fontface, scale, text_color, thickness, 8);
 }
 
+void BaseVisualizer::DrawBox(cv::Mat& img, const types::Box box,
+                             const std::string& text, cv::Scalar box_color,
+                             cv::Scalar text_color, int box_line_width,
+                             int text_fontface, double text_scale,
+                             int text_thickness, int text_baseline) {
+  cv::rectangle(img, cv::Rect(box.x, box.y, box.w, box.h), box_color,
+                box_line_width);
+  if (!text.empty()) {
+    visualizers::BaseVisualizer::PutText(
+        img, text, cv::Point(box.x, box.y), cv::FONT_HERSHEY_SIMPLEX,
+        text_scale, text_thickness, text_baseline, text_color, box_color);
+  }
+}
+
 }  // namespace visualizers
 }  // namespace daisykit

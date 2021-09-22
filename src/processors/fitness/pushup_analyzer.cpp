@@ -34,8 +34,8 @@ int PushupAnalyzer::CountWithNewPoint(double data, bool is_pushing_up) {
 
   std::vector<int> filtered_signals = processors::ZScoreFilter::Filter(signal);
 
-  cv::Mat line_graph = visualizers::BaseVisualizer::LineGraph(
-      signal, range, filtered_signals, 500);
+  cv::Mat line_graph =
+      visualizers::BaseVisualizer::LineGraph(signal, range, 500);
 
   std::vector<int> countPostions;
   for (int i = 0; i < (int)filtered_signals.size() - 1; ++i) {

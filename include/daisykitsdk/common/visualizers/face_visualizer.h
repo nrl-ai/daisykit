@@ -32,12 +32,9 @@ class FaceVisualizer {
       if (face.wearing_mask_prob < 0.5) {
         color = cv::Scalar(255, 0, 0);
       }
-      cv::rectangle(img, cv::Rect(face.x, face.y, face.w, face.h), color, 2);
-      visualizers::BaseVisualizer::PutText(
-          img, face.wearing_mask_prob < 0.5 ? "No Mask" : "Mask",
-          cv::Point(face.x, face.y), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
-          cv::Scalar(0, 0, 0), color);
-
+      BaseVisualizer::DrawBox(img, static_cast<types::Box>(face),
+                              face.wearing_mask_prob < 0.5 ? "No Mask" : "Mask",
+                              color);
       if (with_landmark) {
         DrawLandmark(img, face.landmark);
       }

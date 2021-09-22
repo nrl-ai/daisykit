@@ -16,8 +16,6 @@
 #define DAISYKIT_FLOWS_FACE_DETECTOR_FLOW_H_
 
 #include "daisykitsdk/common/types.h"
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
-#include "daisykitsdk/common/visualizers/face_visualizer.h"
 #include "daisykitsdk/models/face_detector.h"
 #include "daisykitsdk/models/facial_landmark_estimator.h"
 

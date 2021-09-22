@@ -72,7 +72,13 @@ class Node {
   /// the previous node, which means all processing pipeline runs node by node.
   /// Asynchronous node (kAsyncNode) has a processing thread inside to run
   /// processing Tick() in a loop. Thus, these node can run paralelly.
-  Node(const std::string& node_name, NodeType node_type = NodeType::kSyncNode);
+  Node(
+      const std::string& node_name,  /// Node name
+      NodeType node_type =
+          NodeType::kAsyncNode  /// Node type / operation mode.
+                                /// NodeType::kSyncNode for synchronous node,
+                                /// NodeType::kAsyncNode for multithreading node
+  );
 
   /// Activate a node. This function create and activate processing thread for
   /// asynchronous node.
@@ -86,16 +92,7 @@ class Node {
   /// Input connections are used to get input to this node.
   void AddInputConnection(std::shared_ptr<Connection> connection);
 
-  /// Add an output connection from the node.
-  /// Output connections are used to push processing results to next nodes.
-  void AddOutputConnection(std::shared_ptr<Connection> connection);
-
-  /// Check and verify all required data is available before run processing
-  /// pipeline of this node
-  bool IsAllDataAvailable();
-
-  /// Wait for all required data.
-  void WaitForData();
+  ...
 
   /// Virtual method for processing data, needs to be implemented by derived
   /// classes. This method checks and gets all required data, processes data and

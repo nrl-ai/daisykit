@@ -16,6 +16,7 @@
 #define DAISYKIT_COMMON_TYPES_H_
 
 #include "daisykitsdk/common/types/action.h"
+#include "daisykitsdk/common/types/box.h"
 #include "daisykitsdk/common/types/face.h"
 #include "daisykitsdk/common/types/keypoint.h"
 #include "daisykitsdk/common/types/object.h"
