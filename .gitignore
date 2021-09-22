@@ -1,5 +1,9 @@
 /build
-/.vscode
 /.idea
 /assets/*
+/python/assets
 /docs/_build
+__pycache__
+*.pyc
+*.so
+/.vscode/settings.json

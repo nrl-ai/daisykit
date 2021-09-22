@@ -23,7 +23,7 @@ namespace types {
 struct Keypoint {
   float x;
   float y;
-  float prob;  /// Prediction probability
+  float confidence;  /// Prediction probability
 };
 
 }  // namespace types

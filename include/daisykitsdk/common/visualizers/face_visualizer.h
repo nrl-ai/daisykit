@@ -47,7 +47,7 @@ class FaceVisualizer {
     // Draw joint
     for (size_t i = 0; i < keypoints.size(); i++) {
       const types::Keypoint& keypoint = keypoints[i];
-      if (keypoint.prob < threshold) continue;
+      if (keypoint.confidence < threshold) continue;
       cv::circle(img, cv::Point(keypoint.x, keypoint.y), 2,
                  cv::Scalar(0, 255, 0), -1);
     }

@@ -122,6 +122,11 @@ add_custom_target(images ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_BINARY_DIR}/images)
 
 
+if(BUILD_PYTHON)
+    add_subdirectory(python)
+endif()
+
+
 # ==================================================
 # Doxygen - For documentation
 # ==================================================

@@ -75,7 +75,7 @@ std::vector<types::Keypoint> PoseDetector::Predict(const cv::Mat& image) {
     types::Keypoint keypoint;
     keypoint.x = max_x * w / (float)out.w;
     keypoint.y = max_y * h / (float)out.h;
-    keypoint.prob = max_prob;
+    keypoint.confidence = max_prob;
     keypoints.push_back(keypoint);
   }
   return keypoints;
@@ -121,7 +121,7 @@ std::vector<types::Keypoint> PoseDetector::Predict(cv::Mat& image,
     types::Keypoint keypoint;
     keypoint.x = max_x * w / (float)out.w + offset_x;
     keypoint.y = max_y * h / (float)out.h + offset_y;
-    keypoint.prob = max_prob;
+    keypoint.confidence = max_prob;
     keypoints.push_back(keypoint);
   }
   return keypoints;
@@ -169,14 +169,14 @@ void PoseDetector::DrawKeypoints(
   for (int i = 0; i < 16; i++) {
     const types::Keypoint& p1 = keypoints[joint_pairs[i][0]];
     const types::Keypoint& p2 = keypoints[joint_pairs[i][1]];
-    if (p1.prob < threshold || p2.prob < threshold) continue;
+    if (p1.confidence < threshold || p2.confidence < threshold) continue;
     cv::line(image, cv::Point(p1.x, p1.y), cv::Point(p2.x, p2.y),
              cv::Scalar(255, 0, 0), 2);
   }
   // draw joint
   for (size_t i = 0; i < keypoints.size(); i++) {
     const types::Keypoint& keypoint = keypoints[i];
-    if (keypoint.prob < threshold) continue;
+    if (keypoint.confidence < threshold) continue;
     cv::circle(image, cv::Point(keypoint.x, keypoint.y), 3,
                cv::Scalar(0, 255, 0), -1);
   }

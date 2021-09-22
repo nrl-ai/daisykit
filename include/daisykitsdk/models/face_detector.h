@@ -40,7 +40,7 @@ class FaceDetector
 
   // Override abstract Predict.
   /// Predict faces in an image.
-  virtual std::vector<daisykit::types::Face> Predict(cv::Mat& image);
+  virtual std::vector<daisykit::types::Face> Predict(const cv::Mat& image);
 
  private:
   int input_width_;

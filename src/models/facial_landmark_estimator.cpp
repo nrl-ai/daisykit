@@ -60,7 +60,7 @@ std::vector<types::Keypoint> FacialLandmarkEstimator::Predict(
     types::Keypoint keypoint;
     keypoint.x = x * w;
     keypoint.y = y * h;
-    keypoint.prob = 1.0;
+    keypoint.confidence = 1.0;
     keypoints.push_back(keypoint);
   }
   return keypoints;
@@ -88,7 +88,7 @@ std::vector<types::Keypoint> FacialLandmarkEstimator::Predict(
     types::Keypoint keypoint;
     keypoint.x = x * w + offset_x;
     keypoint.y = y * h + offset_y;
-    keypoint.prob = 1.0;
+    keypoint.confidence = 1.0;
     keypoints.push_back(keypoint);
   }
   return keypoints;

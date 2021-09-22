@@ -44,7 +44,7 @@ FaceDetector::FaceDetector(const std::string& param_file,
   input_height_ = input_height;
 }
 
-std::vector<types::Face> FaceDetector::Predict(cv::Mat& image) {
+std::vector<types::Face> FaceDetector::Predict(const cv::Mat& image) {
   // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();
 

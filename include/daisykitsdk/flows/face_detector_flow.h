@@ -36,13 +36,10 @@ class FaceDetectorFlow {
   FaceDetectorFlow(AAssetManager* mgr, const std::string& config_str);
 #endif
   ~FaceDetectorFlow();
-  void Process(cv::Mat& rgb);
-  void DrawResult(cv::Mat& rgb);
+  std::vector<types::Face> Process(const cv::Mat& rgb);
+  void DrawResult(cv::Mat& rgb, std::vector<types::Face>& faces);
 
  private:
-  std::vector<types::Face> faces_;
-  std::mutex faces_lock_;
-
   bool with_landmark_ = false;
   models::FaceDetector* face_detector_;
   models::FacialLandmarkEstimator* facial_landmark_estimator_;

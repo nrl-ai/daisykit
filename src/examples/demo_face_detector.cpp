@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "daisykitsdk/common/types.h"
 #include "daisykitsdk/flows/face_detector_flow.h"
 #include "daisykitsdk/thirdparties/json.hpp"
 
@@ -25,7 +26,7 @@
 using namespace cv;
 using namespace std;
 using json = nlohmann::json;
-using namespace daisykit::types;
+using namespace daisykit;
 using namespace daisykit::flows;
 
 int main(int, char**) {
@@ -43,8 +44,8 @@ int main(int, char**) {
     cv::Mat rgb;
     cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
 
-    flow.Process(rgb);
-    flow.DrawResult(rgb);
+    std::vector<types::Face> faces = flow.Process(rgb);
+    flow.DrawResult(rgb, faces);
 
     cv::Mat draw;
     cv::cvtColor(rgb, draw, cv::COLOR_RGB2BGR);

@@ -63,7 +63,7 @@ FaceDetectorFlow::~FaceDetectorFlow() {
   facial_landmark_estimator_ = nullptr;
 }
 
-void FaceDetectorFlow::Process(cv::Mat& rgb) {
+std::vector<types::Face> FaceDetectorFlow::Process(const cv::Mat& rgb) {
   // Detect faces
   std::vector<types::Face> faces = face_detector_->Predict(rgb);
 
@@ -72,18 +72,13 @@ void FaceDetectorFlow::Process(cv::Mat& rgb) {
     facial_landmark_estimator_->PredictMulti(rgb, faces);
   }
 
-  {
-    const std::lock_guard<std::mutex> lock(faces_lock_);
-    faces_ = faces;
-  }
+  return faces;
 }
 
-void FaceDetectorFlow::DrawResult(cv::Mat& rgb) {
+void FaceDetectorFlow::DrawResult(cv::Mat& rgb,
+                                  std::vector<types::Face>& faces) {
   // Draw face bounding boxes and keypoints
-  {
-    const std::lock_guard<std::mutex> lock(faces_lock_);
-    visualizers::FaceVisualizer::DrawFace(rgb, faces_, true);
-  }
+  visualizers::FaceVisualizer::DrawFace(rgb, faces, true);
 }
 
 }  // namespace flows
