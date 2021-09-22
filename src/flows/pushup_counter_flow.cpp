@@ -25,8 +25,8 @@ PushupCounterFlow::PushupCounterFlow(const std::string& config_str) {
       new models::BodyDetector(config["person_detection_model"]["model"],
                                config["person_detection_model"]["weights"]);
   pose_detector_ =
-      new models::PoseDetector(config["background_pose_model"]["model"],
-                               config["background_pose_model"]["weights"]);
+      new models::PoseDetector(config["human_pose_model"]["model"],
+                               config["human_pose_model"]["weights"]);
   action_classifier_ = new models::ActionClassifier(
       config["action_recognition_model"]["model"],
       config["action_recognition_model"]["weights"], true);
@@ -62,7 +62,7 @@ void PushupCounterFlow::Process(cv::Mat& rgb) {
 
   // Detect keypoints
   std::vector<std::vector<types::Keypoint>> keypoints =
-      pose_detector_->DetectMulti(rgb, bodies);
+      pose_detector_->PredictMulti(rgb, bodies);
   {
     const std::lock_guard<std::mutex> lock(keypoints_lock_);
     keypoints_ = keypoints;

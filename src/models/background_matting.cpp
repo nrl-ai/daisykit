@@ -15,58 +15,30 @@
 #include "daisykitsdk/models/background_matting.h"
 #include "daisykitsdk/processors/image_processors/img_utils.h"
 
-#include <algorithm>
-#include <chrono>
-#include <iostream>
 #include <string>
 #include <vector>
 
 namespace daisykit {
 namespace models {
 
+BackgroundMatting::BackgroundMatting(const char* param_buffer,
+                                     const unsigned char* weight_buffer,
+                                     int input_width, int input_height) {
+  LoadModel(param_buffer, weight_buffer);
+  input_width_ = input_width;
+  input_height_ = input_height;
+}
+
+// Will be deleted when IO module is supported. Keep for old compatibility.
 BackgroundMatting::BackgroundMatting(const std::string& param_file,
-                                     const std::string& weight_file) {
+                                     const std::string& weight_file,
+                                     int input_width, int input_height) {
   LoadModel(param_file, weight_file);
+  input_width_ = input_width;
+  input_height_ = input_height;
 }
 
-void BackgroundMatting::LoadModel(const std::string& param_file,
-                                  const std::string& weight_file) {
-  if (model_) {
-    delete model_;
-    model_ = nullptr;
-  }
-  model_ = new ncnn::Net;
-  int ret_param = model_->load_param(param_file.c_str());
-  int ret_model = model_->load_model(weight_file.c_str());
-  if (ret_param != 0 || ret_model != 0) {
-    exit(1);
-  }
-}
-
-#ifdef __ANDROID__
-BackgroundMatting::BackgroundMatting(AAssetManager* mgr,
-                                     const std::string& param_file,
-                                     const std::string& weight_file) {
-  LoadModel(mgr, param_file, weight_file);
-}
-
-void BackgroundMatting::LoadModel(AAssetManager* mgr,
-                                  const std::string& param_file,
-                                  const std::string& weight_file) {
-  if (model_) {
-    delete model_;
-    model_ = nullptr;
-  }
-  model_ = new ncnn::Net;
-  int ret_param = model_->load_param(mgr, param_file.c_str());
-  int ret_model = model_->load_model(mgr, weight_file.c_str());
-  if (ret_param != 0 || ret_model != 0) {
-    exit(1);
-  }
-}
-#endif
-
-void BackgroundMatting::Segmentation(cv::Mat& image, cv::Mat& mask) {
+cv::Mat BackgroundMatting::Predict(const cv::Mat& image) {
   cv::Mat rgb = image.clone();
   const int w = rgb.cols;
   const int h = rgb.rows;
@@ -74,7 +46,32 @@ void BackgroundMatting::Segmentation(cv::Mat& image, cv::Mat& mask) {
   ncnn::Mat in = ncnn::Mat::from_pixels_resize(
       rgb.data, ncnn::Mat::PIXEL_RGB2BGR, w, h, input_width_, input_height_);
 
-  ncnn::Extractor ex = model_->create_extractor();
+  ncnn::Extractor ex = model_.create_extractor();
+  ex.input("input_blob1", in);
+  const float mean_vals[3] = {104.f, 112.f, 121.f};
+  const float norm_vals[3] = {1.f / 255.f, 1.f / 255.f, 1.f / 255.f};
+  in.substract_mean_normalize(mean_vals, norm_vals);
+
+  ncnn::Mat out;
+  ex.extract("sigmoid_blob1", out);
+
+  const float denorm_vals[3] = {255.f, 255.f, 255.f};
+  out.substract_mean_normalize(0, denorm_vals);
+
+  cv::Mat mask = cv::Mat::zeros(cv::Size(w, h), CV_8UC1);
+  out.to_pixels_resize(mask.data, ncnn::Mat::PIXEL_GRAY, w, h);
+  return mask;
+}
+
+void BackgroundMatting::Predict(cv::Mat& image, cv::Mat& mask) {
+  cv::Mat rgb = image.clone();
+  const int w = rgb.cols;
+  const int h = rgb.rows;
+
+  ncnn::Mat in = ncnn::Mat::from_pixels_resize(
+      rgb.data, ncnn::Mat::PIXEL_RGB2BGR, w, h, input_width_, input_height_);
+
+  ncnn::Extractor ex = model_.create_extractor();
   ex.input("input_blob1", in);
   const float mean_vals[3] = {104.f, 112.f, 121.f};
   const float norm_vals[3] = {1.f / 255.f, 1.f / 255.f, 1.f / 255.f};

@@ -15,8 +15,9 @@
 #ifndef DAISYKIT_MODELS_BODY_DETECTOR_H_
 #define DAISYKIT_MODELS_BODY_DETECTOR_H_
 
-#include <daisykitsdk/common/types.h>
-#include <daisykitsdk/models/base_model.h>
+#include "daisykitsdk/common/types.h"
+#include "daisykitsdk/models/base_model.h"
+
 #include <opencv2/opencv.hpp>
 
 #include <string>
@@ -35,7 +36,8 @@ class BodyDetector
   BodyDetector(const std::string& param_file, const std::string& weight_file,
                const int& width = 320, const int& height = 320);
 
-  // Overide abstract Predict
+  // Overide abstract Predict.
+  /// Detect multiple objects in an image.
   virtual std::vector<daisykit::types::Object> Predict(cv::Mat& image);
 
  private:

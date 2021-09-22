@@ -15,49 +15,46 @@
 #ifndef DAISYKIT_MODELS_FACIAL_LANDMARK_ESTIMATOR_H_
 #define DAISYKIT_MODELS_FACIAL_LANDMARK_ESTIMATOR_H_
 
-#include <daisykitsdk/common/types.h>
+#include "daisykitsdk/common/types.h"
+#include "daisykitsdk/models/base_model.h"
 
 #include <opencv2/opencv.hpp>
-#ifdef __ANDROID__
-#include <android/asset_manager_jni.h>
-#endif
 
-// Ncnn
-#include <benchmark.h>
-#include <cpu.h>
-#include <datareader.h>
-#include <gpu.h>
-#include <net.h>
-#include <platform.h>
+#include <string>
+#include <vector>
+
 namespace daisykit {
 namespace models {
 
-class FacialLandmarkEstimator {
+class FacialLandmarkEstimator
+    : public BaseModel<cv::Mat, std::vector<daisykit::types::Keypoint>> {
  public:
+  FacialLandmarkEstimator(const char* param_buffer,
+                          const unsigned char* weight_buffer,
+                          int input_width = 112, int input_height = 112);
+
+  // Will be deleted when IO module is supported. Keep for old compatibility.
   FacialLandmarkEstimator(const std::string& param_file,
-                          const std::string& weight_file);
-  void LoadModel(const std::string& param_file, const std::string& weight_file);
-#ifdef __ANDROID__
-  FacialLandmarkEstimator(AAssetManager* mgr, const std::string& param_file,
-                          const std::string& weight_file);
-  void LoadModel(AAssetManager* mgr, const std::string& param_file,
-                 const std::string& weight_file);
-#endif
-  // Detect keypoints for single object
-  std::vector<daisykit::types::Keypoint> Detect(cv::Mat& image,
-                                                float offset_x = 0,
-                                                float offset_y = 0);
-  // Detect keypoints for multiple objects
-  void DetectMulti(cv::Mat& image, std::vector<daisykit::types::Face>& objects);
-  // Draw pose
-  void DrawKeypoints(const cv::Mat& image,
-                     const std::vector<daisykit::types::Keypoint>& keypoints);
+                          const std::string& weight_file, int input_width = 112,
+                          int input_height = 112);
+
+  // Override abstract Predict
+  /// Predict keypoints for a single object.
+  virtual std::vector<daisykit::types::Keypoint> Predict(const cv::Mat& image);
+
+  /// Predict keypoints for a single object with modifiable offset.
+  /// (Supports for predict multi objects in an image).
+  std::vector<daisykit::types::Keypoint> Predict(const cv::Mat& image,
+                                                 float offset_x = 0,
+                                                 float offset_y = 0);
+
+  /// Detect keypoints for multiple objects.
+  void PredictMulti(const cv::Mat& image,
+                    std::vector<daisykit::types::Face>& objects);
 
  private:
-  const int input_width_ = 112;
-  const int input_height_ = 112;
-  ncnn::Net* model_ = 0;
-  ncnn::Mutex lock_;
+  int input_width_;
+  int input_height_;
 };
 
 }  // namespace models

@@ -25,6 +25,7 @@
 using namespace cv;
 using namespace std;
 using json = nlohmann::json;
+using namespace daisykit::types;
 using namespace daisykit::flows;
 
 int main(int, char**) {

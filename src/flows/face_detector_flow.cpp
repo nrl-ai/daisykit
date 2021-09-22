@@ -49,7 +49,7 @@ FaceDetectorFlow::FaceDetectorFlow(AAssetManager* mgr,
   with_landmark_ = config["with_landmark"];
   if (with_landmark_) {
     facial_landmark_estimator_ = new models::FacialLandmarkEstimator(
-        mgr, config["facial_landmark_model"]["model"],
+        config["facial_landmark_model"]["model"],
         config["facial_landmark_model"]["weights"]);
   }
 }
@@ -64,11 +64,11 @@ FaceDetectorFlow::~FaceDetectorFlow() {
 
 void FaceDetectorFlow::Process(cv::Mat& rgb) {
   // Detect faces
-  std::vector<types::Face> faces = face_detector_->Detect(rgb);
+  std::vector<types::Face> faces = face_detector_->Predict(rgb);
 
   // Detect landmarks
   if (with_landmark_) {
-    facial_landmark_estimator_->DetectMulti(rgb, faces);
+    facial_landmark_estimator_->PredictMulti(rgb, faces);
   }
 
   {
@@ -82,11 +82,18 @@ void FaceDetectorFlow::DrawResult(cv::Mat& rgb) {
   {
     const std::lock_guard<std::mutex> lock(faces_lock_);
     for (auto face : faces_) {
-      cv::rectangle(rgb, cv::Rect(face.x, face.y, face.w, face.h),
-                    cv::Scalar(0, 255, 0), 2);
+      cv::Scalar color(0, 255, 0);
+      if (face.wearing_mask_prob < 0.5) {
+        color = cv::Scalar(255, 0, 0);
+      }
+      cv::rectangle(rgb, cv::Rect(face.x, face.y, face.w, face.h), color, 2);
+      visualizers::BaseVisualizer::PutText(
+          rgb, face.wearing_mask_prob < 0.5 ? "No Mask" : "Mask",
+          cv::Point(face.x, face.y), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
+          cv::Scalar(0, 0, 0), color);
 
       if (with_landmark_) {
-        facial_landmark_estimator_->DrawKeypoints(rgb, face.landmark);
+        visualizers::FaceVisualizer::DrawLandmark(rgb, face.landmark);
       }
     }
   }
