@@ -1,0 +1,3 @@
+include *.txt
+recursive-include include src python CMakeLists.txt
+prune docs

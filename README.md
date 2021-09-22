@@ -57,4 +57,3 @@ doxygen Doxyfile.in
 - Step 3: Deploy html documentation from `docs/_build/html`.
 
 - Step 4: Our lastest documentation is deployed at <https://docs.daisykit.org>.
-

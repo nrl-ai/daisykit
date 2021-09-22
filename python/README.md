@@ -2,7 +2,6 @@
 
 Python wrapper of DaisyKit with [pybind11](https://github.com/pybind/pybind11), only support python3.x now.
 
-
 Install from pip
 ==================
 

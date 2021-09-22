@@ -49,8 +49,7 @@ cv::Mat BackgroundMattingFlow::Process(const cv::Mat& rgb) {
   return mask;
 }
 
-void BackgroundMattingFlow::DrawResult(cv::Mat& rgb,
-                                       const cv::Mat& mask) {
+void BackgroundMattingFlow::DrawResult(cv::Mat& rgb, const cv::Mat& mask) {
   background_matting_model_->BindWithBackground(rgb, background_, mask);
 }
 

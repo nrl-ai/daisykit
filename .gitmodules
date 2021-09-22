@@ -7,3 +7,6 @@
 [submodule "python/pybind11_opencv_numpy"]
 	path = python/pybind11_opencv_numpy
 	url = https://github.com/vietanhdev/pybind11_opencv_numpy.git
+[submodule "src/thirdparties/ncnn"]
+	path = src/thirdparties/ncnn
+	url = https://github.com/Tencent/ncnn.git

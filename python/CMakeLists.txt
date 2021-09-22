@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.4)
 
 project(pydaisykit)
 
-set(PACKAGE_VERSION "0.0.1")
+set(PACKAGE_VERSION ${DAISYKIT_VERSION_STRING})
 add_definitions(-DVERSION_INFO="${PACKAGE_VERSION}")
 
 set( CMAKE_CXX_STANDARD 11 )

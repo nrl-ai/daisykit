@@ -20,7 +20,7 @@ requirements = ["numpy", "tqdm", "requests", "portalocker", "opencv-python"]
 
 setup(
     name="daisykit",
-    version="0.0.1",
+    version="0.1.20210923",
     author="vietanhdev",
     author_email="vietanh.dev@gmail.com",
     maintainer="vietanhdev",
@@ -35,7 +35,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "License :: OSI Approved :: Apache License 2.0 License",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],
     license="Apache License 2.0",

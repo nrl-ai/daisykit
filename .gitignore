@@ -1,4 +1,7 @@
 /build
+/dist
+/python/setup.py
+/python/*.egg-info
 /.idea
 /assets/*
 /python/assets

@@ -2,6 +2,24 @@ cmake_minimum_required(VERSION 3.10)
 
 project(daisykitsdk)
 
+if(NOT DEFINED DAISYKIT_VERSION)
+    string(TIMESTAMP DAISYKIT_VERSION "%Y%m%d")
+endif()
+
+set(DAISYKIT_VERSION_MAJOR 0)
+set(DAISYKIT_VERSION_MINOR 1)
+set(DAISYKIT_VERSION_PATCH ${DAISYKIT_VERSION})
+set(DAISYKIT_VERSION_STRING ${DAISYKIT_VERSION_MAJOR}.${DAISYKIT_VERSION_MINOR}.${DAISYKIT_VERSION_PATCH})
+if(APPLE OR IOS)
+    # macos / ios only accepts a.b.c.d.e where a=24bit b/c/d/e=10bit
+    # 20201228 to 20.12.28
+    string(SUBSTRING ${DAISYKIT_VERSION} 2 2 DAISYKIT_VERSION_YEAR)
+    string(SUBSTRING ${DAISYKIT_VERSION} 4 2 DAISYKIT_VERSION_MONTH)
+    string(SUBSTRING ${DAISYKIT_VERSION} 6 2 DAISYKIT_VERSION_DAY)
+    set(DAISYKIT_VERSION_STRING ${DAISYKIT_VERSION_MAJOR}.${DAISYKIT_VERSION_MINOR}.${DAISYKIT_VERSION_YEAR}.${DAISYKIT_VERSION_MONTH}.${DAISYKIT_VERSION_DAY})
+endif()
+message(STATUS "DAISYKIT_VERSION_STRING = ${DAISYKIT_VERSION_STRING}")
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fexceptions -frtti -fPIC")
@@ -23,7 +41,12 @@ include_directories(include)
 
 message(${ncnn_FIND_PATH}/lib/cmake/ncnn)
 set(ncnn_DIR ${ncnn_FIND_PATH}/lib/cmake/ncnn)
-find_package(ncnn REQUIRED ${ncnn_DIR})
+find_package(ncnn)
+if(NOT ncnn)
+  message("Missing prebuilt ncnn. Building from source.")
+  add_subdirectory(src/thirdparties/ncnn)
+endif()
+
 find_package(OpenCV REQUIRED)
 
 set(sources
