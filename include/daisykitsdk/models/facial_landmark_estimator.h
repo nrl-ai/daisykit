@@ -15,9 +15,13 @@
 #ifndef DAISYKIT_MODELS_FACIAL_LANDMARK_ESTIMATOR_H_
 #define DAISYKIT_MODELS_FACIAL_LANDMARK_ESTIMATOR_H_
 
-#include <daisykitsdk/common/types.h>
-#include <daisykitsdk/models/base_model.h>
+#include "daisykitsdk/common/types.h"
+#include "daisykitsdk/models/base_model.h"
+
 #include <opencv2/opencv.hpp>
+
+#include <string>
+#include <vector>
 
 namespace daisykit {
 namespace models {
@@ -35,16 +39,16 @@ class FacialLandmarkEstimator
                           int input_height = 112);
 
   // Override abstract Predict
-  // Predict keypoints for a single object
+  /// Predict keypoints for a single object.
   virtual std::vector<daisykit::types::Keypoint> Predict(const cv::Mat& image);
 
-  // Predict keypoints for a single object with modifiable offset
-  // (Supports for predict multi objects in an image)
+  /// Predict keypoints for a single object with modifiable offset.
+  /// (Supports for predict multi objects in an image).
   std::vector<daisykit::types::Keypoint> Predict(const cv::Mat& image,
                                                  float offset_x = 0,
                                                  float offset_y = 0);
 
-  // Detect keypoints for multiple objects
+  /// Detect keypoints for multiple objects.
   void PredictMulti(const cv::Mat& image,
                     std::vector<daisykit::types::Face>& objects);
 

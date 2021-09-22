@@ -15,9 +15,13 @@
 #ifndef DAISYKIT_MODELS_HUMAN_MATTING_H_
 #define DAISYKIT_MODELS_HUMAN_MATTING_H_
 
-#include <daisykitsdk/common/types.h>
-#include <daisykitsdk/models/base_model.h>
+#include "daisykitsdk/common/types.h"
+#include "daisykitsdk/models/base_model.h"
+
 #include <opencv2/opencv.hpp>
+
+#include <string>
+#include <vector>
 
 namespace daisykit {
 namespace models {
@@ -32,11 +36,14 @@ class HumanMatting : public BaseModel<cv::Mat, cv::Mat> {
                int input_width = 256, int input_height = 256);
 
   // Override abstract Predict
+  /// Get the mask of foreground.
   virtual cv::Mat Predict(const cv::Mat& image);
 
-  // Predict like this can share the same allocation => save memory
+  /// Get the mask of foreground. Predict like this can share the same
+  /// allocation => save memory
   void Predict(cv::Mat& image, cv::Mat& mask);
 
+  /// Bind the segmented foreground with defined background.
   void BindWithBackground(cv::Mat& rgb, const cv::Mat& bg, const cv::Mat& mask);
 
  private:

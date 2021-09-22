@@ -15,9 +15,13 @@
 #ifndef DAISYKIT_MODELS_FACE_DETECTOR_H_
 #define DAISYKIT_MODELS_FACE_DETECTOR_H_
 
-#include <daisykitsdk/common/types.h>
-#include <daisykitsdk/models/base_model.h>
+#include "daisykitsdk/common/types.h"
+#include "daisykitsdk/models/base_model.h"
+
 #include <opencv2/opencv.hpp>
+
+#include <string>
+#include <vector>
 
 namespace daisykit {
 namespace models {
@@ -34,7 +38,8 @@ class FaceDetector
                int input_width = 320, int input_height = 320,
                float score_threshold = 0.7, float iou_threshold = 0.5);
 
-  // Override abstract Predict
+  // Override abstract Predict.
+  /// Predict faces in an image.
   virtual std::vector<daisykit::types::Face> Predict(cv::Mat& image);
 
  private:

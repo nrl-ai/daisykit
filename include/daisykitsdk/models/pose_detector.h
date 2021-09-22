@@ -15,9 +15,13 @@
 #ifndef DAISYKIT_MODELS_POSE_DETECTOR_H_
 #define DAISYKIT_MODELS_POSE_DETECTOR_H_
 
-#include <daisykitsdk/common/types.h>
-#include <daisykitsdk/models/base_model.h>
+#include "daisykitsdk/common/types.h"
+#include "daisykitsdk/models/base_model.h"
+
 #include <opencv2/opencv.hpp>
+
+#include <string>
+#include <vector>
 
 namespace daisykit {
 namespace models {
@@ -32,19 +36,19 @@ class PoseDetector : public BaseModel<cv::Mat, std::vector<types::Keypoint>> {
                int input_width = 256, int input_height = 256);
 
   // Override abstract Predict
-  // Predict keypoints for a single object
+  /// Predict keypoints for a single object.
   virtual std::vector<types::Keypoint> Predict(const cv::Mat& image);
 
-  // Predict keypoints for a single object with modifiable offset
-  // (Supports for predict multi objects in an image)
+  /// Predict keypoints for a single object with modifiable offset.
+  /// (Supports for predict multi objects in an image).
   std::vector<types::Keypoint> Predict(cv::Mat& image, float offset_x = 0,
                                        float offset_y = 0);
 
-  // Predict keypoints for multiple objects
+  /// Predict keypoints for multiple objects.
   std::vector<std::vector<types::Keypoint>> PredictMulti(
       cv::Mat& image, const std::vector<types::Object>& objects);
 
-  // Draw pose
+  /// Draw keypoints and their joints.
   void DrawKeypoints(const cv::Mat& image,
                      const std::vector<types::Keypoint>& keypoints);
 
