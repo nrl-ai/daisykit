@@ -17,6 +17,7 @@
 
 #include "daisykitsdk/common/types.h"
 #include "daisykitsdk/common/visualizers/base_visualizer.h"
+#include "daisykitsdk/common/visualizers/face_visualizer.h"
 #include "daisykitsdk/models/face_detector.h"
 #include "daisykitsdk/models/facial_landmark_estimator.h"
 #include "daisykitsdk/processors/image_processors/img_utils.h"

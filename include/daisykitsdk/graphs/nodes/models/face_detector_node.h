@@ -17,7 +17,7 @@
 
 #include "daisykitsdk/graphs/core/node.h"
 
-#include "daisykitsdk/models/face_detector_with_mask.h"
+#include "daisykitsdk/models/face_detector.h"
 
 #include <chrono>
 #include <memory>
@@ -38,7 +38,7 @@ class FaceDetectorNode : public Node {
       : Node(node_name, node_type) {
     // Init model
     face_detector_ =
-        std::make_shared<models::FaceDetectorWithMask>(param_file, weight_file);
+        std::make_shared<models::FaceDetector>(param_file, weight_file);
   }
   void Process(std::shared_ptr<Packet> in_packet,
                std::shared_ptr<Packet>& out_packet) {
@@ -73,7 +73,7 @@ class FaceDetectorNode : public Node {
   }
 
  private:
-  std::shared_ptr<models::FaceDetectorWithMask> face_detector_;
+  std::shared_ptr<models::FaceDetector> face_detector_;
 };
 
 }  // namespace nodes

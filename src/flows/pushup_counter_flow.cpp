@@ -60,7 +60,7 @@ void PushupCounterFlow::Process(cv::Mat& rgb) {
 
   // Detect keypoints
   std::vector<std::vector<types::Keypoint>> keypoints =
-      pose_detector_->DetectMulti(rgb, bodies);
+      pose_detector_->PredictMulti(rgb, bodies);
   {
     const std::lock_guard<std::mutex> lock(keypoints_lock_);
     keypoints_ = keypoints;

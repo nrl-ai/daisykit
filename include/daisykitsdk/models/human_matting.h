@@ -15,41 +15,40 @@
 #ifndef DAISYKIT_MODELS_HUMAN_MATTING_H_
 #define DAISYKIT_MODELS_HUMAN_MATTING_H_
 
-#include <daisykitsdk/common/types.h>
+#include "daisykitsdk/common/types.h"
+#include "daisykitsdk/models/base_model.h"
 
 #include <opencv2/opencv.hpp>
-#ifdef __ANDROID__
-#include <android/asset_manager_jni.h>
-#endif
 
-// Ncnn
-#include <benchmark.h>
-#include <cpu.h>
-#include <datareader.h>
-#include <gpu.h>
-#include <net.h>
-#include <platform.h>
+#include <string>
+#include <vector>
+
 namespace daisykit {
 namespace models {
 
-class HumanMatting {
+class HumanMatting : public BaseModel<cv::Mat, cv::Mat> {
  public:
-  HumanMatting(const std::string& param_file, const std::string& weight_file);
-  void LoadModel(const std::string& param_file, const std::string& weight_file);
-#ifdef __ANDROID__
-  HumanMatting(AAssetManager* mgr, const std::string& param_file,
-               const std::string& weight_file);
-  void LoadModel(AAssetManager* mgr, const std::string& param_file,
-                 const std::string& weight_file);
-#endif
+  HumanMatting(const char* param_buffer, const unsigned char* weight_buffer,
+               int input_width = 256, int input_height = 256);
 
-  void Segmentation(cv::Mat& image, cv::Mat& mask);
+  // Will be deleted when IO module is supported. Keep for old compatibility.
+  HumanMatting(const std::string& param_file, const std::string& weight_file,
+               int input_width = 256, int input_height = 256);
+
+  // Override abstract Predict
+  /// Get the mask of foreground.
+  virtual cv::Mat Predict(const cv::Mat& image);
+
+  /// Get the mask of foreground. Predict like this can share the same
+  /// allocation => save memory
+  void Predict(cv::Mat& image, cv::Mat& mask);
+
+  /// Bind the segmented foreground with defined background.
   void BindWithBackground(cv::Mat& rgb, const cv::Mat& bg, const cv::Mat& mask);
 
  private:
-  ncnn::Net* model_ = 0;
-  int input_width_ = 256;
-  int input_height_ = 256;
+  int input_width_;
+  int input_height_;
 };
 
 }  // namespace models

@@ -44,8 +44,7 @@ HumanMattingFlow::~HumanMattingFlow() {
 }
 
 void HumanMattingFlow::Process(cv::Mat& rgb) {
-  cv::Mat mask;
-  human_matting_model_->Segmentation(rgb, mask);
+  cv::Mat mask = human_matting_model_->Predict(rgb);
 
   {
     const std::lock_guard<std::mutex> lock(mask_lock_);

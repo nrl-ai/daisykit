@@ -15,49 +15,46 @@
 #ifndef DAISYKIT_MODELS_POSE_DETECTOR_H_
 #define DAISYKIT_MODELS_POSE_DETECTOR_H_
 
-#include <daisykitsdk/common/types.h>
+#include "daisykitsdk/common/types.h"
+#include "daisykitsdk/models/base_model.h"
 
 #include <opencv2/opencv.hpp>
-#ifdef __ANDROID__
-#include <android/asset_manager_jni.h>
-#endif
 
-// Ncnn
-#include <benchmark.h>
-#include <cpu.h>
-#include <datareader.h>
-#include <gpu.h>
-#include <net.h>
-#include <platform.h>
+#include <string>
+#include <vector>
 
 namespace daisykit {
 namespace models {
 
-class PoseDetector {
+class PoseDetector : public BaseModel<cv::Mat, std::vector<types::Keypoint>> {
  public:
-  PoseDetector(const std::string& param_file, const std::string& weight_file);
-  void LoadModel(const std::string& param_file, const std::string& weight_file);
-#ifdef __ANDROID__
-  PoseDetector(AAssetManager* mgr, const std::string& param_file,
-               const std::string& weight_file);
-  void LoadModel(AAssetManager* mgr, const std::string& param_file,
-                 const std::string& weight_file);
-#endif
-  // Detect keypoints for single object
-  std::vector<types::Keypoint> Detect(cv::Mat& image, float offset_x = 0,
-                                      float offset_y = 0);
-  // Detect keypoints for multiple objects
-  std::vector<std::vector<types::Keypoint>> DetectMulti(
+  PoseDetector(const char* param_buffer, const unsigned char* weight_buffer,
+               int input_width = 256, int input_height = 256);
+
+  // Will be deleted when IO module is supported. Keep for old compatibility.
+  PoseDetector(const std::string& param_file, const std::string& weight_file,
+               int input_width = 256, int input_height = 256);
+
+  // Override abstract Predict
+  /// Predict keypoints for a single object.
+  virtual std::vector<types::Keypoint> Predict(const cv::Mat& image);
+
+  /// Predict keypoints for a single object with modifiable offset.
+  /// (Supports for predict multi objects in an image).
+  std::vector<types::Keypoint> Predict(cv::Mat& image, float offset_x = 0,
+                                       float offset_y = 0);
+
+  /// Predict keypoints for multiple objects.
+  std::vector<std::vector<types::Keypoint>> PredictMulti(
       cv::Mat& image, const std::vector<types::Object>& objects);
-  // Draw pose
+
+  /// Draw keypoints and their joints.
   void DrawKeypoints(const cv::Mat& image,
                      const std::vector<types::Keypoint>& keypoints);
 
  private:
-  const int input_width_ = 192;
-  const int input_height_ = 256;
-  ncnn::Mutex lock_;
-  ncnn::Net* model_ = 0;
+  int input_width_;
+  int input_height_;
 };
 
 }  // namespace models
