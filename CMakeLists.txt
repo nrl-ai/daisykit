@@ -34,10 +34,13 @@ set(sources
     src/models/action_classifier.cpp
     src/models/face_detector.cpp
     src/models/facial_landmark_estimator.cpp
-    src/models/human_matting.cpp
+    src/models/background_matting.cpp
 
     src/common/logging/mjpeg_writer.cpp
     src/common/visualizers/base_visualizer.cpp
+    src/common/profiler.cpp
+    src/common/utils/timer.cpp
+    src/common/io/data_reader.cpp
 
     src/processors/signal_processors/signal_smoothing.cpp
     src/processors/signal_processors/z_score_filter.cpp
@@ -52,10 +55,17 @@ set(sources
 
     src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
-    src/flows/human_matting_flow.cpp
+    src/flows/background_matting_flow.cpp
 
 )
 
+# Add platform specific source files
+if (ANDROID)
+set(sources ${sources} 
+    src/common/io/android_assets_stream.cpp)
+endif()
+
+# Add barcode scanner
 if (ENABLE_BARCODE_SCANNER)
 add_subdirectory(src/thirdparties/zxing-cpp)
 include_directories(src/thirdparties/zxing-cpp/core/src)
@@ -65,9 +75,16 @@ set(sources ${sources}
 endif()
 
 add_library(daisykitsdk SHARED ${sources})
-target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS} ZXing::ZXing)
+target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS})
+
+if (ENABLE_BARCODE_SCANNER)
+target_link_libraries(daisykitsdk ZXing::ZXing)
+endif()
 
 
+# ==================================================
+# Examples
+# ==================================================
 if ((NOT ANDROID) AND COMPILE_EXAMPLES)
 
 add_executable(demo_pushup_classifier src/examples/fitness/demo_pushup_classifier.cpp)
@@ -82,8 +99,8 @@ target_link_libraries(demo_barcode_scanner ${OpenCV_LIBS} daisykitsdk)
 add_executable(demo_face_detector src/examples/demo_face_detector.cpp)
 target_link_libraries(demo_face_detector ${OpenCV_LIBS} daisykitsdk)
 
-add_executable(demo_human_matting src/examples/demo_human_matting.cpp)
-target_link_libraries(demo_human_matting ${OpenCV_LIBS} daisykitsdk)
+add_executable(demo_background_matting src/examples/demo_background_matting.cpp)
+target_link_libraries(demo_background_matting ${OpenCV_LIBS} daisykitsdk)
 
 add_executable(demo_graph_api src/examples/demo_graph_api.cpp)
 target_link_libraries(demo_graph_api ${OpenCV_LIBS} daisykitsdk)
@@ -94,7 +111,9 @@ target_link_libraries(demo_face_detector_graph ${OpenCV_LIBS} daisykitsdk)
 endif()
 
 
+# ==================================================
 # Copy asset folders
+# ==================================================
 add_custom_target(configs ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_BINARY_DIR}/configs)
 add_custom_target(models ALL
@@ -103,7 +122,9 @@ add_custom_target(images ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_BINARY_DIR}/images)
 
 
+# ==================================================
 # Doxygen - For documentation
+# ==================================================
 # Look for Doxygen package
 find_package(Doxygen)
 if (DOXYGEN_FOUND)

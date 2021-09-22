@@ -12,50 +12,50 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/flows/human_matting_flow.h"
+#include "daisykitsdk/flows/background_matting_flow.h"
+#include "daisykitsdk/thirdparties/json.hpp"
 
 namespace daisykit {
 namespace flows {
 
-HumanMattingFlow::HumanMattingFlow(const std::string& config_str,
-                                   const cv::Mat& default_background) {
+BackgroundMattingFlow::BackgroundMattingFlow(
+    const std::string& config_str, const cv::Mat& default_background) {
   nlohmann::json config = nlohmann::json::parse(config_str);
-  human_matting_model_ =
-      new models::HumanMatting(config["human_matting_model"]["model"],
-                               config["human_matting_model"]["weights"]);
+  background_matting_model_ = new models::BackgroundMatting(
+      config["background_matting_model"]["model"],
+      config["background_matting_model"]["weights"]);
   background_ = default_background.clone();
 }
 
 #ifdef __ANDROID__
-HumanMattingFlow::HumanMattingFlow(AAssetManager* mgr,
-                                   const std::string& config_str,
-                                   const cv::Mat& default_background) {
+BackgroundMattingFlow::BackgroundMattingFlow(
+    AAssetManager* mgr, const std::string& config_str,
+    const cv::Mat& default_background) {
   nlohmann::json config = nlohmann::json::parse(config_str);
-  human_matting_model_ =
-      new models::HumanMatting(mgr, config["human_matting_model"]["model"],
-                               config["human_matting_model"]["weights"]);
+  background_matting_model_ = new models::BackgroundMatting(
+      mgr, config["background_matting_model"]["model"],
+      config["background_matting_model"]["weights"]);
   background_ = default_background.clone();
 }
 #endif
 
-HumanMattingFlow::~HumanMattingFlow() {
-  delete human_matting_model_;
-  human_matting_model_ = nullptr;
+BackgroundMattingFlow::~BackgroundMattingFlow() {
+  delete background_matting_model_;
+  background_matting_model_ = nullptr;
 }
 
-void HumanMattingFlow::Process(cv::Mat& rgb) {
-  cv::Mat mask = human_matting_model_->Predict(rgb);
-
+void BackgroundMattingFlow::Process(cv::Mat& rgb) {
+  cv::Mat mask = background_matting_model_->Predict(rgb);
   {
     const std::lock_guard<std::mutex> lock(mask_lock_);
     mask_ = mask;
   }
 }
 
-void HumanMattingFlow::DrawResult(cv::Mat& rgb) {
+void BackgroundMattingFlow::DrawResult(cv::Mat& rgb) {
   {
     const std::lock_guard<std::mutex> lock(mask_lock_);
-    human_matting_model_->BindWithBackground(rgb, background_, mask_);
+    background_matting_model_->BindWithBackground(rgb, background_, mask_);
   }
 }
 

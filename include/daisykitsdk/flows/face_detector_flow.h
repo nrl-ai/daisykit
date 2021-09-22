@@ -20,14 +20,11 @@
 #include "daisykitsdk/common/visualizers/face_visualizer.h"
 #include "daisykitsdk/models/face_detector.h"
 #include "daisykitsdk/models/facial_landmark_estimator.h"
-#include "daisykitsdk/processors/image_processors/img_utils.h"
-#include "daisykitsdk/thirdparties/json.hpp"
 
-#include <atomic>
-#include <iostream>
 #include <mutex>
+#include <opencv2/opencv.hpp>
 #include <string>
-#include <vector>
+
 #ifdef __ANDROID__
 #include <android/asset_manager_jni.h>
 #endif

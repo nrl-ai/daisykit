@@ -1,21 +1,14 @@
-# Coding structure
-
+# Coding structure - SDK
 
 + **daisykitsdk**
-  + **common** (daisykit::common) common helpers
+  + **common** common helpers
     + **io** (daisykit::io): read/write files, config, network
     + **logging** (daisykit::logging): logging / profilers
     + **types** (daisykit::types): data structures and types
     + **visualizers** (daisykit::visualizers): visualizers for object detection, segmentation, keypoints...
-    + **profilers** (daisykit::profilers): profilers to tracking system performance 
-      + node_profiler.h
-      + fps_calculator.h
-      + latency_tracking.h
-      ...
     + **utils** (daisykit::utils): common utilities
       + timer.h
-      + filesystem.h
-      ...
+    + profiler.h (daisykit::profilers): profilers to tracking system performance
   + **processors** (daisykit::processors) signal/image processors, basic operations to build computational system.
     + **image_processors**
     + **signal_processors**
@@ -25,6 +18,7 @@
     + **core**: core definitions of graph API
       + packet.h
       + node.h
+      + graph.h
       ...
     + **nodes** (daisykit::graphs::nodes): computational or visualizer nodes.
       + **models**
@@ -32,4 +26,4 @@
       + **signal_processors**
       + **trackers**
   + **flows** (daisykit::flows): completed flows built on graphs, or chain of processors
-  + **third_party**: lightweight third-party libraries.
+  + **thirdparties**: lightweight third-party libraries.

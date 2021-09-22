@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/models/human_matting.h"
+#include "daisykitsdk/models/background_matting.h"
 #include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <string>
@@ -21,24 +21,24 @@
 namespace daisykit {
 namespace models {
 
-HumanMatting::HumanMatting(const char* param_buffer,
-                           const unsigned char* weight_buffer, int input_width,
-                           int input_height) {
+BackgroundMatting::BackgroundMatting(const char* param_buffer,
+                                     const unsigned char* weight_buffer,
+                                     int input_width, int input_height) {
   LoadModel(param_buffer, weight_buffer);
   input_width_ = input_width;
   input_height_ = input_height;
 }
 
 // Will be deleted when IO module is supported. Keep for old compatibility.
-HumanMatting::HumanMatting(const std::string& param_file,
-                           const std::string& weight_file, int input_width,
-                           int input_height) {
+BackgroundMatting::BackgroundMatting(const std::string& param_file,
+                                     const std::string& weight_file,
+                                     int input_width, int input_height) {
   LoadModel(param_file, weight_file);
   input_width_ = input_width;
   input_height_ = input_height;
 }
 
-cv::Mat HumanMatting::Predict(const cv::Mat& image) {
+cv::Mat BackgroundMatting::Predict(const cv::Mat& image) {
   cv::Mat rgb = image.clone();
   const int w = rgb.cols;
   const int h = rgb.rows;
@@ -63,7 +63,7 @@ cv::Mat HumanMatting::Predict(const cv::Mat& image) {
   return mask;
 }
 
-void HumanMatting::Predict(cv::Mat& image, cv::Mat& mask) {
+void BackgroundMatting::Predict(cv::Mat& image, cv::Mat& mask) {
   cv::Mat rgb = image.clone();
   const int w = rgb.cols;
   const int h = rgb.rows;
@@ -87,8 +87,8 @@ void HumanMatting::Predict(cv::Mat& image, cv::Mat& mask) {
   out.to_pixels_resize(mask.data, ncnn::Mat::PIXEL_GRAY, w, h);
 }
 
-void HumanMatting::BindWithBackground(cv::Mat& rgb, const cv::Mat& bg,
-                                      const cv::Mat& mask) {
+void BackgroundMatting::BindWithBackground(cv::Mat& rgb, const cv::Mat& bg,
+                                           const cv::Mat& mask) {
   const int w = rgb.cols;
   const int h = rgb.rows;
 

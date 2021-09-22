@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_MODELS_HUMAN_MATTING_H_
-#define DAISYKIT_MODELS_HUMAN_MATTING_H_
+#ifndef DAISYKIT_MODELS_BACKGROUND_MATTING_H_
+#define DAISYKIT_MODELS_BACKGROUND_MATTING_H_
 
 #include "daisykitsdk/common/types.h"
 #include "daisykitsdk/models/base_model.h"
@@ -26,14 +26,16 @@
 namespace daisykit {
 namespace models {
 
-class HumanMatting : public BaseModel<cv::Mat, cv::Mat> {
+class BackgroundMatting : public BaseModel<cv::Mat, cv::Mat> {
  public:
-  HumanMatting(const char* param_buffer, const unsigned char* weight_buffer,
-               int input_width = 256, int input_height = 256);
+  BackgroundMatting(const char* param_buffer,
+                    const unsigned char* weight_buffer, int input_width = 256,
+                    int input_height = 256);
 
   // Will be deleted when IO module is supported. Keep for old compatibility.
-  HumanMatting(const std::string& param_file, const std::string& weight_file,
-               int input_width = 256, int input_height = 256);
+  BackgroundMatting(const std::string& param_file,
+                    const std::string& weight_file, int input_width = 256,
+                    int input_height = 256);
 
   // Override abstract Predict
   /// Get the mask of foreground.

@@ -34,19 +34,8 @@ cmake .. -Dncnn_FIND_PATH="<path to ncnn lib>"
 make
 ```
 
-- Run Pushups example
+- Run face detection example
 
 ```
-./demo_pushup_full
+./demo_face_detector_graph
 ```
-
-## Coding convention
-
-Follow [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
-
-**Exceptions:**
-
-- Source code file names: `.cpp` for source file and `.h` for header files.
-- Accept `using namespace` in `.cpp` files.
-
-

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/flows/face_detector_flow.h"
+#include "daisykitsdk/thirdparties/json.hpp"
 
 namespace daisykit {
 namespace flows {
@@ -92,9 +93,6 @@ void FaceDetectorFlow::DrawResult(cv::Mat& rgb) {
           cv::Scalar(0, 0, 0), color);
 
       if (with_landmark_) {
-        cv::putText(rgb, std::to_string(face.landmark.size()),
-                    cv::Point(100, 100), cv::FONT_HERSHEY_PLAIN, 1.0,
-                    cv::Scalar(0, 255, 0), 2);
         visualizers::FaceVisualizer::DrawLandmark(rgb, face.landmark);
       }
     }

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_UTILS_TIMER_H_
-#define DAISYKIT_COMMON_UTILS_TIMER_H_
+#include "daisykitsdk/common/utils/timer.h"
 
 #include <chrono>
 #include <ctime>
@@ -21,20 +20,23 @@
 namespace daisykit {
 namespace utils {
 
-typedef std::chrono::high_resolution_clock::time_point TimePoint;
+// Get current time point.
+TimePoint Timer::GetCurrentTime() {
+  return std::chrono::high_resolution_clock::now();
+}
 
-// Timer utility.s
-class Timer {
- public:
-  /// Get current time point.
-  static TimePoint GetCurrentTime();
-  /// Get time eslapsed from `start` to `end` time points.
-  static double CalcTimeElapsedMs(TimePoint start, TimePoint end);
-  /// Get time eslapsed from `start` to now.
-  static double CalcTimeElapsedMs(TimePoint start);
-};
+// Get time eslapsed from `start` to `end` time points.
+double Timer::CalcTimeElapsedMs(TimePoint start, TimePoint end) {
+  double elapsed_time_ms =
+      std::chrono::duration<double, std::milli>(end - start).count();
+  return elapsed_time_ms;
+}
+
+// Get time eslapsed from `start` to now.
+double Timer::CalcTimeElapsedMs(TimePoint start) {
+  auto now = GetCurrentTime();
+  return CalcTimeElapsedMs(start, now);
+}
 
 }  // namespace utils
 }  // namespace daisykit
-
-#endif

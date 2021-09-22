@@ -12,35 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_FLOWS_HUMAN_MATTING_FLOW_H_
-#define DAISYKIT_FLOWS_HUMAN_MATTING_FLOW_H_
+#ifndef DAISYKIT_FLOWS_BACKGROUND_MATTING_FLOW_H_
+#define DAISYKIT_FLOWS_BACKGROUND_MATTING_FLOW_H_
 
-#include "daisykitsdk/common/types.h"
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
-#include "daisykitsdk/models/human_matting.h"
-#include "daisykitsdk/processors/image_processors/img_utils.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "daisykitsdk/models/background_matting.h"
 
-#include <atomic>
-#include <iostream>
 #include <mutex>
+#include <opencv2/opencv.hpp>
 #include <string>
-#include <vector>
+
 #ifdef __ANDROID__
 #include <android/asset_manager_jni.h>
 #endif
 
 namespace daisykit {
 namespace flows {
-class HumanMattingFlow {
+class BackgroundMattingFlow {
  public:
-  HumanMattingFlow(const std::string& config_str,
-                   const cv::Mat& default_background);
+  BackgroundMattingFlow(const std::string& config_str,
+                        const cv::Mat& default_background);
 #ifdef __ANDROID__
-  HumanMattingFlow(AAssetManager* mgr, const std::string& config_str,
-                   const cv::Mat& default_background);
+  BackgroundMattingFlow(AAssetManager* mgr, const std::string& config_str,
+                        const cv::Mat& default_background);
 #endif
-  ~HumanMattingFlow();
+  ~BackgroundMattingFlow();
   void Process(cv::Mat& rgb);
   void DrawResult(cv::Mat& rgb);
 
@@ -49,7 +44,7 @@ class HumanMattingFlow {
   std::mutex mask_lock_;
   cv::Mat background_;
 
-  models::HumanMatting* human_matting_model_;
+  models::BackgroundMatting* background_matting_model_;
 };
 
 }  // namespace flows

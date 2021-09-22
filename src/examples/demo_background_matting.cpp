@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/flows/human_matting_flow.h"
+#include "daisykitsdk/flows/background_matting_flow.h"
 #include "daisykitsdk/thirdparties/json.hpp"
 
 #include <stdio.h>
@@ -29,13 +29,13 @@ using namespace daisykit::types;
 using namespace daisykit::flows;
 
 int main(int, char**) {
-  std::ifstream t("configs/human_matting_config.json");
+  std::ifstream t("configs/background_matting_config.json");
   std::string config_str((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());
 
   cv::Mat background = cv::imread("images/background.jpg");
   cv::cvtColor(background, background, cv::COLOR_BGR2RGB);
-  HumanMattingFlow flow(config_str, background);
+  BackgroundMattingFlow flow(config_str, background);
 
   Mat frame;
   VideoCapture cap(0);

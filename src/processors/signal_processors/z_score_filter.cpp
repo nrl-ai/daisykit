@@ -14,6 +14,10 @@
 
 #include "daisykitsdk/processors/signal_processors/z_score_filter.h"
 
+#include <algorithm>
+#include <cmath>
+#include <numeric>
+
 namespace daisykit {
 namespace processors {
 

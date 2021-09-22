@@ -15,18 +15,11 @@
 #ifndef DAISYKIT_COMMON_LOGGING_MJPEH_SERVER_H_
 #define DAISYKIT_COMMON_LOGGING_MJPEH_SERVER_H_
 
-#include <arpa/inet.h>
-#include <netdb.h>
 #include <netinet/in.h>
 #include <pthread.h>
-#include <stdio.h>
-#include <string.h>
 #include <sys/signal.h>
 #include <sys/socket.h>
-#include <sys/time.h>
-#include <sys/types.h>
 #include <unistd.h>
-#include <iostream>
 #include <opencv2/opencv.hpp>
 
 namespace daisykit {

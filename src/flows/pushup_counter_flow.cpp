@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include "daisykitsdk/flows/pushup_counter_flow.h"
+#include "daisykitsdk/common/visualizers/base_visualizer.h"
+#include "daisykitsdk/thirdparties/json.hpp"
 
 namespace daisykit {
 namespace flows {
@@ -40,8 +42,8 @@ PushupCounterFlow::PushupCounterFlow(AAssetManager* mgr,
       new models::BodyDetector(mgr, config["person_detection_model"]["model"],
                                config["person_detection_model"]["weights"]);
   pose_detector_ =
-      new models::PoseDetector(mgr, config["human_pose_model"]["model"],
-                               config["human_pose_model"]["weights"]);
+      new models::PoseDetector(mgr, config["background_pose_model"]["model"],
+                               config["background_pose_model"]["weights"]);
   action_classifier_ = new models::ActionClassifier(
       mgr, config["action_recognition_model"]["model"],
       config["action_recognition_model"]["weights"], true);
@@ -51,7 +53,7 @@ PushupCounterFlow::PushupCounterFlow(AAssetManager* mgr,
 #endif
 
 void PushupCounterFlow::Process(cv::Mat& rgb) {
-  // Detect human pose
+  // Detect background pose
   std::vector<types::Object> bodies = body_detector_->Predict(rgb);
   {
     const std::lock_guard<std::mutex> lock(bodies_lock_);

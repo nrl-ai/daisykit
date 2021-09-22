@@ -16,22 +16,8 @@
 #define DAISYKIT_PROCESSORS_FITNESS_PUSHUPS_PUSHUP_ANALYZER_H_
 
 #include "daisykitsdk/common/logging/mjpeg_server.h"
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
-#include "daisykitsdk/processors/signal_processors/signal_smoothing.h"
-#include "daisykitsdk/processors/signal_processors/z_score_filter.h"
 
-#include <algorithm>
-#include <chrono>
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
-#include <iterator>
-#include <memory>
-#include <numeric>
 #include <opencv2/opencv.hpp>
-#include <string>
-#include <unordered_map>
-#include <vector>
 
 namespace daisykit {
 namespace processors {

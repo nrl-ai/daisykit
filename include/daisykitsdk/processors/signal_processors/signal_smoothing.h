@@ -15,16 +15,6 @@
 #ifndef DAISYKIT_PROCESSORS_SIGNAL_PROCESSORS_SIGNAL_SMOOTHING_H_
 #define DAISYKIT_PROCESSORS_SIGNAL_PROCESSORS_SIGNAL_SMOOTHING_H_
 
-#include <algorithm>
-#include <chrono>
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
-#include <iterator>
-#include <memory>
-#include <numeric>
-#include <string>
-#include <unordered_map>
 #include <vector>
 
 namespace daisykit {

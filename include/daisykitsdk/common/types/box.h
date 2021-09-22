@@ -12,34 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_FLOWS_BARCODE_SCANNER_FLOW_H_
-#define DAISYKIT_FLOWS_BARCODE_SCANNER_FLOW_H_
-
-#include "ReadBarcode.h"
-
-#include <opencv2/opencv.hpp>
-#include <string>
-
-#ifdef __ANDROID__
-#include <android/asset_manager_jni.h>
-#endif
+#ifndef DAISYKIT_COMMON_TYPES_BOX_H_
+#define DAISYKIT_COMMON_TYPES_BOX_H_
 
 namespace daisykit {
-namespace flows {
-class BarcodeScannerFlow {
- public:
-  BarcodeScannerFlow(const std::string& config_str);
-#ifdef __ANDROID__
-  BarcodeScannerFlow(AAssetManager* mgr, const std::string& config_str);
-#endif
-  std::string Process(cv::Mat& rgb, bool draw = true);
+namespace types {
 
- private:
-  void DrawRect(cv::Mat& rgb, const ZXing::Position& pos);
-  ZXing::DecodeHints hints_;
+struct Box {
+  float x;  /// Top left x
+  float y;  /// Top left y
+  float w;  /// Bounding box width
+  float h;  /// Bounding box height
 };
 
-}  // namespace flows
+}  // namespace types
 }  // namespace daisykit
 
 #endif

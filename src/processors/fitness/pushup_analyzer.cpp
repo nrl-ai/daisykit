@@ -13,6 +13,9 @@
 // limitations under the License.
 
 #include "daisykitsdk/processors/fitness/pushup_analyzer.h"
+#include "daisykitsdk/common/visualizers/base_visualizer.h"
+#include "daisykitsdk/processors/signal_processors/signal_smoothing.h"
+#include "daisykitsdk/processors/signal_processors/z_score_filter.h"
 
 namespace daisykit {
 namespace processors {
