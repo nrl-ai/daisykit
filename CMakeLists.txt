@@ -33,6 +33,7 @@ set(sources
     src/models/pose_detector.cpp
     src/models/action_classifier.cpp
     src/models/face_detector.cpp
+    src/models/face_extractor.cpp
     src/models/face_detector_with_mask.cpp
     src/models/facial_landmark_estimator.cpp
     src/models/human_matting.cpp
@@ -74,6 +75,7 @@ if ((NOT ANDROID) AND COMPILE_EXAMPLES)
 
 add_executable(demo_pushup_classifier src/examples/fitness/demo_pushup_classifier.cpp)
 target_link_libraries(demo_pushup_classifier ${OpenCV_LIBS} daisykitsdk)
+
 
 add_executable(demo_pushup_full src/examples/fitness/demo_pushup_full.cpp)
 target_link_libraries(demo_pushup_full ${OpenCV_LIBS} daisykitsdk)

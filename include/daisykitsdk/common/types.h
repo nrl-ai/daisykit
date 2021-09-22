@@ -19,5 +19,5 @@
 #include "daisykitsdk/common/types/face.h"
 #include "daisykitsdk/common/types/keypoint.h"
 #include "daisykitsdk/common/types/object.h"
-
+#include "daisykitsdk/common/types/feature.h"
 #endif

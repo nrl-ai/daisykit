@@ -12,51 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef DAISYKIT_MODELS_FACE_EXTRACTOR_H_
 #define DAISYKIT_MODELS_FACE_EXTRACTOR_H_
 
-#include <opencv2/core/core.hpp>
-#include <net.h>
-#include <platform.h>
-#include <benchmark.h>
-#include <datareader.h>
+#include <daisykitsdk/common/types.h>
+#include <daisykitsdk/models/base_model.h>
+#include <opencv2/opencv.hpp>
 
 namespace daisykit {
 namespace models {
 
-<<<<<<< HEAD
-class FaceExtractor 
+class FaceExtractor
     : public BaseModel<cv::Mat, std::vector<daisykit::types::Feature>> {
  public:
-  FaceExtractor(const std::string& param_file,const std::string& weight_file);
-  void LoadModel(const std::string& param_file, const std::string& weight_file);
-  void preprocess(cv::Mat& image, ncnn::Mat& in);
-  virtual std::vector<daisykit::types::Feature> extract(cv::Mat image);
- 
+  FaceExtractor(const std::string& param_file, const std::string& weight_file);
+  virtual std::vector<daisykit::types::Feature> Predict(cv::Mat& image);
+
  private:
-  ncnn::Net* model_ = 0;
-  ncnn::Mutex lock_;
-=======
-class FaceFeature{
-    public:
-        FaceExtractor(const std::string& param_file,const std::string& weight_file);
-        void LoadModel(const std::string& param_file, const std::string& weight_file);
-        static bool hasGPU;
-        void preprocess(cv::Mat& image, ncnn::Mat& in);
-        std::vector<daisykit::types::Features> extract(cv::Mat image);
-
-
-    private:
-
-        ncnn::Net* model_ = 0;
-        ncnn::Mutex lock_;
->>>>>>> 8435931ae78fb88bbd2686605ab5de617f371c55
-
+    int input_width_;
+    int input_height_;
 };
 
-
 }  // namespace models
-}  // namespace daisykit
+}  // namespace models
 
 #endif
