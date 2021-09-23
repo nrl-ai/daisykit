@@ -22,9 +22,15 @@ sudo apt-get install -y libvulkan-dev
 
 - Download [precompiled NCNN](https://github.com/Tencent/ncnn/releases), extract it (version for your development computer).
 
-- Download all assets [here](https://drive.google.com/drive/folders/1ZAM8W4hHkV7-zmfHFjIGLAuso3QajUfW?usp=sharing) and put into `assets/` folder.
-
 ## Build and Run on PC
+
+- Initialize / Update submodules
+
+```
+git submodule update --init
+```
+
+- Build
 
 ```
 mkdir build

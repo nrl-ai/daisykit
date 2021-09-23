@@ -65,7 +65,11 @@ class CMakeBuild(build_ext):
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={}".format(extdir),
             "-DPYTHON_EXECUTABLE={}".format(sys.executable),
             "-DCMAKE_BUILD_TYPE={}".format(cfg),  # not used on MSVC, but no harm
-            "-DBUILD_PYTHON=ON"
+            "-DBUILD_PYTHON=ON",
+            "-DBUILD_EXAMPLES=OFF",
+            "-DBUILD_DOCS=OFF",
+            "-DCOPY_ASSETS=OFF",
+            "-DBUILD_SHARED_LIB=OFF"
         ]
         build_args = []
 
