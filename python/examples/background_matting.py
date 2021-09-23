@@ -1,13 +1,21 @@
 import cv2
+import json
+from daisykit.utils import get_asset_file
 from daisykit import BackgroundMattingFlow
 
-config_file = "./assets/configs/background_matting_config.json"
-with open(config_file, "r") as f:
-    config = f.read()
-background = cv2.imread("./assets/images/background.jpg")
+config = {
+    "background_matting_model": {
+        "model": get_asset_file("models/human_matting/erd/erdnet.param"),
+        "weights": get_asset_file("models/human_matting/erd/erdnet.bin")
+    }
+}
+
+# Load background
+default_bg_file = get_asset_file("images/background.jpg")
+background = cv2.imread(default_bg_file)
 background = cv2.cvtColor(background, cv2.COLOR_BGR2RGB)
 
-background_matting_flow = BackgroundMattingFlow(config, background)
+background_matting_flow = BackgroundMattingFlow(json.dumps(config), background)
 
 # Open video stream from webcam
 vid = cv2.VideoCapture(0)
@@ -21,7 +29,7 @@ while(True):
 
     mask = background_matting_flow.Process(frame)
     background_matting_flow.DrawResult(frame, mask)
-    
+
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
     # Display the resulting frame

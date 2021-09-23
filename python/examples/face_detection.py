@@ -1,11 +1,25 @@
 import cv2
+import json
+from daisykit.utils import get_asset_file
 import daisykit
 
-config_file = "./assets/configs/face_detector_config.json"
-with open(config_file, "r") as f:
-    config = f.read()
+config = {
+    "face_detection_model": {
+        "model": get_asset_file("models/face_detection/yolo_fastest_with_mask/yolo-fastest-opt.param"),
+        "weights": get_asset_file("models/face_detection/yolo_fastest_with_mask/yolo-fastest-opt.bin"),
+        "input_width": 320,
+        "input_height": 320,
+        "score_threshold": 0.7,
+        "iou_threshold": 0.5
+    },
+    "with_landmark": True,
+    "facial_landmark_model": {
+        "model": get_asset_file("models/facial_landmark/pfld-sim.param"),
+        "weights": get_asset_file("models/facial_landmark/pfld-sim.bin")
+    }
+}
 
-face_detector_flow = daisykit.FaceDetectorFlow(config)
+face_detector_flow = daisykit.FaceDetectorFlow(json.dumps(config))
 
 # Open video stream from webcam
 vid = cv2.VideoCapture(0)
