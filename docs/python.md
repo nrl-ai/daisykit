@@ -12,7 +12,7 @@ pip install daisykit
 
 **Face Detection with mask recognition:**
 
-```Python
+```py
 import cv2
 import json
 from daisykit.utils import get_asset_file
@@ -71,7 +71,7 @@ cv2.destroyAllWindows()
 
 **Background Matting:**
 
-```Python
+```py
 import cv2
 import json
 from daisykit.utils import get_asset_file
