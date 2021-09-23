@@ -1,3 +1,9 @@
 include *.txt
-recursive-include include src python CMakeLists.txt
-prune docs
+recursive-include include *
+recursive-include src *
+recursive-include python/daisykit *
+recursive-include python/examples *
+recursive-include python/pybind11 *
+recursive-include python/pybind11_opencv_numpy *
+recursive-include python/src *
+recursive-include python *.txt *.py *.md *.i

@@ -24,9 +24,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fexceptions -frtti -fPIC")
 
-option(ENABLE_BARCODE_SCANNER "Enable barcode scanner" ON)
-option(COMPILE_EXAMPLES "Compile Examples" ON)
 option(ncnn_FIND_PATH "Path to NCNN library" "~/Apps/ncnn-20210720-ubuntu-1804")
+option(ENABLE_BARCODE_SCANNER "Enable barcode scanner" ON)
+option(BUILD_EXAMPLES "Build examples" ON)
+option(BUILD_PYTHON "Build Python packages" OFF)
+option(BUILD_DOCS "Build documentation" OFF)
+option(BUILD_SHARED_LIB "Build shared lib for dasiykitsdk. Set this value to OFF for static lib." ON)
 
 if(ANDROID)
 MESSAGE(STATUS "COMPILE_ANDROID")
@@ -90,86 +93,75 @@ endif()
 
 # Add barcode scanner
 if (ENABLE_BARCODE_SCANNER)
-add_subdirectory(src/thirdparties/zxing-cpp)
-include_directories(src/thirdparties/zxing-cpp/core/src)
-include_directories(src/thirdparties/zxing-cpp/opencv/src)
-set(sources ${sources} 
-    src/flows/barcode_scanner_flow.cpp)
+    add_subdirectory(src/thirdparties/zxing-cpp)
+    include_directories(src/thirdparties/zxing-cpp/core/src)
+    include_directories(src/thirdparties/zxing-cpp/opencv/src)
+    set(sources ${sources} 
+        src/flows/barcode_scanner_flow.cpp)
 endif()
 
-add_library(daisykitsdk SHARED ${sources})
+if (BUILD_SHARED_LIB)
+    add_library(daisykitsdk SHARED ${sources})
+else()
+    add_library(daisykitsdk STATIC ${sources})
+endif()
+
 target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS})
 
 if (ENABLE_BARCODE_SCANNER)
-target_link_libraries(daisykitsdk ZXing::ZXing)
+    target_link_libraries(daisykitsdk ZXing::ZXing)
 endif()
 
 
 # ==================================================
-# Examples
+# Build examples
 # ==================================================
-if ((NOT ANDROID) AND COMPILE_EXAMPLES)
-
-add_executable(demo_pushup_classifier src/examples/fitness/demo_pushup_classifier.cpp)
-target_link_libraries(demo_pushup_classifier ${OpenCV_LIBS} daisykitsdk)
-
-add_executable(demo_pushup_full src/examples/fitness/demo_pushup_full.cpp)
-target_link_libraries(demo_pushup_full ${OpenCV_LIBS} daisykitsdk)
-
-add_executable(demo_barcode_scanner src/examples/demo_barcode_scanner.cpp)
-target_link_libraries(demo_barcode_scanner ${OpenCV_LIBS} daisykitsdk)
-
-add_executable(demo_face_detector src/examples/demo_face_detector.cpp)
-target_link_libraries(demo_face_detector ${OpenCV_LIBS} daisykitsdk)
-
-add_executable(demo_background_matting src/examples/demo_background_matting.cpp)
-target_link_libraries(demo_background_matting ${OpenCV_LIBS} daisykitsdk)
-
-add_executable(demo_graph_api src/examples/demo_graph_api.cpp)
-target_link_libraries(demo_graph_api ${OpenCV_LIBS} daisykitsdk)
-
-add_executable(demo_face_detector_graph src/examples/demo_face_detector_graph.cpp)
-target_link_libraries(demo_face_detector_graph ${OpenCV_LIBS} daisykitsdk)
-
+if ((NOT ANDROID) AND BUILD_EXAMPLES)
+    add_subdirectory(src/examples)
 endif()
 
 
 # ==================================================
 # Copy asset folders
 # ==================================================
-add_custom_target(configs ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_BINARY_DIR}/configs)
-add_custom_target(models ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/models ${CMAKE_BINARY_DIR}/models)
-add_custom_target(images ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_BINARY_DIR}/images)
+if (COPY_ASSETS)
+    add_custom_target(configs ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_BINARY_DIR}/configs)
+    add_custom_target(models ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/models ${CMAKE_BINARY_DIR}/models)
+    add_custom_target(images ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_BINARY_DIR}/images)
+endif()
 
-
+# ==================================================
+# Build Python package
+# ==================================================
 if(BUILD_PYTHON)
     add_subdirectory(python)
 endif()
-
 
 # ==================================================
 # Doxygen - For documentation
 # ==================================================
 # Look for Doxygen package
-find_package(Doxygen)
-if (DOXYGEN_FOUND)
-    # set input and output files
-    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in)
-    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.out)
+if (BUILD_DOCS)
+    find_package(Doxygen)
+    if (DOXYGEN_FOUND)
+        # set input and output files
+        set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in)
+        set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.out)
 
-    # request to configure the file
-    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-    message("Doxygen build started")
+        # request to configure the file
+        configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+        message("Doxygen build started")
 
-    # Note: do not put "ALL" - this builds docs together with application EVERY TIME!
-    add_custom_target(docs
-        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMENT "Generating API documentation with Doxygen"
-        VERBATIM )
-else (DOXYGEN_FOUND)
-  message("Doxygen need to be installed to generate the doxygen documentation")
-endif (DOXYGEN_FOUND)
+        # Note: do not put "ALL" - this builds docs together with application EVERY TIME!
+        add_custom_target(docs
+            COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            COMMENT "Generating API documentation with Doxygen"
+            VERBATIM )
+    else (DOXYGEN_FOUND)
+    message("Doxygen need to be installed to generate the doxygen documentation")
+    endif (DOXYGEN_FOUND)
+endif()
