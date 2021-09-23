@@ -10,18 +10,14 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
+// limitations under the License
 
-#ifndef DAISYKIT_COMMON_TYPES_H_
-#define DAISYKIT_COMMON_TYPES_H_
+#ifndef FACE_ALIGNMENT_H_
+#define FACE_ALIGNMENT_H_
 
-#include "daisykitsdk/common/types/action.h"
-#include "daisykitsdk/common/types/box.h"
-#include "daisykitsdk/common/types/det.h"
-#include "daisykitsdk/common/types/face.h"
-#include "daisykitsdk/common/types/feature.h"
-#include "daisykitsdk/common/types/keypoint.h"
-#include "daisykitsdk/common/types/landmark.h"
-#include "daisykitsdk/common/types/object.h"
+#include <opencv2/opencv.hpp>
+
+int get_aligned_face(cv::Mat& img, float* landmark, int landmark_number,
+                     int desired_size, cv::Mat& out);
 
 #endif

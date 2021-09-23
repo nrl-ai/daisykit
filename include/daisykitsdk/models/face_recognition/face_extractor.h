@@ -12,16 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_H_
-#define DAISYKIT_COMMON_TYPES_H_
+#ifndef DAISYKIT_MODELS_FACE_EXTRACTOR_H_
+#define DAISYKIT_MODELS_FACE_EXTRACTOR_H_
 
-#include "daisykitsdk/common/types/action.h"
-#include "daisykitsdk/common/types/box.h"
-#include "daisykitsdk/common/types/det.h"
-#include "daisykitsdk/common/types/face.h"
-#include "daisykitsdk/common/types/feature.h"
-#include "daisykitsdk/common/types/keypoint.h"
-#include "daisykitsdk/common/types/landmark.h"
-#include "daisykitsdk/common/types/object.h"
+#include "daisykitsdk/common/types.h"
+#include "daisykitsdk/models/base_model.h"
+#include <opencv2/opencv.hpp>
+
+namespace daisykit {
+namespace models {
+
+class FaceExtractor
+    : public BaseModel<cv::Mat, std::vector<daisykit::types::Feature>> {
+public:
+  FaceExtractor(const std::string &param_file, const std::string &weight_file);
+  virtual std::vector<daisykit::types::Feature> Predict(cv::Mat &image);
+
+private:
+  int input_width_;
+  int input_height_;
+};
+
+} // namespace models
+} // namespace daisykit
 
 #endif

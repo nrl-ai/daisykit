@@ -12,16 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_H_
-#define DAISYKIT_COMMON_TYPES_H_
+#include "daisykitsdk/models/face_recognition/config.h"
 
-#include "daisykitsdk/common/types/action.h"
-#include "daisykitsdk/common/types/box.h"
-#include "daisykitsdk/common/types/det.h"
-#include "daisykitsdk/common/types/face.h"
-#include "daisykitsdk/common/types/feature.h"
-#include "daisykitsdk/common/types/keypoint.h"
-#include "daisykitsdk/common/types/landmark.h"
-#include "daisykitsdk/common/types/object.h"
+float pixel_mean[3] = {0, 0, 0};
+float pixel_std[3] = {1, 1, 1};
+float pixel_scale = 1.0;
 
+#if fmc == 3
+std::vector<int> _feat_stride_fpn = {32, 16, 8};
+std::map<int, AnchorCfg> anchor_cfg = {
+    {32, AnchorCfg(std::vector<float>{32, 16}, std::vector<float>{1}, 16)},
+    {16, AnchorCfg(std::vector<float>{8, 4}, std::vector<float>{1}, 16)},
+    {8, AnchorCfg(std::vector<float>{2, 1}, std::vector<float>{1}, 16)}};
 #endif
+
+bool dense_anchor = false;
+float cls_threshold = 0.8;

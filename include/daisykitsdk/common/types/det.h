@@ -12,16 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_H_
-#define DAISYKIT_COMMON_TYPES_H_
-
-#include "daisykitsdk/common/types/action.h"
-#include "daisykitsdk/common/types/box.h"
-#include "daisykitsdk/common/types/det.h"
-#include "daisykitsdk/common/types/face.h"
-#include "daisykitsdk/common/types/feature.h"
-#include "daisykitsdk/common/types/keypoint.h"
+#ifndef DAISYKIT_COMMON_TYPES_DET_H_
+#define DAISYKIT_COMMON_TYPES_DET_H_
 #include "daisykitsdk/common/types/landmark.h"
-#include "daisykitsdk/common/types/object.h"
+
+#include <opencv2/opencv.hpp>
+
+#include <vector>
+
+namespace daisykit {
+namespace types {
+
+/// Human face data type.
+/// Also includes other information such as wearing mask or not, facial landmark
+struct Det {
+  cv::Rect boxes;
+  Landmark landmark;
+  cv::Mat face_aligned;
+};
+
+}  // namespace types
+}  // namespace daisykit
 
 #endif

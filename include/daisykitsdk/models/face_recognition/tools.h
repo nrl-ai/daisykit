@@ -12,16 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_H_
-#define DAISYKIT_COMMON_TYPES_H_
+#ifndef FD_TOOLS_
+#define FD_TOOLS_
 
-#include "daisykitsdk/common/types/action.h"
-#include "daisykitsdk/common/types/box.h"
-#include "daisykitsdk/common/types/det.h"
-#include "daisykitsdk/common/types/face.h"
-#include "daisykitsdk/common/types/feature.h"
-#include "daisykitsdk/common/types/keypoint.h"
-#include "daisykitsdk/common/types/landmark.h"
-#include "daisykitsdk/common/types/object.h"
+#include "daisykitsdk/models/face_recognition/anchor_generator.h"
 
-#endif
+void nms_cpu(std::vector<Anchor>& boxes, float threshold,
+             std::vector<Anchor>& filterOutBoxes);
+
+#endif  // FD_TOOLS

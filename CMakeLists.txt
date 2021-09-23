@@ -51,7 +51,7 @@ find_package(ncnn)
 if(NOT ncnn)
   message("Missing prebuilt ncnn. Building from source.")
   add_subdirectory(src/thirdparties/ncnn)
-endif()
+#endif()
 
 find_package(OpenCV REQUIRED)
 
@@ -85,6 +85,15 @@ set(sources
     src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
     src/flows/background_matting_flow.cpp
+
+    src/models/face_recognition/anchor_generator.cpp
+    src/models/face_recognition/config.cpp
+    src/models/face_recognition/face_alignment.cpp
+    src/models/face_recognition/face_detector_with_landmark.cpp
+    src/models/face_recognition/face_extractor.cpp
+    src/models/face_recognition/tools.cpp
+
+
 
 )
 

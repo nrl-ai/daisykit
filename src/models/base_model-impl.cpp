@@ -35,6 +35,8 @@ template class BaseModel<cv::Mat, std::vector<types::Object>>;
 template class BaseModel<cv::Mat, std::vector<types::Face>>;
 template class BaseModel<cv::Mat, std::vector<types::Keypoint>>;
 template class BaseModel<cv::Mat, cv::Mat>;
+template class BaseModel<cv::Mat, std::vector<types::Feature>>;
+template class BaseModel<cv::Mat, std::vector<types::Det>>;
 
 }  // namespace models
 }  // namespace daisykit
