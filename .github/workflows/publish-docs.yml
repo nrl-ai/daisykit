@@ -1,0 +1,27 @@
+name: publish-docs
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: set version
+        run: echo "PROJECT_NUMBER = 0.1.dev" >> Doxyfile
+      - name: Generate Documentation
+        uses: mattnotmitt/doxygen-action@v1
+        with:
+          working-directory: 'docs/'
+          doxyfile-path: 'Doxyfile.in'
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: docs/_build/html # The folder the action should deploy.
