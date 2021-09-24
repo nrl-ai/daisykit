@@ -63,3 +63,12 @@ doxygen Doxyfile.in
 - Step 3: Deploy html documentation from `docs/_build/html`.
 
 - Step 4: Our lastest documentation is deployed at <https://docs.daisykit.org>.
+
+## References
+
+This toolkit is developed on top of other source code. Including
+
+- Toolchains setup from [ncnn](https://github.com/Tencent/ncnn).
+- QR Scanner from [ZXing-CPP](https://github.com/nu-book/zxing-cpp).
+- JSON support from [nlohmann/json](https://github.com/nlohmann/json).
+- Pretrained AI models from different sources: <https://docs.daisykit.org/md_models.html>.

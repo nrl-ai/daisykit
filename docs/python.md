@@ -2,12 +2,22 @@
 
 <https://pypi.org/project/daisykit/>
 
-Python bindings for DaisyKit. This package only supports Linux now. We will add support for other platforms and models in the future.
+Python bindings for DaisyKit. This package only supports Ubuntu Linux - Python 3 now. We will add support for other platforms and models in the future.
 
 ## Install and run example
 
+Install dependencies. Below commands are for Ubuntu. You can try other installation methods based on your OS.
+
 ```
-pip install daisykit
+sudo apt install pybind11-dev # Pybind11 - For Python/C++ Wrapper
+sudo apt install libopencv-dev # For OpenCV
+sudo apt install libvulkan-dev # Optional - For GPU support
+```
+
+Install DaisyKit
+
+```
+pip3 install daisykit
 ```
 
 **Face Detection with mask recognition:**
