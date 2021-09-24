@@ -38,19 +38,19 @@ set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fexceptions -frtti -fPIC")
 
 option(ncnn_FIND_PATH "Path to NCNN library" "~/Apps/ncnn-20210720-ubuntu-1804")
-option(ENABLE_BARCODE_SCANNER "Enable barcode scanner" ON)
-option(BUILD_EXAMPLES "Build examples" ON)
-option(BUILD_PYTHON "Build Python packages" OFF)
-option(BUILD_DOCS "Build documentation" OFF)
-option(BUILD_SHARED_LIB "Build shared lib for dasiykitsdk. Set this value to OFF for static lib." ON)
-option(WITH_VULKAN "Build with Vulkan" OFF)
+option(DAISYKIT_ENABLE_BARCODE_SCANNER "Enable barcode scanner" ON)
+option(DAISYKIT_BUILD_EXAMPLES "Build examples" ON)
+option(DAISYKIT_BUILD_PYTHON "Build Python packages" OFF)
+option(DAISYKIT_BUILD_DOCS "Build documentation" OFF)
+option(DAISYKIT_BUILD_SHARED_LIB "Build shared lib for dasiykitsdk. Set this value to OFF for static lib." ON)
+option(DAISYKIT_WITH_VULKAN "Build with Vulkan" OFF)
 
 if(ANDROID)
 MESSAGE(STATUS "COMPILE_ANDROID")
     set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/thirdparties/opencv-mobile-4.5.3-android/sdk/native/jni)
     set(ncnn_FIND_PATH ${CMAKE_SOURCE_DIR}/thirdparties/ncnn-20210720-android-vulkan/${ANDROID_ABI})
 else()
-    if (WITH_VULKAN)
+    if (DAISYKIT_WITH_VULKAN)
         find_package(Vulkan REQUIRED)
     endif()
     include_directories(${ncnn_FIND_PATH}/include/ncnn)
@@ -108,7 +108,7 @@ set(sources ${sources}
 endif()
 
 # Add barcode scanner
-if (ENABLE_BARCODE_SCANNER)
+if (DAISYKIT_ENABLE_BARCODE_SCANNER)
     add_subdirectory(src/thirdparties/zxing-cpp)
     include_directories(src/thirdparties/zxing-cpp/core/src)
     include_directories(src/thirdparties/zxing-cpp/opencv/src)
@@ -116,7 +116,7 @@ if (ENABLE_BARCODE_SCANNER)
         src/flows/barcode_scanner_flow.cpp)
 endif()
 
-if (BUILD_SHARED_LIB)
+if (DAISYKIT_BUILD_SHARED_LIB)
     add_library(daisykitsdk SHARED ${sources})
 else()
     add_library(daisykitsdk STATIC ${sources})
@@ -124,7 +124,7 @@ endif()
 
 target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS})
 
-if (ENABLE_BARCODE_SCANNER)
+if (DAISYKIT_ENABLE_BARCODE_SCANNER)
     target_link_libraries(daisykitsdk ZXing::ZXing)
 endif()
 
@@ -132,7 +132,7 @@ endif()
 # ==================================================
 # Build examples
 # ==================================================
-if ((NOT ANDROID) AND BUILD_EXAMPLES)
+if ((NOT ANDROID) AND DAISYKIT_BUILD_EXAMPLES)
     add_subdirectory(src/examples)
 endif()
 
@@ -152,6 +152,6 @@ endif()
 # ==================================================
 # Build Python package
 # ==================================================
-if(BUILD_PYTHON)
+if(DAISYKIT_BUILD_PYTHON)
     add_subdirectory(python)
 endif()
