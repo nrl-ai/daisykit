@@ -7,8 +7,8 @@ DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "DaisyKit Documentation"
 PROJECT_NUMBER         = dev-0.0.1
 PROJECT_BRIEF          = "AI framework focusing on the ease of deployment"
-PROJECT_LOGO           = ../docs/images/logo.svg
-OUTPUT_DIRECTORY       = ../docs/_build
+PROJECT_LOGO           = images/logo.svg
+OUTPUT_DIRECTORY       = _build
 CREATE_SUBDIRS         = NO
 ALLOW_UNICODE_NAMES    = NO
 OUTPUT_LANGUAGE        = English
@@ -112,13 +112,12 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  =../docs/sdk.md \
-                        ../docs/android.md \
-                        ../docs/python.md \
+INPUT                  =sdk.md \
+                        android.md \
+                        python.md \
                         ../include/daisykitsdk/README.md \
-                        ../docs/models.md \
-                        ../docs/contribution.md \
-                        ../docs/road_map.md \ 
+                        models.md \
+                        contribution.md \
                         ../include \
                         ../src
                          
@@ -168,19 +167,19 @@ FILE_PATTERNS          = *.c \
                          *.ucf \
                          *.qsf
 RECURSIVE              = YES
-EXCLUDE                = ../docs/doxygen-awesome-css
+EXCLUDE                = doxygen-awesome-css
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = thirdparties
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = *
 EXAMPLE_RECURSIVE      = NO
-IMAGE_PATH             = .. ../docs
+IMAGE_PATH             = .
 INPUT_FILTER           = 
 FILTER_PATTERNS        = 
 FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS = 
-USE_MDFILE_AS_MAINPAGE = ../docs/sdk.md
+USE_MDFILE_AS_MAINPAGE = sdk.md
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
 #---------------------------------------------------------------------------
@@ -211,8 +210,8 @@ HTML_HEADER            =
 HTML_FOOTER            =
 HTML_STYLESHEET        = 
 HTML_EXTRA_FILES       = 
-HTML_EXTRA_STYLESHEET  = ../docs/doxygen-awesome-css/doxygen-awesome.css \ 
-                         ../docs/doxygen-custom/custom.css
+HTML_EXTRA_STYLESHEET  = doxygen-awesome-css/doxygen-awesome.css \
+                         doxygen-custom/custom.css
 HTML_COLORSTYLE_HUE    = 13
 HTML_COLORSTYLE_SAT    = 0
 HTML_COLORSTYLE_GAMMA  = 173

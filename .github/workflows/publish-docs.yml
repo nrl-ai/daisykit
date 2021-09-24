@@ -12,13 +12,17 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: set version
-        run: echo "PROJECT_NUMBER = 0.1.dev" >> Doxyfile
+      - name: Init submodules (for themes)
+        run: git submodule update --init
+      - name: Set version
+        run: echo "PROJECT_NUMBER = 0.1.dev" >> docs/Doxyfile.in
       - name: Generate Documentation
         uses: mattnotmitt/doxygen-action@v1
         with:
           working-directory: 'docs/'
           doxyfile-path: 'Doxyfile.in'
+      - name: Set nojerkyll
+        run: cd docs/_build/html && sudo chmod 777 . && touch .nojekyll
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
