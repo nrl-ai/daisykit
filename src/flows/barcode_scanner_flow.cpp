@@ -17,7 +17,7 @@
 #include "ReadBarcode.h"
 #include "TextUtfEncoding.h"
 #include "daisykitsdk/common/visualizers/base_visualizer.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 #include <iostream>
 #include <opencv2/opencv.hpp>

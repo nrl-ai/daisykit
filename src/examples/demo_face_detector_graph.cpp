@@ -18,7 +18,7 @@
 #include "daisykitsdk/graphs/nodes/models/face_landmark_estimator_node.h"
 #include "daisykitsdk/graphs/nodes/packet_distributor_node.h"
 #include "daisykitsdk/graphs/nodes/visualizers/face_visualizer_node.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 #include <stdio.h>
 #include <fstream>

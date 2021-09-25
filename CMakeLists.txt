@@ -50,10 +50,12 @@ option(DAISYKIT_BUILD_SHARED_LIB "Build shared lib for dasiykitsdk. Set this val
 option(DAISYKIT_WITH_VULKAN "Build with Vulkan" ON)
 option(DAISYKIT_COPY_ASSETS "Copy assets to bin folder" ON)
 
+include_directories(include .)
+
 if(ANDROID)
 MESSAGE(STATUS "COMPILE_ANDROID")
-    set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/thirdparties/opencv-mobile-4.5.3-android/sdk/native/jni)
-    set(ncnn_FIND_PATH ${CMAKE_SOURCE_DIR}/thirdparties/ncnn-20210720-android-vulkan/${ANDROID_ABI})
+    set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/third_party/opencv-mobile-4.5.3-android/sdk/native/jni)
+    set(ncnn_FIND_PATH ${CMAKE_SOURCE_DIR}/third_party/ncnn-20210720-android-vulkan/${ANDROID_ABI})
 else()
     if (DAISYKIT_WITH_VULKAN)
         find_package(Vulkan)
@@ -67,8 +69,6 @@ else()
     include_directories(${ncnn_FIND_PATH}/include/ncnn)
 endif()
 
-include_directories(include)
-
 message(${ncnn_FIND_PATH}/lib/cmake/ncnn)
 set(ncnn_DIR ${ncnn_FIND_PATH}/lib/cmake/ncnn)
 find_package(ncnn)
@@ -79,7 +79,7 @@ if(NOT ncnn)
   option(NCNN_BUILD_TOOLS "" OFF)
   option(NCNN_BUILD_EXAMPLES "" OFF)
   option(NCNN_VULKAN "" ${DAISYKIT_WITH_VULKAN})
-  add_subdirectory(src/thirdparties/ncnn ${CMAKE_BINARY_DIR}/bin_ncnn)
+  add_subdirectory(third_party/ncnn ${CMAKE_BINARY_DIR}/bin_ncnn)
 endif()
 
 find_package(OpenCV REQUIRED)
@@ -125,9 +125,9 @@ endif()
 
 # Add barcode scanner
 if (DAISYKIT_ENABLE_BARCODE_SCANNER)
-    add_subdirectory(src/thirdparties/zxing-cpp)
-    include_directories(src/thirdparties/zxing-cpp/core/src)
-    include_directories(src/thirdparties/zxing-cpp/opencv/src)
+    add_subdirectory(third_party/zxing-cpp)
+    include_directories(third_party/zxing-cpp/core/src)
+    include_directories(third_party/zxing-cpp/opencv/src)
     set(sources ${sources} 
         src/flows/barcode_scanner_flow.cpp)
 endif()

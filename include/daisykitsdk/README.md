@@ -26,4 +26,4 @@
       + **signal_processors**
       + **trackers**
   + **flows** (daisykit::flows): completed flows built on graphs, or chain of processors
-  + **thirdparties**: lightweight third-party libraries.
+  + **third_party**: lightweight third-party libraries.

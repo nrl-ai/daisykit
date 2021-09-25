@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/flows/background_matting_flow.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 namespace daisykit {
 namespace flows {

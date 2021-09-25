@@ -17,7 +17,7 @@
 #include "daisykitsdk/graphs/nodes/img_proc/binarize_node.h"
 #include "daisykitsdk/graphs/nodes/img_proc/grayscale_node.h"
 #include "daisykitsdk/graphs/nodes/img_proc/img_viz_node.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 #include <stdio.h>
 #include <fstream>

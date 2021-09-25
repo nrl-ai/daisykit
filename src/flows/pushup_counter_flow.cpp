@@ -14,7 +14,7 @@
 
 #include "daisykitsdk/flows/pushup_counter_flow.h"
 #include "daisykitsdk/common/visualizers/base_visualizer.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 namespace daisykit {
 namespace flows {

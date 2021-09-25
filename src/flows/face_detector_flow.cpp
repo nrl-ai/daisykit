@@ -14,7 +14,7 @@
 
 #include "daisykitsdk/flows/face_detector_flow.h"
 #include "daisykitsdk/common/visualizers/face_visualizer.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 namespace daisykit {
 namespace flows {

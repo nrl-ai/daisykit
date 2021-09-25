@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/flows/pushup_counter_flow.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 #include <stdio.h>
 #include <fstream>
