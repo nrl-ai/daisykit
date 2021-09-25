@@ -48,7 +48,13 @@ class FaceDetector : public NCNNModel, public ImageModel {
   /// Preprocess image data to obtain net input.
   void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;
 
+  /// Score threshold for bounding box. Currently we ignore to set this value
+  /// because the current model has an internal of 0.25 inside and that's
+  /// enough.
   float score_threshold_;
+
+  /// IoU threshold for NMS. Currently we ignore this value because our current
+  /// model doesn't need NMS.
   float iou_threshold_;
 };
 

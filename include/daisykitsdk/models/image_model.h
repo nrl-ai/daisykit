@@ -22,6 +22,7 @@ namespace daisykit {
 namespace models {
 
 /// Model interface with image input.
+/// All models receiving an image as input should inherite this class.
 class ImageModel {
  public:
   ImageModel(int input_width, int input_height);

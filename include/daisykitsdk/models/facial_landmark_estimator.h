@@ -27,7 +27,7 @@
 namespace daisykit {
 namespace models {
 
-/// Facial landmark estimation model.
+/// Facial landmark estimation model - 68 points.
 class FacialLandmarkEstimator : public NCNNModel, public ImageModel {
  public:
   FacialLandmarkEstimator(const char* param_buffer,

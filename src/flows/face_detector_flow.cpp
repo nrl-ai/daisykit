@@ -88,9 +88,9 @@ void FaceDetectorFlow::DrawResult(cv::Mat& rgb,
   // Draw face bounding boxes and keypoints
   visualizers::FaceVisualizer::DrawFace(rgb, faces, true);
   visualizers::BaseVisualizer::PutText(
-      rgb, std::string("FPS: ") + std::to_string(profiler.CurrentFPS()), cv::Point(100, 100),
-      cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10, cv::Scalar(0, 0, 0),
-      cv::Scalar(0, 255, 0));
+      rgb, std::string("FPS: ") + std::to_string(profiler.CurrentFPS()),
+      cv::Point(100, 100), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
+      cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
 }
 
 }  // namespace flows
