@@ -70,11 +70,11 @@ FaceDetectorFlow::~FaceDetectorFlow() {
 std::vector<types::Face> FaceDetectorFlow::Process(const cv::Mat& rgb) {
   // Detect faces
   std::vector<types::Face> faces;
-  face_detector_->Detect(rgb, faces);
+  face_detector_->Predict(rgb, faces);
 
   // Detect landmarks
   if (with_landmark_) {
-    facial_landmark_estimator_->DetectMulti(rgb, faces);
+    facial_landmark_estimator_->PredictMulti(rgb, faces);
   }
 
   // Tick profiler when processing is done

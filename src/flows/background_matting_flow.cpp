@@ -46,7 +46,7 @@ BackgroundMattingFlow::~BackgroundMattingFlow() {
 
 cv::Mat BackgroundMattingFlow::Process(const cv::Mat& rgb) {
   cv::Mat mask;
-  background_matting_model_->Segmentation(rgb, mask);
+  background_matting_model_->Predict(rgb, mask);
   return mask;
 }
 

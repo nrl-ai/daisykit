@@ -42,14 +42,14 @@ class FacialLandmarkEstimator : public NCNNModel, public ImageModel {
   /// Detect keypoints for a single face.
   /// This function adds offset_x and offset_y to the keypoints.
   /// Return 0 on success, otherwise return error code.
-  int Detect(const cv::Mat& image, std::vector<types::Keypoint>& keypoints,
-             float offset_x = 0, float offset_y = 0);
+  int Predict(const cv::Mat& image, std::vector<types::Keypoint>& keypoints,
+              float offset_x = 0, float offset_y = 0);
 
   /// Detect keypoints for multiple faces.
   /// Modify faces vector to add landmark info. Return 0 on success, otherwise
   /// return the number of inference errors.
-  int DetectMulti(const cv::Mat& image,
-                  std::vector<daisykit::types::Face>& faces);
+  int PredictMulti(const cv::Mat& image,
+                   std::vector<daisykit::types::Face>& faces);
 
  private:
   /// Preprocess image data to obtain net input.

@@ -38,7 +38,7 @@ class ActionClassifier : public NCNNModel, public ImageModel {
 
   /// Classify actions.
   /// Return 0 on success, otherwise return error code.
-  int Classify(const cv::Mat& image, types::Action& action, float& confidence);
+  int Predict(const cv::Mat& image, types::Action& action, float& confidence);
 
  private:
   /// Preprocess image data to obtain net input.

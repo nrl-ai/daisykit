@@ -146,6 +146,12 @@ Build package:
 python3 setup.py sdist
 ```
 
+or
+
+```
+bash scripts/build_python.sh
+```
+
 Upload to Pypi (for DaisyKit authors only)
 
 ```

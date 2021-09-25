@@ -46,16 +46,16 @@ void PoseDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   net_input.substract_mean_normalize(mean_vals, norm_vals);
 }
 
-int PoseDetector::Detect(const cv::Mat& image,
-                         std::vector<types::Keypoint>& keypoints,
-                         float offset_x, float offset_y) {
+int PoseDetector::Predict(const cv::Mat& image,
+                          std::vector<types::Keypoint>& keypoints,
+                          float offset_x, float offset_y) {
   // Preprocess
   ncnn::Mat in;
   Preprocess(image, in);
 
   // Inference
   ncnn::Mat out;
-  int result = Predict(in, out, "data", "hybridsequential0_conv7_fwd");
+  int result = Infer(in, out, "data", "hybridsequential0_conv7_fwd");
   if (result != 0) {
     return result;
   }
@@ -91,7 +91,7 @@ int PoseDetector::Detect(const cv::Mat& image,
   return 0;
 }
 
-int PoseDetector::DetectMulti(
+int PoseDetector::PredictMulti(
     const cv::Mat& image, const std::vector<types::Object>& objects,
     std::vector<std::vector<types::Keypoint>>& poses) {
   int num_errors = 0;
@@ -116,7 +116,7 @@ int PoseDetector::DetectMulti(
 
     cv::Mat roi = image(cv::Rect(x1, y1, x2 - x1, y2 - y1)).clone();
     std::vector<types::Keypoint> keypoints_single;
-    if (Detect(roi, keypoints_single, x1, y1) != 0) {
+    if (Predict(roi, keypoints_single, x1, y1) != 0) {
       ++num_errors;
     }
     poses.push_back(keypoints_single);

@@ -55,10 +55,10 @@ class NCNNModel {
   int LoadModel(const std::string& param_file, const std::string& weight_file,
                 bool use_gpu = false);
 
-  /// Prediction function for NCNN model with 1 input and 1 output.
+  /// Inference function for NCNN model with 1 input and 1 output.
   /// Return 0 on success, otherwise return error code.
-  int Predict(const ncnn::Mat& in, ncnn::Mat& out,
-              const std::string& input_name, const std::string& output_name);
+  int Infer(const ncnn::Mat& in, ncnn::Mat& out, const std::string& input_name,
+            const std::string& output_name);
 
  protected:
   ncnn::Net model_;

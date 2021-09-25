@@ -93,9 +93,9 @@ int NCNNModel::LoadModel(const std::string& param_file,
   return 0;
 }
 
-int NCNNModel::Predict(const ncnn::Mat& in, ncnn::Mat& out,
-                       const std::string& input_name,
-                       const std::string& output_name) {
+int NCNNModel::Infer(const ncnn::Mat& in, ncnn::Mat& out,
+                     const std::string& input_name,
+                     const std::string& output_name) {
   if (in.empty()) {
     return -1;
   }

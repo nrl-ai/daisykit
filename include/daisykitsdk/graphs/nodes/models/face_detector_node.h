@@ -48,7 +48,7 @@ class FaceDetectorNode : public Node {
     // Process
     std::shared_ptr<std::vector<daisykit::types::Face>> result =
         std::make_shared<std::vector<daisykit::types::Face>>();
-    face_detector_->Detect(img, *result);
+    face_detector_->Predict(img, *result);
 
     // Convert to output packet
     utils::TimePoint timestamp = utils::Timer::GetCurrentTime();

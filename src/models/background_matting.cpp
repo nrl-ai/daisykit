@@ -48,14 +48,14 @@ void BackgroundMatting::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   net_input.substract_mean_normalize(mean_vals, norm_vals);
 }
 
-int BackgroundMatting::Segmentation(const cv::Mat& image, cv::Mat& mask) {
+int BackgroundMatting::Predict(const cv::Mat& image, cv::Mat& mask) {
   // Preprocess
   ncnn::Mat in;
   Preprocess(image, in);
 
   // Inference
   ncnn::Mat out;
-  int result = Predict(in, out, "input_blob1", "sigmoid_blob1");
+  int result = Infer(in, out, "input_blob1", "sigmoid_blob1");
   if (result != 0) {
     return result;
   }

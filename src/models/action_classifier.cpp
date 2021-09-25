@@ -49,15 +49,15 @@ void ActionClassifier::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
                                     rgb.rows, InputWidth(), InputHeight());
 }
 
-int ActionClassifier::Classify(const cv::Mat& image, types::Action& action,
-                               float& confidence) {
+int ActionClassifier::Predict(const cv::Mat& image, types::Action& action,
+                              float& confidence) {
   // Preprocess
   ncnn::Mat in;
   Preprocess(image, in);
 
   // Model inference
   ncnn::Mat out;
-  int result = Predict(in, out, "input_1_blob", "dense_Softmax_blob");
+  int result = Infer(in, out, "input_1_blob", "dense_Softmax_blob");
   if (result != 0) {
     return result;
   }

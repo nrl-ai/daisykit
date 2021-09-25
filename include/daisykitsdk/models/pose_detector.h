@@ -40,14 +40,14 @@ class PoseDetector : public NCNNModel, public ImageModel {
 
   /// Detect single human pose.
   /// This function adds offset_x and offset_y to the keypoints.
-  int Detect(const cv::Mat& image, std::vector<types::Keypoint>& keypoints,
-             float offset_x = 0, float offset_y = 0);
+  int Predict(const cv::Mat& image, std::vector<types::Keypoint>& keypoints,
+              float offset_x = 0, float offset_y = 0);
 
   /// Detect multiple human poses.
   /// Return 0 on success, otherwise return the number of inference errors.
-  int DetectMulti(const cv::Mat& image,
-                  const std::vector<types::Object>& objects,
-                  std::vector<std::vector<types::Keypoint>>& poses);
+  int PredictMulti(const cv::Mat& image,
+                   const std::vector<types::Object>& objects,
+                   std::vector<std::vector<types::Keypoint>>& poses);
 
   /// Draw keypoints and their joints.
   void DrawKeypoints(const cv::Mat& image,

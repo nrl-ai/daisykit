@@ -37,7 +37,7 @@ PushupCounterFlow::PushupCounterFlow(const std::string& config_str) {
 void PushupCounterFlow::Process(cv::Mat& rgb) {
   // Detect background pose
   std::vector<types::Object> bodies;
-  body_detector_->Detect(rgb, bodies);
+  body_detector_->Predict(rgb, bodies);
   {
     const std::lock_guard<std::mutex> lock(bodies_lock_);
     bodies_ = bodies;
@@ -45,7 +45,7 @@ void PushupCounterFlow::Process(cv::Mat& rgb) {
 
   // Detect keypoints
   std::vector<std::vector<types::Keypoint>> keypoints;
-  pose_detector_->DetectMulti(rgb, bodies, keypoints);
+  pose_detector_->PredictMulti(rgb, bodies, keypoints);
   {
     const std::lock_guard<std::mutex> lock(keypoints_lock_);
     keypoints_ = keypoints;
@@ -54,7 +54,7 @@ void PushupCounterFlow::Process(cv::Mat& rgb) {
   // Recognize action and count pushups
   float score;
   types::Action action;
-  action_classifier_->Classify(rgb, action, score);
+  action_classifier_->Predict(rgb, action, score);
   is_pushup_score_ = score;
   num_pushups_ =
       pushup_analyzer_->CountPushups(rgb, action == types::Action::kPushup);

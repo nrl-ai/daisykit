@@ -42,7 +42,7 @@ class BackgroundMatting : public NCNNModel, public ImageModel {
 
   /// Get forground probability mask.
   /// Return 0 on success, otherwise return error code.
-  int Segmentation(const cv::Mat& image, cv::Mat& mask);
+  int Predict(const cv::Mat& image, cv::Mat& mask);
 
   /// Bind the segmented foreground with defined background.
   void BindWithBackground(cv::Mat& rgb, const cv::Mat& background,

@@ -38,7 +38,7 @@ int main(int, char**) {
 
     float score;
     types::Action action;
-    model->Classify(rgb, action, score);
+    model->Predict(rgb, action, score);
 
     cv::Scalar color(0, 255, 0);
     if (score < 0.9) {

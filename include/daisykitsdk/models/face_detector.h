@@ -42,7 +42,7 @@ class FaceDetector : public NCNNModel, public ImageModel {
 
   /// Detect faces in an image.
   /// Return 0 on success, otherwise return error code.
-  int Detect(const cv::Mat& image, std::vector<daisykit::types::Face>& faces);
+  int Predict(const cv::Mat& image, std::vector<daisykit::types::Face>& faces);
 
  private:
   /// Preprocess image data to obtain net input.

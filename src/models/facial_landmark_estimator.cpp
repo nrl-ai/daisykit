@@ -44,16 +44,16 @@ void FacialLandmarkEstimator::Preprocess(const cv::Mat& image,
   net_input.substract_mean_normalize(0, norm_vals);
 }
 
-int FacialLandmarkEstimator::Detect(const cv::Mat& image,
-                                    std::vector<types::Keypoint>& keypoints,
-                                    float offset_x, float offset_y) {
+int FacialLandmarkEstimator::Predict(const cv::Mat& image,
+                                     std::vector<types::Keypoint>& keypoints,
+                                     float offset_x, float offset_y) {
   // Preprocess
   ncnn::Mat in;
   Preprocess(image, in);
 
   // Inference
   ncnn::Mat out;
-  int result = Predict(in, out, "input_1", "415");
+  int result = Infer(in, out, "input_1", "415");
   if (result != 0) {
     return result;
   }
@@ -74,8 +74,8 @@ int FacialLandmarkEstimator::Detect(const cv::Mat& image,
   return 0;
 }
 
-int FacialLandmarkEstimator::DetectMulti(const cv::Mat& image,
-                                         std::vector<types::Face>& faces) {
+int FacialLandmarkEstimator::PredictMulti(const cv::Mat& image,
+                                          std::vector<types::Face>& faces) {
   int num_errors = 0;
   int img_width = image.cols;
   int img_height = image.rows;
@@ -97,7 +97,7 @@ int FacialLandmarkEstimator::DetectMulti(const cv::Mat& image,
     if (y2 > img_height) y2 = img_height;
 
     cv::Mat roi = image(cv::Rect(x1, y1, x2 - x1, y2 - y1));
-    if (Detect(roi, faces[i].landmark, x1, y1) != 0) {
+    if (Predict(roi, faces[i].landmark, x1, y1) != 0) {
       ++num_errors;
     }
   }

@@ -45,15 +45,15 @@ void BodyDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   net_input.substract_mean_normalize(mean_vals, norm_vals);
 }
 
-int BodyDetector::Detect(const cv::Mat& image,
-                         std::vector<daisykit::types::Object>& objects) {
+int BodyDetector::Predict(const cv::Mat& image,
+                          std::vector<daisykit::types::Object>& objects) {
   // Preprocess
   ncnn::Mat in;
   Preprocess(image, in);
 
   // Inference
   ncnn::Mat out;
-  int result = Predict(in, out, "data", "output");
+  int result = Infer(in, out, "data", "output");
   if (result != 0) {
     return result;
   }

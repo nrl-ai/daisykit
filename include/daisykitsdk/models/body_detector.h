@@ -39,8 +39,8 @@ class BodyDetector : public NCNNModel, public ImageModel {
 
   /// Detect human bodies.
   /// Return 0 on success, otherwise return error code.
-  int Detect(const cv::Mat& image,
-             std::vector<daisykit::types::Object>& objects);
+  int Predict(const cv::Mat& image,
+              std::vector<daisykit::types::Object>& objects);
 
  private:
   /// Preprocess image data to obtain net input.

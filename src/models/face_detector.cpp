@@ -78,15 +78,15 @@ void FaceDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   net_input.substract_mean_normalize(0, norm_vals);
 }
 
-int FaceDetector::Detect(const cv::Mat& image,
-                         std::vector<daisykit::types::Face>& faces) {
+int FaceDetector::Predict(const cv::Mat& image,
+                          std::vector<daisykit::types::Face>& faces) {
   // Preprocess
   ncnn::Mat in;
   Preprocess(image, in);
 
   // Inference
   ncnn::Mat out;
-  int result = Predict(in, out, "data", "output");
+  int result = Infer(in, out, "data", "output");
   if (result != 0) {
     return result;
   }
