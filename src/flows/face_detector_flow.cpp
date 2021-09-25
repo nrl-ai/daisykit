@@ -27,12 +27,16 @@ FaceDetectorFlow::FaceDetectorFlow(const std::string& config_str) {
       config["face_detection_model"]["score_threshold"],
       config["face_detection_model"]["iou_threshold"],
       config["face_detection_model"]["input_width"],
-      config["face_detection_model"]["input_height"]);
+      config["face_detection_model"]["input_height"],
+      config["face_detection_model"]["use_gpu"]);
   with_landmark_ = config["with_landmark"];
   if (with_landmark_) {
     facial_landmark_estimator_ = new models::FacialLandmarkEstimator(
         config["facial_landmark_model"]["model"],
-        config["facial_landmark_model"]["weights"]);
+        config["facial_landmark_model"]["weights"],
+        config["facial_landmark_model"]["input_width"],
+        config["facial_landmark_model"]["input_height"],
+        config["facial_landmark_model"]["use_gpu"]);
   }
 }
 
@@ -73,6 +77,9 @@ std::vector<types::Face> FaceDetectorFlow::Process(const cv::Mat& rgb) {
     facial_landmark_estimator_->DetectMulti(rgb, faces);
   }
 
+  // Tick profiler when processing is done
+  profiler.Tick();
+
   return faces;
 }
 
@@ -80,6 +87,10 @@ void FaceDetectorFlow::DrawResult(cv::Mat& rgb,
                                   std::vector<types::Face>& faces) {
   // Draw face bounding boxes and keypoints
   visualizers::FaceVisualizer::DrawFace(rgb, faces, true);
+  visualizers::BaseVisualizer::PutText(
+      rgb, std::string("FPS: ") + std::to_string(profiler.CurrentFPS()), cv::Point(100, 100),
+      cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10, cv::Scalar(0, 0, 0),
+      cv::Scalar(0, 255, 0));
 }
 
 }  // namespace flows

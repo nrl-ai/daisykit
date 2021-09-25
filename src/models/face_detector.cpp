@@ -88,7 +88,6 @@ int FaceDetector::Detect(const cv::Mat& image,
   ncnn::Mat out;
   int result = Predict(in, out, "data", "output");
   if (result != 0) {
-    std::cout << "WTF" << std::endl;
     return result;
   }
 

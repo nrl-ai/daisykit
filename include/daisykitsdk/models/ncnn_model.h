@@ -45,13 +45,15 @@ class NCNNModel {
   /// Load model from buffers.
   /// Module IO should be used to provide inferfaces for loading assets and do
   /// some middleware processing.
-  int LoadModel(const char* param_buffer, const unsigned char* weight_buffer);
+  int LoadModel(const char* param_buffer, const unsigned char* weight_buffer,
+                bool use_gpu = false);
 
   /// Load model from param and weight file.
   /// This function only works if file access is supported. Be careful when use
   /// it for multiplatform applications. Instead, use IO module for loading
   /// models from different sources.
-  int LoadModel(const std::string& param_file, const std::string& weight_file);
+  int LoadModel(const std::string& param_file, const std::string& weight_file,
+                bool use_gpu = false);
 
   /// Prediction function for NCNN model with 1 input and 1 output.
   /// Return 0 on success, otherwise return error code.

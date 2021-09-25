@@ -15,6 +15,7 @@
 #ifndef DAISYKIT_FLOWS_FACE_DETECTOR_FLOW_H_
 #define DAISYKIT_FLOWS_FACE_DETECTOR_FLOW_H_
 
+#include "daisykitsdk/common/profiler.h"
 #include "daisykitsdk/common/types.h"
 #include "daisykitsdk/models/face_detector.h"
 #include "daisykitsdk/models/facial_landmark_estimator.h"
@@ -43,6 +44,7 @@ class FaceDetectorFlow {
   bool with_landmark_ = false;
   models::FaceDetector* face_detector_;
   models::FacialLandmarkEstimator* facial_landmark_estimator_;
+  Profiler profiler;
 };
 
 }  // namespace flows
