@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.10)
 
 project(daisykitsdk)
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 if(CMAKE_TOOLCHAIN_FILE)
     set(LIBRARY_OUTPUT_PATH_ROOT ${CMAKE_BINARY_DIR} CACHE PATH "root for library output, set this to change where android libs are compiled to")
     # Get absolute path, but get_filename_component ABSOLUTE only refer with source dir, so find_file here.
@@ -44,6 +48,7 @@ option(DAISYKIT_BUILD_PYTHON "Build Python packages" OFF)
 option(DAISYKIT_BUILD_DOCS "Build documentation" OFF)
 option(DAISYKIT_BUILD_SHARED_LIB "Build shared lib for dasiykitsdk. Set this value to OFF for static lib." ON)
 option(DAISYKIT_WITH_VULKAN "Build with Vulkan" OFF)
+option(DAISYKIT_COPY_ASSETS "Copy assets to bin folder" ON)
 
 if(ANDROID)
 MESSAGE(STATUS "COMPILE_ANDROID")
@@ -63,14 +68,19 @@ set(ncnn_DIR ${ncnn_FIND_PATH}/lib/cmake/ncnn)
 find_package(ncnn)
 if(NOT ncnn)
   message("Missing prebuilt ncnn. Building from source.")
-  add_subdirectory(src/thirdparties/ncnn)
+  option(NCNN_BUILD_BENCHMARK "" OFF)
+  option(NCNN_PYTHON "" OFF)
+  option(NCNN_BUILD_TOOLS "" OFF)
+  option(NCNN_BUILD_EXAMPLES "" OFF)
+  option(NCNN_VULKAN "" ${DAISYKIT_WITH_VULKAN})
+  add_subdirectory(src/thirdparties/ncnn ${CMAKE_BINARY_DIR}/bin_ncnn)
 endif()
 
 find_package(OpenCV REQUIRED)
 
 set(sources
-    src/models/base_model.cpp
-    src/models/base_model-impl.cpp
+    src/models/ncnn_model.cpp
+    src/models/image_model.cpp
     src/models/body_detector.cpp
     src/models/pose_detector.cpp
     src/models/action_classifier.cpp
@@ -140,13 +150,13 @@ endif()
 # ==================================================
 # Copy asset folders
 # ==================================================
-if (COPY_ASSETS)
+if (DAISYKIT_COPY_ASSETS)
     add_custom_target(configs ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_BINARY_DIR}/configs)
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/configs)
     add_custom_target(models ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/models ${CMAKE_BINARY_DIR}/models)
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/models ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/models)
     add_custom_target(images ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_BINARY_DIR}/images)
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/images)
 endif()
 
 # ==================================================

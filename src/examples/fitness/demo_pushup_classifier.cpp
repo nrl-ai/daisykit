@@ -20,7 +20,7 @@
 
 using namespace cv;
 using namespace std;
-using namespace daisykit::types;
+using namespace daisykit;
 using namespace daisykit::models;
 
 int main(int, char**) {
@@ -36,14 +36,15 @@ int main(int, char**) {
     cv::Mat rgb;
     cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
 
-    float confidence;
-    auto action = model->Classify(rgb, confidence);
+    float score;
+    types::Action action;
+    model->Classify(rgb, action, score);
 
     cv::Scalar color(0, 255, 0);
-    if (confidence < 0.9) {
+    if (score < 0.9) {
       color = cv::Scalar(0, 0, 255);
     }
-    cv::putText(frame, std::to_string(confidence), cv::Point(100, 100),
+    cv::putText(frame, std::to_string(score), cv::Point(100, 100),
                 cv::FONT_HERSHEY_PLAIN, 1.0, color, 2);
 
     imshow("Image", frame);

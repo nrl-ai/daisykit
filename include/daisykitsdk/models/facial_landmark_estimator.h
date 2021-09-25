@@ -16,7 +16,8 @@
 #define DAISYKIT_MODELS_FACIAL_LANDMARK_ESTIMATOR_H_
 
 #include "daisykitsdk/common/types.h"
-#include "daisykitsdk/models/base_model.h"
+#include "daisykitsdk/models/image_model.h"
+#include "daisykitsdk/models/ncnn_model.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -26,35 +27,33 @@
 namespace daisykit {
 namespace models {
 
-class FacialLandmarkEstimator
-    : public BaseModel<cv::Mat, std::vector<daisykit::types::Keypoint>> {
+/// Facial landmark estimation model.
+class FacialLandmarkEstimator : public NCNNModel, public ImageModel {
  public:
   FacialLandmarkEstimator(const char* param_buffer,
                           const unsigned char* weight_buffer,
-                          int input_width = 112, int input_height = 112);
+                          int input_width = 112, int input_height = 112,
+                          bool use_gpu = false);
 
-  // Will be deleted when IO module is supported. Keep for old compatibility.
   FacialLandmarkEstimator(const std::string& param_file,
                           const std::string& weight_file, int input_width = 112,
-                          int input_height = 112);
+                          int input_height = 112, bool use_gpu = false);
 
-  // Override abstract Predict
-  /// Predict keypoints for a single object.
-  virtual std::vector<daisykit::types::Keypoint> Predict(const cv::Mat& image);
+  /// Detect keypoints for a single face.
+  /// This function adds offset_x and offset_y to the keypoints.
+  /// Return 0 on success, otherwise return error code.
+  int Detect(const cv::Mat& image, std::vector<types::Keypoint>& keypoints,
+             float offset_x = 0, float offset_y = 0);
 
-  /// Predict keypoints for a single object with modifiable offset.
-  /// (Supports for predict multi objects in an image).
-  std::vector<daisykit::types::Keypoint> Predict(const cv::Mat& image,
-                                                 float offset_x = 0,
-                                                 float offset_y = 0);
-
-  /// Detect keypoints for multiple objects.
-  void PredictMulti(const cv::Mat& image,
-                    std::vector<daisykit::types::Face>& objects);
+  /// Detect keypoints for multiple faces.
+  /// Modify faces vector to add landmark info. Return 0 on success, otherwise
+  /// return the number of inference errors.
+  int DetectMulti(const cv::Mat& image,
+                  std::vector<daisykit::types::Face>& faces);
 
  private:
-  int input_width_;
-  int input_height_;
+  /// Preprocess image data to obtain net input.
+  void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;
 };
 
 }  // namespace models

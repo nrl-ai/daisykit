@@ -12,29 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
-Follow
-https://isocpp.org/wiki/faq/templates#separate-template-class-defn-from-decl to
-enable implement codes of templated abstract class be put in a .cpp file.
-*/
+#include "daisykitsdk/models/image_model.h"
 
-/*
-New implemented BaseModel need to be listed here
-*/
-
-#include "base_model.cpp"
-#include "daisykitsdk/common/types.h"
-
-#include <opencv2/opencv.hpp>
+#include <string>
+#include <vector>
 
 namespace daisykit {
 namespace models {
 
-// Belows for template implementation
-template class BaseModel<cv::Mat, std::vector<types::Object>>;
-template class BaseModel<cv::Mat, std::vector<types::Face>>;
-template class BaseModel<cv::Mat, std::vector<types::Keypoint>>;
-template class BaseModel<cv::Mat, cv::Mat>;
+ImageModel::ImageModel(int input_width, int input_height) {
+  input_height_ = input_height;
+  input_width_ = input_width;
+}
+
+int ImageModel::InputWidth() { return input_width_; }
+
+int ImageModel::InputHeight() { return input_height_; }
 
 }  // namespace models
 }  // namespace daisykit

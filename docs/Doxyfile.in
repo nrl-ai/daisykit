@@ -112,7 +112,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  =sdk.md \
+INPUT                  =../README.md \
                         android.md \
                         python.md \
                         ../include/daisykitsdk/README.md \

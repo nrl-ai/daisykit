@@ -24,10 +24,10 @@ FaceDetectorFlow::FaceDetectorFlow(const std::string& config_str) {
   face_detector_ = new models::FaceDetector(
       config["face_detection_model"]["model"],
       config["face_detection_model"]["weights"],
-      config["face_detection_model"]["input_width"],
-      config["face_detection_model"]["input_height"],
       config["face_detection_model"]["score_threshold"],
-      config["face_detection_model"]["iou_threshold"]);
+      config["face_detection_model"]["iou_threshold"],
+      config["face_detection_model"]["input_width"],
+      config["face_detection_model"]["input_height"]);
   with_landmark_ = config["with_landmark"];
   if (with_landmark_) {
     facial_landmark_estimator_ = new models::FacialLandmarkEstimator(
@@ -43,10 +43,10 @@ FaceDetectorFlow::FaceDetectorFlow(AAssetManager* mgr,
   face_detector_ = new models::FaceDetector(
       mgr, config["face_detection_model"]["model"],
       config["face_detection_model"]["weights"],
-      config["face_detection_model"]["input_width"],
-      config["face_detection_model"]["input_height"],
       config["face_detection_model"]["score_threshold"],
-      config["face_detection_model"]["iou_threshold"]);
+      config["face_detection_model"]["iou_threshold"],
+      config["face_detection_model"]["input_width"],
+      config["face_detection_model"]["input_height"]);
   with_landmark_ = config["with_landmark"];
   if (with_landmark_) {
     facial_landmark_estimator_ = new models::FacialLandmarkEstimator(
@@ -65,11 +65,12 @@ FaceDetectorFlow::~FaceDetectorFlow() {
 
 std::vector<types::Face> FaceDetectorFlow::Process(const cv::Mat& rgb) {
   // Detect faces
-  std::vector<types::Face> faces = face_detector_->Predict(rgb);
+  std::vector<types::Face> faces;
+  face_detector_->Detect(rgb, faces);
 
   // Detect landmarks
   if (with_landmark_) {
-    facial_landmark_estimator_->PredictMulti(rgb, faces);
+    facial_landmark_estimator_->DetectMulti(rgb, faces);
   }
 
   return faces;

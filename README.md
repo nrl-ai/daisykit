@@ -42,6 +42,7 @@ make
 - Run face detection example
 
 ```
+cd build/bin
 ./demo_face_detector_graph
 ```
 

@@ -16,7 +16,8 @@
 #define DAISYKIT_MODELS_BACKGROUND_MATTING_H_
 
 #include "daisykitsdk/common/types.h"
-#include "daisykitsdk/models/base_model.h"
+#include "daisykitsdk/models/image_model.h"
+#include "daisykitsdk/models/ncnn_model.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -26,31 +27,30 @@
 namespace daisykit {
 namespace models {
 
-class BackgroundMatting : public BaseModel<cv::Mat, cv::Mat> {
+/// Background matting model.
+/// Used to segment human body from background, for background replacement, like
+/// in video call software such as Google Meet, Zoom.
+class BackgroundMatting : public NCNNModel, public ImageModel {
  public:
   BackgroundMatting(const char* param_buffer,
                     const unsigned char* weight_buffer, int input_width = 256,
-                    int input_height = 256);
+                    int input_height = 256, bool use_gpu = false);
 
-  // Will be deleted when IO module is supported. Keep for old compatibility.
   BackgroundMatting(const std::string& param_file,
                     const std::string& weight_file, int input_width = 256,
-                    int input_height = 256);
+                    int input_height = 256, bool use_gpu = false);
 
-  // Override abstract Predict
-  /// Get the mask of foreground.
-  virtual cv::Mat Predict(const cv::Mat& image);
-
-  /// Get the mask of foreground. Predict like this can share the same
-  /// allocation => save memory
-  void Predict(cv::Mat& image, cv::Mat& mask);
+  /// Get forground probability mask.
+  /// Return 0 on success, otherwise return error code.
+  int Segmentation(const cv::Mat& image, cv::Mat& mask);
 
   /// Bind the segmented foreground with defined background.
-  void BindWithBackground(cv::Mat& rgb, const cv::Mat& bg, const cv::Mat& mask);
+  void BindWithBackground(cv::Mat& rgb, const cv::Mat& background,
+                          const cv::Mat& mask);
 
  private:
-  int input_width_;
-  int input_height_;
+  /// Preprocess image data to obtain net input.
+  void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;
 };
 
 }  // namespace models

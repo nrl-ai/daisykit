@@ -23,78 +23,63 @@ namespace models {
 
 BackgroundMatting::BackgroundMatting(const char* param_buffer,
                                      const unsigned char* weight_buffer,
-                                     int input_width, int input_height) {
-  LoadModel(param_buffer, weight_buffer);
-  input_width_ = input_width;
-  input_height_ = input_height;
-}
+                                     int input_width, int input_height,
+                                     bool use_gpu)
+    : NCNNModel(param_buffer, weight_buffer, use_gpu),
+      ImageModel(input_width, input_height) {}
 
-// Will be deleted when IO module is supported. Keep for old compatibility.
 BackgroundMatting::BackgroundMatting(const std::string& param_file,
                                      const std::string& weight_file,
-                                     int input_width, int input_height) {
-  LoadModel(param_file, weight_file);
-  input_width_ = input_width;
-  input_height_ = input_height;
-}
+                                     int input_width, int input_height,
+                                     bool use_gpu)
+    : NCNNModel(param_file, weight_file, use_gpu),
+      ImageModel(input_width, input_height) {}
 
-cv::Mat BackgroundMatting::Predict(const cv::Mat& image) {
+void BackgroundMatting::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
+  // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();
-  const int w = rgb.cols;
-  const int h = rgb.rows;
 
-  ncnn::Mat in = ncnn::Mat::from_pixels_resize(
-      rgb.data, ncnn::Mat::PIXEL_RGB2BGR, w, h, input_width_, input_height_);
+  net_input = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB2BGR,
+                                            rgb.cols, rgb.rows, InputWidth(),
+                                            InputHeight());
 
-  ncnn::Extractor ex = model_.create_extractor();
-  ex.input("input_blob1", in);
   const float mean_vals[3] = {104.f, 112.f, 121.f};
   const float norm_vals[3] = {1.f / 255.f, 1.f / 255.f, 1.f / 255.f};
-  in.substract_mean_normalize(mean_vals, norm_vals);
-
-  ncnn::Mat out;
-  ex.extract("sigmoid_blob1", out);
-
-  const float denorm_vals[3] = {255.f, 255.f, 255.f};
-  out.substract_mean_normalize(0, denorm_vals);
-
-  cv::Mat mask = cv::Mat::zeros(cv::Size(w, h), CV_8UC1);
-  out.to_pixels_resize(mask.data, ncnn::Mat::PIXEL_GRAY, w, h);
-  return mask;
+  net_input.substract_mean_normalize(mean_vals, norm_vals);
 }
 
-void BackgroundMatting::Predict(cv::Mat& image, cv::Mat& mask) {
-  cv::Mat rgb = image.clone();
-  const int w = rgb.cols;
-  const int h = rgb.rows;
+int BackgroundMatting::Segmentation(const cv::Mat& image, cv::Mat& mask) {
+  // Preprocess
+  ncnn::Mat in;
+  Preprocess(image, in);
 
-  ncnn::Mat in = ncnn::Mat::from_pixels_resize(
-      rgb.data, ncnn::Mat::PIXEL_RGB2BGR, w, h, input_width_, input_height_);
-
-  ncnn::Extractor ex = model_.create_extractor();
-  ex.input("input_blob1", in);
-  const float mean_vals[3] = {104.f, 112.f, 121.f};
-  const float norm_vals[3] = {1.f / 255.f, 1.f / 255.f, 1.f / 255.f};
-  in.substract_mean_normalize(mean_vals, norm_vals);
-
+  // Inference
   ncnn::Mat out;
-  ex.extract("sigmoid_blob1", out);
+  int result = Predict(in, out, "input_blob1", "sigmoid_blob1");
+  if (result != 0) {
+    return result;
+  }
 
+  // Postprocess
   const float denorm_vals[3] = {255.f, 255.f, 255.f};
   out.substract_mean_normalize(0, denorm_vals);
+  int img_width = image.cols;
+  int img_height = image.rows;
+  mask = cv::Mat::zeros(cv::Size(img_width, img_height), CV_8UC1);
+  out.to_pixels_resize(mask.data, ncnn::Mat::PIXEL_GRAY, img_width, img_height);
 
-  mask = cv::Mat::zeros(cv::Size(w, h), CV_8UC1);
-  out.to_pixels_resize(mask.data, ncnn::Mat::PIXEL_GRAY, w, h);
+  return 0;
 }
 
-void BackgroundMatting::BindWithBackground(cv::Mat& rgb, const cv::Mat& bg,
+void BackgroundMatting::BindWithBackground(cv::Mat& rgb,
+                                           const cv::Mat& background,
                                            const cv::Mat& mask) {
   const int w = rgb.cols;
   const int h = rgb.rows;
 
   for (int y = 0; y < h; y++) {
     uchar* rgbptr = rgb.ptr<uchar>(y);
-    const uchar* bgptr = bg.ptr<const uchar>(y);
+    const uchar* bgptr = background.ptr<const uchar>(y);
     const uchar* mptr = mask.ptr<const uchar>(y);
 
     for (int x = 0; x < w; x++) {
