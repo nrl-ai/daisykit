@@ -24,76 +24,55 @@
 namespace daisykit {
 namespace models {
 
+ActionClassifier::ActionClassifier(const char* param_buffer,
+                                   const unsigned char* weight_buffer,
+                                   bool smooth, int input_width,
+                                   int input_height, bool use_gpu)
+    : NCNNModel(param_buffer, weight_buffer, use_gpu),
+      ImageModel(input_width, input_height) {
+  smooth_ = smooth;
+}
+
 ActionClassifier::ActionClassifier(const std::string& param_file,
-                                   const std::string& weight_file,
-                                   bool smooth) {
-  _smooth = smooth;
-  LoadModel(param_file, weight_file);
+                                   const std::string& weight_file, bool smooth,
+                                   int input_width, int input_height,
+                                   bool use_gpu)
+    : NCNNModel(param_file, weight_file, use_gpu),
+      ImageModel(input_width, input_height) {
+  smooth_ = smooth;
 }
 
-void ActionClassifier::LoadModel(const std::string& param_file,
-                                 const std::string& weight_file) {
-  if (model_) {
-    delete model_;
-    model_ = nullptr;
-  }
-  model_ = new ncnn::Net;
-  int ret_param = model_->load_param(param_file.c_str());
-  int ret_model = model_->load_model(weight_file.c_str());
-  if (ret_param != 0 || ret_model != 0) {
-    exit(1);
-  }
-}
-
-#ifdef __ANDROID__
-ActionClassifier::ActionClassifier(AAssetManager* mgr,
-                                   const std::string& param_file,
-                                   const std::string& weight_file,
-                                   bool smooth) {
-  _smooth = smooth;
-  LoadModel(mgr, param_file, weight_file);
-}
-
-void ActionClassifier::LoadModel(AAssetManager* mgr,
-                                 const std::string& param_file,
-                                 const std::string& weight_file) {
-  if (model_) {
-    delete model_;
-    model_ = nullptr;
-  }
-  model_ = new ncnn::Net;
-  int ret_param = model_->load_param(mgr, param_file.c_str());
-  int ret_model = model_->load_model(mgr, weight_file.c_str());
-  if (ret_param != 0 || ret_model != 0) {
-    exit(1);
-  }
-}
-#endif
-
-types::Action ActionClassifier::Classify(cv::Mat& image, float& confidence) {
-  cv::Mat rgb = image.clone();
-  rgb = processors::ImgUtils::SquarePadding(rgb, input_width_).clone();
-  ncnn::Mat in =
+void ActionClassifier::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
+  cv::Mat rgb = processors::ImgUtils::SquarePadding(image, InputWidth());
+  net_input =
       ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols,
-                                    rgb.rows, input_width_, input_height_);
+                                    rgb.rows, InputWidth(), InputHeight());
+}
 
+int ActionClassifier::Predict(const cv::Mat& image, types::Action& action,
+                              float& confidence) {
+  // Preprocess
+  ncnn::Mat in;
+  Preprocess(image, in);
+
+  // Model inference
   ncnn::Mat out;
-  {
-    ncnn::MutexLockGuard g(lock_);
-    ncnn::Extractor ex = model_->create_extractor();
-    ex.input("input_1_blob", in);
-    ex.extract("dense_Softmax_blob", out);
+  int result = Infer(in, out, "input_1_blob", "dense_Softmax_blob");
+  if (result != 0) {
+    return result;
   }
 
+  // Postprocess
   out = out.reshape(out.w * out.h * out.c);
   confidence = out[1];
   bool is_pushup = confidence > 0.9;
 
-  if (!_smooth) {
-    return is_pushup ? types::Action::kPushup : types::Action::kUnknown;
+  if (!smooth_) {
+    action = is_pushup ? types::Action::kPushup : types::Action::kUnknown;
+    return 0;
   }
 
-  // Check and recognize pushup
+  // Check and recognize push-up
   long long int current_time =
       std::chrono::duration_cast<std::chrono::milliseconds>(
           std::chrono::system_clock::now().time_since_epoch())
@@ -104,15 +83,12 @@ types::Action ActionClassifier::Classify(cv::Mat& image, float& confidence) {
 
   // Return smoothed result
   if (current_time - last_pushup_time_ < 2000) {
-    return types::Action::kPushup;
+    action = types::Action::kPushup;
+    return 0;
   }
 
-  return types::Action::kUnknown;
-}
-
-types::Action ActionClassifier::Classify(cv::Mat& image) {
-  float confidence;
-  return Classify(image, confidence);
+  action = types::Action::kUnknown;
+  return 0;
 }
 
 }  // namespace models

@@ -22,38 +22,47 @@ namespace models {
 
 PoseDetector::PoseDetector(const char* param_buffer,
                            const unsigned char* weight_buffer, int input_width,
-                           int input_height) {
-  LoadModel(param_buffer, weight_buffer);
-  input_height_ = input_height;
-  input_width_ = input_width;
-}
+                           int input_height, bool use_gpu)
+    : NCNNModel(param_buffer, weight_buffer, use_gpu),
+      ImageModel(input_width, input_height) {}
 
-// Will be deleted when IO module is supported. Keep for old compatibility.
 PoseDetector::PoseDetector(const std::string& param_file,
                            const std::string& weight_file, int input_width,
-                           int input_height) {
-  LoadModel(param_file, weight_file);
-  input_height_ = input_height;
-  input_width_ = input_width;
-}
+                           int input_height, bool use_gpu)
+    : NCNNModel(param_file, weight_file, use_gpu),
+      ImageModel(input_width, input_height) {}
 
-// Detect keypoints for single object
-std::vector<types::Keypoint> PoseDetector::Predict(const cv::Mat& image) {
-  std::vector<types::Keypoint> keypoints;
-  int w = image.cols;
-  int h = image.rows;
-  ncnn::Mat in = ncnn::Mat::from_pixels_resize(image.data, ncnn::Mat::PIXEL_RGB,
-                                               image.cols, image.rows,
-                                               input_width_, input_height_);
+void PoseDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
+  // Clone the original cv::Mat to ensure continuous address for memory
+  cv::Mat rgb = image.clone();
+
+  net_input =
+      ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols,
+                                    rgb.rows, InputWidth(), InputHeight());
+
   const float mean_vals[3] = {0.485f * 255.f, 0.456f * 255.f, 0.406f * 255.f};
   const float norm_vals[3] = {1 / 0.229f / 255.f, 1 / 0.224f / 255.f,
                               1 / 0.225f / 255.f};
-  in.substract_mean_normalize(mean_vals, norm_vals);
-  ncnn::MutexLockGuard g(lock_);
-  ncnn::Extractor ex = model_.create_extractor();
-  ex.input("data", in);
+  net_input.substract_mean_normalize(mean_vals, norm_vals);
+}
+
+int PoseDetector::Predict(const cv::Mat& image,
+                          std::vector<types::Keypoint>& keypoints,
+                          float offset_x, float offset_y) {
+  // Preprocess
+  ncnn::Mat in;
+  Preprocess(image, in);
+
+  // Inference
   ncnn::Mat out;
-  ex.extract("hybridsequential0_conv7_fwd", out);
+  int result = Infer(in, out, "data", "hybridsequential0_conv7_fwd");
+  if (result != 0) {
+    return result;
+  }
+
+  // Postprocess
+  int img_width = image.cols;
+  int img_height = image.rows;
   keypoints.clear();
   for (int p = 0; p < out.c; p++) {
     const ncnn::Mat m = out.channel(p);
@@ -73,68 +82,24 @@ std::vector<types::Keypoint> PoseDetector::Predict(const cv::Mat& image) {
     }
 
     types::Keypoint keypoint;
-    keypoint.x = max_x * w / (float)out.w;
-    keypoint.y = max_y * h / (float)out.h;
+    keypoint.x = max_x * img_width / (float)out.w + offset_x;
+    keypoint.y = max_y * img_height / (float)out.h + offset_y;
     keypoint.confidence = max_prob;
     keypoints.push_back(keypoint);
   }
-  return keypoints;
+
+  return 0;
 }
 
-// Detect keypoints for single object
-std::vector<types::Keypoint> PoseDetector::Predict(cv::Mat& image,
-                                                   float offset_x,
-                                                   float offset_y) {
-  std::vector<types::Keypoint> keypoints;
-  int w = image.cols;
-  int h = image.rows;
-  ncnn::Mat in = ncnn::Mat::from_pixels_resize(image.data, ncnn::Mat::PIXEL_RGB,
-                                               image.cols, image.rows,
-                                               input_width_, input_height_);
-  const float mean_vals[3] = {0.485f * 255.f, 0.456f * 255.f, 0.406f * 255.f};
-  const float norm_vals[3] = {1 / 0.229f / 255.f, 1 / 0.224f / 255.f,
-                              1 / 0.225f / 255.f};
-  in.substract_mean_normalize(mean_vals, norm_vals);
-  ncnn::MutexLockGuard g(lock_);
-  ncnn::Extractor ex = model_.create_extractor();
-  ex.input("data", in);
-  ncnn::Mat out;
-  ex.extract("hybridsequential0_conv7_fwd", out);
-  keypoints.clear();
-  for (int p = 0; p < out.c; p++) {
-    const ncnn::Mat m = out.channel(p);
-    float max_prob = 0.f;
-    int max_x = 0;
-    int max_y = 0;
-    for (int y = 0; y < out.h; y++) {
-      const float* ptr = m.row(y);
-      for (int x = 0; x < out.w; x++) {
-        float prob = ptr[x];
-        if (prob > max_prob) {
-          max_prob = prob;
-          max_x = x;
-          max_y = y;
-        }
-      }
-    }
-
-    types::Keypoint keypoint;
-    keypoint.x = max_x * w / (float)out.w + offset_x;
-    keypoint.y = max_y * h / (float)out.h + offset_y;
-    keypoint.confidence = max_prob;
-    keypoints.push_back(keypoint);
-  }
-  return keypoints;
-}
-
-// Detect keypoints for multiple objects
-std::vector<std::vector<types::Keypoint>> PoseDetector::PredictMulti(
-    cv::Mat& image, const std::vector<types::Object>& objects) {
-  int img_w = image.cols;
-  int img_h = image.rows;
+int PoseDetector::PredictMulti(
+    const cv::Mat& image, const std::vector<types::Object>& objects,
+    std::vector<std::vector<types::Keypoint>>& poses) {
+  int num_errors = 0;
+  int img_width = image.cols;
+  int img_height = image.rows;
   int x1, y1, x2, y2;
 
-  std::vector<std::vector<types::Keypoint>> keypoints;
+  poses.clear();
   for (size_t i = 0; i < objects.size(); ++i) {
     x1 = objects[i].x;
     y1 = objects[i].y;
@@ -144,17 +109,20 @@ std::vector<std::vector<types::Keypoint>> PoseDetector::PredictMulti(
     if (y1 < 0) y1 = 0;
     if (x2 < 0) x2 = 0;
     if (y2 < 0) y2 = 0;
-    if (x1 > img_w) x1 = img_w;
-    if (y1 > img_h) y1 = img_h;
-    if (x2 > img_w) x2 = img_w;
-    if (y2 > img_h) y2 = img_h;
+    if (x1 > img_width) x1 = img_width;
+    if (y1 > img_height) y1 = img_height;
+    if (x2 > img_width) x2 = img_width;
+    if (y2 > img_height) y2 = img_height;
 
     cv::Mat roi = image(cv::Rect(x1, y1, x2 - x1, y2 - y1)).clone();
-    std::vector<types::Keypoint> keypoints_single = Predict(roi, x1, y1);
-    keypoints.push_back(keypoints_single);
+    std::vector<types::Keypoint> keypoints_single;
+    if (Predict(roi, keypoints_single, x1, y1) != 0) {
+      ++num_errors;
+    }
+    poses.push_back(keypoints_single);
   }
 
-  return keypoints;
+  return num_errors;
 }
 
 // Draw pose

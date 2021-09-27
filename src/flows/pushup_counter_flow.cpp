@@ -14,7 +14,7 @@
 
 #include "daisykitsdk/flows/pushup_counter_flow.h"
 #include "daisykitsdk/common/visualizers/base_visualizer.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 namespace daisykit {
 namespace flows {
@@ -34,35 +34,18 @@ PushupCounterFlow::PushupCounterFlow(const std::string& config_str) {
   num_pushups_ = 0;
 }
 
-#ifdef __ANDROID__
-PushupCounterFlow::PushupCounterFlow(AAssetManager* mgr,
-                                     const std::string& config_str) {
-  nlohmann::json config = nlohmann::json::parse(config_str);
-  body_detector_ =
-      new models::BodyDetector(mgr, config["person_detection_model"]["model"],
-                               config["person_detection_model"]["weights"]);
-  pose_detector_ =
-      new models::PoseDetector(mgr, config["background_pose_model"]["model"],
-                               config["background_pose_model"]["weights"]);
-  action_classifier_ = new models::ActionClassifier(
-      mgr, config["action_recognition_model"]["model"],
-      config["action_recognition_model"]["weights"], true);
-  pushup_analyzer_ = new examples::PushupAnalyzer();
-  num_pushups_ = 0;
-}
-#endif
-
 void PushupCounterFlow::Process(cv::Mat& rgb) {
   // Detect background pose
-  std::vector<types::Object> bodies = body_detector_->Predict(rgb);
+  std::vector<types::Object> bodies;
+  body_detector_->Predict(rgb, bodies);
   {
     const std::lock_guard<std::mutex> lock(bodies_lock_);
     bodies_ = bodies;
   }
 
   // Detect keypoints
-  std::vector<std::vector<types::Keypoint>> keypoints =
-      pose_detector_->PredictMulti(rgb, bodies);
+  std::vector<std::vector<types::Keypoint>> keypoints;
+  pose_detector_->PredictMulti(rgb, bodies, keypoints);
   {
     const std::lock_guard<std::mutex> lock(keypoints_lock_);
     keypoints_ = keypoints;
@@ -70,7 +53,8 @@ void PushupCounterFlow::Process(cv::Mat& rgb) {
 
   // Recognize action and count pushups
   float score;
-  types::Action action = action_classifier_->Classify(rgb, score);
+  types::Action action;
+  action_classifier_->Predict(rgb, action, score);
   is_pushup_score_ = score;
   num_pushups_ =
       pushup_analyzer_->CountPushups(rgb, action == types::Action::kPushup);
@@ -96,7 +80,7 @@ void PushupCounterFlow::DrawResult(cv::Mat& rgb) {
     }
   }
 
-  // Draw pushups counting
+  // Draw push-up counting
   if (is_pushup_score_ > 0.5) {
     visualizers::BaseVisualizer::PutText(
         rgb, "Is pushing: " + std::to_string(is_pushup_score_),

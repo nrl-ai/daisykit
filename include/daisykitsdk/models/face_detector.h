@@ -16,7 +16,8 @@
 #define DAISYKIT_MODELS_FACE_DETECTOR_H_
 
 #include "daisykitsdk/common/types.h"
-#include "daisykitsdk/models/base_model.h"
+#include "daisykitsdk/models/image_model.h"
+#include "daisykitsdk/models/ncnn_model.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -26,29 +27,34 @@
 namespace daisykit {
 namespace models {
 
-class FaceDetector
-    : public BaseModel<cv::Mat, std::vector<daisykit::types::Face>> {
+/// Human face detection model with probability of wearing mask.
+class FaceDetector : public NCNNModel, public ImageModel {
  public:
   FaceDetector(const char* param_buffer, const unsigned char* weight_buffer,
+               float score_threshold = 0.7, float iou_threshold = 0.5,
                int input_width = 320, int input_height = 320,
-               float score_threshold = 0.7, float iou_threshold = 0.5);
+               bool use_gpu = false);
 
-  // Will be deleted when IO module is supported. Keep for old compatibility.
   FaceDetector(const std::string& param_file, const std::string& weight_file,
+               float score_threshold = 0.7, float iou_threshold = 0.5,
                int input_width = 320, int input_height = 320,
-               float score_threshold = 0.7, float iou_threshold = 0.5);
+               bool use_gpu = false);
 
-  // Override abstract Predict.
-  /// Predict faces in an image.
-  virtual std::vector<daisykit::types::Face> Predict(const cv::Mat& image);
+  /// Detect faces in an image.
+  /// Return 0 on success, otherwise return error code.
+  int Predict(const cv::Mat& image, std::vector<daisykit::types::Face>& faces);
 
  private:
-  int input_width_;
-  int input_height_;
+  /// Preprocess image data to obtain net input.
+  void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;
 
-  int num_anchors_;
-
+  /// Score threshold for bounding box. Currently we ignore to set this value
+  /// because the current model has an internal of 0.25 inside and that's
+  /// enough.
   float score_threshold_;
+
+  /// IoU threshold for NMS. Currently we ignore this value because our current
+  /// model doesn't need NMS.
   float iou_threshold_;
 };
 

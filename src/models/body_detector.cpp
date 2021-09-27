@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "daisykitsdk/models/body_detector.h"
-#include "daisykitsdk/processors/image_processors/img_utils.h"
 
 #include <string>
 #include <vector>
@@ -22,52 +21,58 @@ namespace daisykit {
 namespace models {
 
 BodyDetector::BodyDetector(const char* param_buffer,
-                           const unsigned char* weight_buffer,
-                           const int& input_width, const int& input_height) {
-  LoadModel(param_buffer, weight_buffer);
-  input_width_ = input_width;
-  input_height_ = input_height;
-}
+                           const unsigned char* weight_buffer, int input_width,
+                           int input_height, bool use_gpu)
+    : NCNNModel(param_buffer, weight_buffer, use_gpu),
+      ImageModel(input_width, input_height) {}
 
-// Will be deleted when IO module is supported. Keep for old compatibility.
 BodyDetector::BodyDetector(const std::string& param_file,
-                           const std::string& weight_file,
-                           const int& input_width, const int& input_height) {
-  LoadModel(param_file, weight_file);
-  input_width_ = input_width;
-  input_height_ = input_height;
-}
+                           const std::string& weight_file, int input_width,
+                           int input_height, bool use_gpu)
+    : NCNNModel(param_file, weight_file, use_gpu),
+      ImageModel(input_width, input_height) {}
 
-std::vector<types::Object> BodyDetector::Predict(cv::Mat& image) {
+void BodyDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();
-  int img_w = rgb.cols;
-  int img_h = rgb.rows;
 
-  ncnn::Mat in =
-      ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, img_w,
-                                    img_h, input_width_, input_height_);
+  net_input =
+      ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols,
+                                    rgb.rows, InputWidth(), InputHeight());
 
   const float mean_vals[3] = {0.f, 0.f, 0.f};
   const float norm_vals[3] = {1 / 255.f, 1 / 255.f, 1 / 255.f};
-  in.substract_mean_normalize(mean_vals, norm_vals);
+  net_input.substract_mean_normalize(mean_vals, norm_vals);
+}
 
-  ncnn::Extractor ex = model_.create_extractor();
-  ex.input("data", in);
+int BodyDetector::Predict(const cv::Mat& image,
+                          std::vector<daisykit::types::Object>& objects) {
+  // Preprocess
+  ncnn::Mat in;
+  Preprocess(image, in);
+
+  // Inference
   ncnn::Mat out;
-  ex.extract("output", out);
+  int result = Infer(in, out, "data", "output");
+  if (result != 0) {
+    return result;
+  }
 
-  std::vector<types::Object> objects;
-  for (int i = 0; i < out.h; i++) {
+  // Postprocess
+  int img_width = image.cols;
+  int img_height = image.rows;
+  int count = out.h;
+  objects.resize(count);
+  for (int i = 0; i < count; i++) {
     types::Object object;
     float x1, y1, x2, y2, score, label;
     float pw, ph, cx, cy;
     const float* values = out.row(i);
 
-    x1 = values[2] * img_w;
-    y1 = values[3] * img_h;
-    x2 = values[4] * img_w;
-    y2 = values[5] * img_h;
+    x1 = values[2] * img_width;
+    y1 = values[3] * img_height;
+    x2 = values[4] * img_width;
+    y2 = values[5] * img_height;
 
     pw = x2 - x1;
     ph = y2 - y1;
@@ -86,10 +91,8 @@ std::vector<types::Object> BodyDetector::Predict(cv::Mat& image) {
     object.w = x2 - x1;
     object.h = y2 - y1;
 
-    objects.push_back(object);
+    objects[i] = object;
   }
-
-  return objects;
 }
 
 }  // namespace models

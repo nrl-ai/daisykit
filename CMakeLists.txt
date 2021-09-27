@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.10)
 
 project(daisykitsdk)
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 if(CMAKE_TOOLCHAIN_FILE)
     set(LIBRARY_OUTPUT_PATH_ROOT ${CMAKE_BINARY_DIR} CACHE PATH "root for library output, set this to change where android libs are compiled to")
     # Get absolute path, but get_filename_component ABSOLUTE only refer with source dir, so find_file here.
@@ -38,39 +42,51 @@ set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fexceptions -frtti -fPIC")
 
 option(ncnn_FIND_PATH "Path to NCNN library" "~/Apps/ncnn-20210720-ubuntu-1804")
-option(ENABLE_BARCODE_SCANNER "Enable barcode scanner" ON)
-option(BUILD_EXAMPLES "Build examples" ON)
-option(BUILD_PYTHON "Build Python packages" OFF)
-option(BUILD_DOCS "Build documentation" OFF)
-option(BUILD_SHARED_LIB "Build shared lib for dasiykitsdk. Set this value to OFF for static lib." ON)
-option(WITH_VULKAN "Build with Vulkan" OFF)
+option(DAISYKIT_ENABLE_BARCODE_SCANNER "Enable barcode scanner" ON)
+option(DAISYKIT_BUILD_EXAMPLES "Build examples" ON)
+option(DAISYKIT_BUILD_PYTHON "Build Python packages" OFF)
+option(DAISYKIT_BUILD_DOCS "Build documentation" OFF)
+option(DAISYKIT_BUILD_SHARED_LIB "Build shared lib for dasiykitsdk. Set this value to OFF for static lib." ON)
+option(DAISYKIT_WITH_VULKAN "Build with Vulkan" ON)
+option(DAISYKIT_COPY_ASSETS "Copy assets to bin folder" ON)
+
+include_directories(include .)
 
 if(ANDROID)
 MESSAGE(STATUS "COMPILE_ANDROID")
-    set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/thirdparties/opencv-mobile-4.5.3-android/sdk/native/jni)
-    set(ncnn_FIND_PATH ${CMAKE_SOURCE_DIR}/thirdparties/ncnn-20210720-android-vulkan/${ANDROID_ABI})
+    set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/third_party/opencv-mobile-4.5.3-android/sdk/native/jni)
+    set(ncnn_FIND_PATH ${CMAKE_SOURCE_DIR}/third_party/ncnn-20210720-android-vulkan/${ANDROID_ABI})
 else()
-    if (WITH_VULKAN)
-        find_package(Vulkan REQUIRED)
+    if (DAISYKIT_WITH_VULKAN)
+        find_package(Vulkan)
+        # If not found Vulkan, disable GPU support
+        if(NOT Vulkan_FOUND)
+            message("Vulkan is not found. Disabling GPU support.")
+            set(DAISYKIT_WITH_VULKAN OFF)
+        endif()
+        option(NCNN_VULKAN "" ${DAISYKIT_WITH_VULKAN})
     endif()
     include_directories(${ncnn_FIND_PATH}/include/ncnn)
 endif()
-
-include_directories(include)
 
 message(${ncnn_FIND_PATH}/lib/cmake/ncnn)
 set(ncnn_DIR ${ncnn_FIND_PATH}/lib/cmake/ncnn)
 find_package(ncnn)
 if(NOT ncnn)
   message("Missing prebuilt ncnn. Building from source.")
-  add_subdirectory(src/thirdparties/ncnn)
+  option(NCNN_BUILD_BENCHMARK "" OFF)
+  option(NCNN_PYTHON "" OFF)
+  option(NCNN_BUILD_TOOLS "" OFF)
+  option(NCNN_BUILD_EXAMPLES "" OFF)
+  option(NCNN_VULKAN "" ${DAISYKIT_WITH_VULKAN})
+  add_subdirectory(third_party/ncnn ${CMAKE_BINARY_DIR}/bin_ncnn)
 endif()
 
 find_package(OpenCV REQUIRED)
 
 set(sources
-    src/models/base_model.cpp
-    src/models/base_model-impl.cpp
+    src/models/ncnn_model.cpp
+    src/models/image_model.cpp
     src/models/body_detector.cpp
     src/models/pose_detector.cpp
     src/models/action_classifier.cpp
@@ -108,15 +124,15 @@ set(sources ${sources}
 endif()
 
 # Add barcode scanner
-if (ENABLE_BARCODE_SCANNER)
-    add_subdirectory(src/thirdparties/zxing-cpp)
-    include_directories(src/thirdparties/zxing-cpp/core/src)
-    include_directories(src/thirdparties/zxing-cpp/opencv/src)
+if (DAISYKIT_ENABLE_BARCODE_SCANNER)
+    add_subdirectory(third_party/zxing-cpp)
+    include_directories(third_party/zxing-cpp/core/src)
+    include_directories(third_party/zxing-cpp/opencv/src)
     set(sources ${sources} 
         src/flows/barcode_scanner_flow.cpp)
 endif()
 
-if (BUILD_SHARED_LIB)
+if (DAISYKIT_BUILD_SHARED_LIB)
     add_library(daisykitsdk SHARED ${sources})
 else()
     add_library(daisykitsdk STATIC ${sources})
@@ -124,7 +140,7 @@ endif()
 
 target_link_libraries(daisykitsdk ncnn ${OpenCV_LIBS})
 
-if (ENABLE_BARCODE_SCANNER)
+if (DAISYKIT_ENABLE_BARCODE_SCANNER)
     target_link_libraries(daisykitsdk ZXing::ZXing)
 endif()
 
@@ -132,7 +148,7 @@ endif()
 # ==================================================
 # Build examples
 # ==================================================
-if ((NOT ANDROID) AND BUILD_EXAMPLES)
+if ((NOT ANDROID) AND DAISYKIT_BUILD_EXAMPLES)
     add_subdirectory(src/examples)
 endif()
 
@@ -140,18 +156,18 @@ endif()
 # ==================================================
 # Copy asset folders
 # ==================================================
-if (COPY_ASSETS)
+if (DAISYKIT_COPY_ASSETS)
     add_custom_target(configs ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_BINARY_DIR}/configs)
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/configs)
     add_custom_target(models ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/models ${CMAKE_BINARY_DIR}/models)
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/models ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/models)
     add_custom_target(images ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_BINARY_DIR}/images)
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/images)
 endif()
 
 # ==================================================
 # Build Python package
 # ==================================================
-if(BUILD_PYTHON)
+if(DAISYKIT_BUILD_PYTHON)
     add_subdirectory(python)
 endif()

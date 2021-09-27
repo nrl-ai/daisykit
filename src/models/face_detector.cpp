@@ -22,85 +22,90 @@ namespace daisykit {
 namespace models {
 
 FaceDetector::FaceDetector(const char* param_buffer,
-                           const unsigned char* weight_buffer, int input_width,
-                           int input_height, float score_threshold,
-                           float iou_threshold) {
-  LoadModel(param_buffer, weight_buffer);
+                           const unsigned char* weight_buffer,
+                           float score_threshold, float iou_threshold,
+                           int input_width, int input_height, bool use_gpu)
+    : NCNNModel(param_buffer, weight_buffer, use_gpu),
+      ImageModel(input_width, input_height) {
   score_threshold_ = score_threshold;
   iou_threshold_ = iou_threshold;
-  input_width_ = input_width;
-  input_height_ = input_height;
 }
 
-// Will be deleted when IO module is supported. Keep for old compatibility.
 FaceDetector::FaceDetector(const std::string& param_file,
-                           const std::string& weight_file, int input_width,
-                           int input_height, float score_threshold,
-                           float iou_threshold) {
-  LoadModel(param_file, weight_file);
+                           const std::string& weight_file,
+                           float score_threshold, float iou_threshold,
+                           int input_width, int input_height, bool use_gpu)
+    : NCNNModel(param_file, weight_file, use_gpu),
+      ImageModel(input_width, input_height) {
   score_threshold_ = score_threshold;
   iou_threshold_ = iou_threshold;
-  input_width_ = input_width;
-  input_height_ = input_height;
 }
 
-std::vector<types::Face> FaceDetector::Predict(const cv::Mat& image) {
+void FaceDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();
 
-  // letterbox pad to multiple of 32
-  int im_width = rgb.cols;
-  int im_height = rgb.rows;
+  // Letterbox pad to multiple of 32
+  int img_width = rgb.cols;
+  int img_height = rgb.rows;
 
-  int w = im_width;
-  int h = im_height;
+  int w = img_width;
+  int h = img_height;
 
   float scale = 1.f;
 
   if (w > h) {
-    scale = (float)input_width_ / w;
-    w = input_width_;
+    scale = (float)InputWidth() / w;
+    w = InputWidth();
     h = h * scale;
   } else {
-    scale = (float)input_height_ / h;
-    h = input_height_;
+    scale = (float)InputHeight() / h;
+    h = InputHeight();
     w = w * scale;
   }
 
   ncnn::Mat in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB,
-                                               im_width, im_height, w, h);
+                                               img_width, img_height, w, h);
 
   // Pad to target_size rectangle
   // yolo/utils/datasets.py letterbox
   int wpad = (w + 31) / 32 * 32 - w;
   int hpad = (h + 31) / 32 * 32 - h;
-  ncnn::Mat in_pad;
-  ncnn::copy_make_border(in, in_pad, hpad / 2, hpad - hpad / 2, wpad / 2,
+  ncnn::copy_make_border(in, net_input, hpad / 2, hpad - hpad / 2, wpad / 2,
                          wpad - wpad / 2, ncnn::BORDER_CONSTANT, 114.f);
 
   const float norm_vals[3] = {1 / 255.f, 1 / 255.f, 1 / 255.f};
-  in_pad.substract_mean_normalize(0, norm_vals);
+  net_input.substract_mean_normalize(0, norm_vals);
+}
 
-  ncnn::Extractor ex = model_.create_extractor();
+int FaceDetector::Predict(const cv::Mat& image,
+                          std::vector<daisykit::types::Face>& faces) {
+  // Preprocess
+  ncnn::Mat in;
+  Preprocess(image, in);
 
-  ex.input("data", in_pad);
+  // Inference
   ncnn::Mat out;
-  ex.extract("output", out);
+  int result = Infer(in, out, "data", "output");
+  if (result != 0) {
+    return result;
+  }
 
+  // Postprocess
+  int img_width = image.cols;
+  int img_height = image.rows;
   int count = out.h;
-
-  std::vector<types::Face> objects;
-  objects.resize(count);
+  faces.resize(count);
   for (int i = 0; i < count; i++) {
     int label;
     float x1, y1, x2, y2, score;
     float pw, ph, cx, cy;
     const float* values = out.row(i);
 
-    x1 = values[2] * im_width;
-    y1 = values[3] * im_height;
-    x2 = values[4] * im_width;
-    y2 = values[5] * im_height;
+    x1 = values[2] * img_width;
+    y1 = values[3] * img_height;
+    x2 = values[4] * img_width;
+    y2 = values[5] * img_height;
 
     score = values[1];
     label = values[0];
@@ -110,20 +115,20 @@ std::vector<types::Face> FaceDetector::Predict(const cv::Mat& image) {
     if (x2 < 0) x2 = 0;
     if (y2 < 0) y2 = 0;
 
-    if (x1 > im_width) x1 = im_width;
-    if (y1 > im_height) y1 = im_height;
-    if (x2 > im_width) x2 = im_width;
-    if (y2 > im_height) y2 = im_height;
+    if (x1 > img_width) x1 = img_width;
+    if (y1 > img_height) y1 = img_height;
+    if (x2 > img_width) x2 = img_width;
+    if (y2 > img_height) y2 = img_height;
 
-    objects[i].wearing_mask_prob = label == 2 ? 1.0 : 0.0;
-    objects[i].confidence = score;
-    objects[i].x = x1;
-    objects[i].y = y1;
-    objects[i].w = x2 - x1;
-    objects[i].h = y2 - y1;
+    faces[i].wearing_mask_prob = label == 2 ? 1.0 : 0.0;
+    faces[i].confidence = score;
+    faces[i].x = x1;
+    faces[i].y = y1;
+    faces[i].w = x2 - x1;
+    faces[i].h = y2 - y1;
   }
 
-  return objects;
+  return 0;
 }
 
 }  // namespace models

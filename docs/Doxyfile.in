@@ -112,7 +112,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  =sdk.md \
+INPUT                  =../README.md \
                         android.md \
                         python.md \
                         ../include/daisykitsdk/README.md \
@@ -169,7 +169,7 @@ FILE_PATTERNS          = *.c \
 RECURSIVE              = YES
 EXCLUDE                = doxygen-awesome-css
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = thirdparties
+EXCLUDE_PATTERNS       = third_party
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = *

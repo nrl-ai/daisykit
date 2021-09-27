@@ -65,11 +65,12 @@ class CMakeBuild(build_ext):
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={}".format(extdir),
             "-DPYTHON_EXECUTABLE={}".format(sys.executable),
             "-DCMAKE_BUILD_TYPE={}".format(cfg),  # not used on MSVC, but no harm
-            "-DBUILD_PYTHON=ON",
-            "-DBUILD_EXAMPLES=OFF",
-            "-DBUILD_DOCS=OFF",
-            "-DCOPY_ASSETS=OFF",
-            "-DBUILD_SHARED_LIB=OFF"
+            "-DDAISYKIT_BUILD_PYTHON=ON",
+            "-DDAISYKIT_BUILD_EXAMPLES=OFF",
+            "-DDAISYKIT_BUILD_DOCS=OFF",
+            "-DDAISYKIT_COPY_ASSETS=OFF",
+            "-DDAISYKIT_BUILD_SHARED_LIB=OFF",
+            "-DDAISYKIT_WITH_VULKAN=OFF"
         ]
         build_args = []
 
@@ -136,10 +137,10 @@ setup(
     author_email="daisykit.team@gmail.com",
     maintainer="DaisyKit Team",
     maintainer_email="daisykit.team@gmail.com",
-    description="Toolkit for software engineers to Deploy AI Systems Yourself (DAISY). DaisyKit SDK is the core of models and algorithms, which can be used to develop wrappers and applications for different platforms: mobile, embedded or web browsers.",
+    description="Deploy AI Systems Yourself (DAISY) Kit. DaisyKit Python is the wrapper of DaisyKit SDK, an AI framework focusing on the ease of deployment.",
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url="https://daisykit.org/",
+    url="https://docs.daisykit.org/",
     classifiers=[
         "Programming Language :: C++",
         "Programming Language :: Python :: 3",

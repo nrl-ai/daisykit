@@ -16,7 +16,8 @@
 #define DAISYKIT_MODELS_BODY_DETECTOR_H_
 
 #include "daisykitsdk/common/types.h"
-#include "daisykitsdk/models/base_model.h"
+#include "daisykitsdk/models/image_model.h"
+#include "daisykitsdk/models/ncnn_model.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -26,21 +27,25 @@
 namespace daisykit {
 namespace models {
 
-class BodyDetector
-    : public BaseModel<cv::Mat, std::vector<daisykit::types::Object>> {
+/// Human body detection model.
+class BodyDetector : public NCNNModel, public ImageModel {
  public:
   BodyDetector(const char* param_buffer, const unsigned char* weight_buffer,
-               const int& input_width = 320, const int& input_height = 320);
+               int input_width = 320, int input_height = 320,
+               bool use_gpu = false);
 
-  // Will be deleted when IO module is supported. Keep for old compatibility.
   BodyDetector(const std::string& param_file, const std::string& weight_file,
-               const int& width = 320, const int& height = 320);
+               int width = 320, int height = 320, bool use_gpu = false);
 
-  // Overide abstract Predict.
-  /// Detect multiple objects in an image.
-  virtual std::vector<daisykit::types::Object> Predict(cv::Mat& image);
+  /// Detect human bodies.
+  /// Return 0 on success, otherwise return error code.
+  int Predict(const cv::Mat& image,
+              std::vector<daisykit::types::Object>& objects);
 
  private:
+  /// Preprocess image data to obtain net input.
+  void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;
+
   int input_width_;
   int input_height_;
 };

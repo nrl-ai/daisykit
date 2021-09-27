@@ -23,6 +23,12 @@ VS Code can use clang-format to format source code file (Ctrl+Shift+i).
 
 ![Configure Clang Format for VS Code - DaisyKit project](config-clang-format-vscode.png)
 
+**Run code format for the whole project on Ubuntu (should be done before committing your code):**
+
+```
+bash scripts/format_code.sh
+```
+
 ### Comments
 
 - Use `//` to start a comment. This project use Doxygen to generate documentation automatically. Use `///` to start a comment that should be used to generate documentation.

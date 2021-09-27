@@ -18,7 +18,7 @@
 #include "daisykitsdk/graphs/nodes/models/face_landmark_estimator_node.h"
 #include "daisykitsdk/graphs/nodes/packet_distributor_node.h"
 #include "daisykitsdk/graphs/nodes/visualizers/face_visualizer_node.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 #include <stdio.h>
 #include <fstream>
@@ -40,18 +40,17 @@ int main(int, char**) {
   std::shared_ptr<nodes::FaceDetectorNode> face_detector_node =
       std::make_shared<nodes::FaceDetectorNode>(
           "face_detector",
-          "../assets/models/face_detection/yolo_fastest_with_mask/"
+          "models/face_detection/yolo_fastest_with_mask/"
           "yolo-fastest-opt.param",
-          "../assets/models/face_detection/yolo_fastest_with_mask/"
+          "models/face_detection/yolo_fastest_with_mask/"
           "yolo-fastest-opt.bin",
           NodeType::kAsyncNode);
   std::shared_ptr<nodes::FacialLandmarkEstimatorNode>
       facial_landmark_estimator_node =
           std::make_shared<nodes::FacialLandmarkEstimatorNode>(
               "facial_landmark_estimator",
-              "../assets/models/facial_landmark/pfld-sim.param",
-              "../assets/models/facial_landmark/pfld-sim.bin",
-              NodeType::kAsyncNode);
+              "models/facial_landmark/pfld-sim.param",
+              "models/facial_landmark/pfld-sim.bin", NodeType::kAsyncNode);
   std::shared_ptr<nodes::FaceVisualizerNode> face_visualizer_node =
       std::make_shared<nodes::FaceVisualizerNode>("face_visualizer",
                                                   NodeType::kAsyncNode, true);

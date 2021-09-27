@@ -2,7 +2,7 @@
 
 <https://pypi.org/project/daisykit/>
 
-Python bindings for DaisyKit. This package only supports Ubuntu Linux - Python 3 now. We will add support for other platforms and models in the future.
+Deploy AI Systems Yourself (DAISY) Kit. DaisyKit Python is the wrapper of DaisyKit SDK, an AI framework focusing on the ease of deployment. This package only supports Ubuntu Linux - Python 3 now. We will add support for other platforms and models in the future.
 
 ## Install and run example
 
@@ -144,6 +144,12 @@ Build package:
 
 ```
 python3 setup.py sdist
+```
+
+or
+
+```
+bash scripts/build_python.sh
 ```
 
 Upload to Pypi (for DaisyKit authors only)

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/flows/barcode_scanner_flow.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 #include <stdio.h>
 #include <fstream>

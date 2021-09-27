@@ -14,7 +14,7 @@
 
 #include "daisykitsdk/common/types.h"
 #include "daisykitsdk/flows/face_detector_flow.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 #include <stdio.h>
 #include <fstream>

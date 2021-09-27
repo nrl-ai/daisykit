@@ -8,9 +8,9 @@ jobs:
       matrix:
         path:
           - check: 'src'
-            exclude: 'thirdparties'
+            exclude: 'third_party'
           - check: 'include'
-            exclude: 'thirdparties'
+            exclude: 'third_party'
     steps:
     - uses: actions/checkout@v2
     - name: Run clang-format style check for C/C++ programs.

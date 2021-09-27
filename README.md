@@ -14,10 +14,11 @@
 sudo apt install libopencv-dev
 ```
 
-- Install Vulkan dev. In Ubuntu:
+- Install Vulkan development package. In Ubuntu:
 
 ```
-sudo apt-get install -y libvulkan-dev
+sudo apt install -y libvulkan-dev vulkan-utils
+sudo apt install mesa-vulkan-drivers # For Intel GPU support
 ```
 
 - Download [precompiled NCNN](https://github.com/Tencent/ncnn/releases), extract it (version for your development computer).
@@ -42,6 +43,7 @@ make
 - Run face detection example
 
 ```
+cd build/bin
 ./demo_face_detector_graph
 ```
 
@@ -63,6 +65,12 @@ doxygen Doxyfile.in
 - Step 3: Deploy html documentation from `docs/_build/html`.
 
 - Step 4: Our lastest documentation is deployed at <https://docs.daisykit.org>.
+
+## Known issues and problems
+
+**1. Slow model inference - Low FPS**
+
+This issue can happen on development build. Add `-DCMAKE_BUILD_TYPE=Debug` to `cmake` command and build again. The FPS can be much better.
 
 ## References
 

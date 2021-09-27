@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/flows/background_matting_flow.h"
-#include "daisykitsdk/thirdparties/json.hpp"
+#include "third_party/json.hpp"
 
 namespace daisykit {
 namespace flows {
@@ -45,7 +45,8 @@ BackgroundMattingFlow::~BackgroundMattingFlow() {
 }
 
 cv::Mat BackgroundMattingFlow::Process(const cv::Mat& rgb) {
-  cv::Mat mask = background_matting_model_->Predict(rgb);
+  cv::Mat mask;
+  background_matting_model_->Predict(rgb, mask);
   return mask;
 }
 
