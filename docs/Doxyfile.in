@@ -167,9 +167,10 @@ FILE_PATTERNS          = *.c \
                          *.ucf \
                          *.qsf
 RECURSIVE              = YES
-EXCLUDE                = doxygen-awesome-css
+EXCLUDE                = doxygen-awesome-css \
+                         ../third_party
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = third_party
+EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = *
@@ -179,7 +180,7 @@ INPUT_FILTER           =
 FILTER_PATTERNS        = 
 FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS = 
-USE_MDFILE_AS_MAINPAGE = sdk.md
+USE_MDFILE_AS_MAINPAGE = ../README.md
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
 #---------------------------------------------------------------------------
