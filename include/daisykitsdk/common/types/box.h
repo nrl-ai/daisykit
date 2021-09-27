@@ -19,6 +19,8 @@ namespace daisykit {
 namespace types {
 
 struct Box {
+  Box() {}
+  Box(float x, float y, float w, float h) : x(x), y(y), w(w), h(h) {}
   float x;  /// Top left x
   float y;  /// Top left y
   float w;  /// Bounding box width

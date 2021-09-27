@@ -23,6 +23,7 @@ the operation of loading model, predicting model and other basics.
 
 #include <net.h>
 
+#include <map>
 #include <string>
 
 namespace daisykit {
@@ -59,6 +60,12 @@ class NCNNModel {
   /// Return 0 on success, otherwise return error code.
   int Infer(const ncnn::Mat& in, ncnn::Mat& out, const std::string& input_name,
             const std::string& output_name);
+
+  /// Inference function for NCNN model with 1 input and multiple outputs.
+  /// Return 0 on success, otherwise return error code.
+  int Infer(const ncnn::Mat& in, std::map<std::string, ncnn::Mat>& out,
+            const std::string& input_name,
+            const std::vector<std::string>& output_names);
 
  protected:
   ncnn::Net model_;
