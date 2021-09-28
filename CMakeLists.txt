@@ -67,11 +67,13 @@ else()
         option(NCNN_VULKAN "" ${DAISYKIT_WITH_VULKAN})
     endif()
     include_directories(${ncnn_FIND_PATH}/include/ncnn)
+
+    message(${ncnn_FIND_PATH}/lib/cmake/ncnn)
+    set(ncnn_DIR ${ncnn_FIND_PATH}/lib/cmake/ncnn)
+    find_package(ncnn)
 endif()
 
-message(${ncnn_FIND_PATH}/lib/cmake/ncnn)
-set(ncnn_DIR ${ncnn_FIND_PATH}/lib/cmake/ncnn)
-find_package(ncnn)
+
 if(NOT ncnn)
   message("Missing prebuilt ncnn. Building from source.")
   option(NCNN_BUILD_BENCHMARK "" OFF)
@@ -89,6 +91,7 @@ set(sources
     src/models/image_model.cpp
     src/models/body_detector.cpp
     src/models/pose_detector.cpp
+    src/models/pose_detector_movenet.cpp
     src/models/action_classifier.cpp
     src/models/face_detector.cpp
     src/models/facial_landmark_estimator.cpp
@@ -114,6 +117,7 @@ set(sources
     src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
     src/flows/background_matting_flow.cpp
+    src/flows/human_pose_movenet_flow.cpp
 
 )
 

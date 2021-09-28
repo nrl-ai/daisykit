@@ -18,3 +18,6 @@ target_link_libraries(demo_graph_api ${OpenCV_LIBS} daisykitsdk)
 
 add_executable(demo_face_detector_graph demo_face_detector_graph.cpp)
 target_link_libraries(demo_face_detector_graph ${OpenCV_LIBS} daisykitsdk)
+
+add_executable(demo_movenet demo_movenet.cpp)
+target_link_libraries(demo_movenet ${OpenCV_LIBS} daisykitsdk)

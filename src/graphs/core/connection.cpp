@@ -19,6 +19,7 @@
 #include "daisykitsdk/graphs/core/transmission_profile.h"
 
 #include <atomic>
+#include <iostream>
 #include <memory>
 #include <queue>
 

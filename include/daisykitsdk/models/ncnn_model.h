@@ -23,6 +23,7 @@ the operation of loading model, predicting model and other basics.
 
 #include <net.h>
 
+#include <map>
 #include <string>
 
 namespace daisykit {
@@ -55,10 +56,32 @@ class NCNNModel {
   int LoadModel(const std::string& param_file, const std::string& weight_file,
                 bool use_gpu = false);
 
-  /// Inference function for NCNN model with 1 input and 1 output.
-  /// Return 0 on success, otherwise return error code.
+  /// Inference function for NCNN model with 1 input and 1 output. The inference
+  /// output is written into `out`. Return 0 on success, otherwise return error
+  /// code.
   int Infer(const ncnn::Mat& in, ncnn::Mat& out, const std::string& input_name,
             const std::string& output_name);
+
+  /// Inference function for NCNN model with 1 input and multiple outputs. The
+  /// inference outputs are written into `out` map. Return 0 on success,
+  /// otherwise return error code.
+  int Infer(const ncnn::Mat& in, std::map<std::string, ncnn::Mat>& out,
+            const std::string& input_name,
+            const std::vector<std::string>& output_names);
+
+  /// Inference function for NCNN model with multiple inputs and 1 output. The
+  /// inference output is written into `out`. Return 0 on success, otherwise
+  /// return error code.
+  int Infer(const std::map<std::string, ncnn::Mat>& in, ncnn::Mat& out,
+            std::string& output_name);
+
+  /// Inference function for NCNN model with multiple inputs and multiple
+  /// outputs - using std::map for inputs and outputs. The inference outputs
+  /// are written into `out` map. Return 0 on success, otherwise return
+  /// error code.
+  int Infer(const std::map<std::string, ncnn::Mat>& in,
+            std::map<std::string, ncnn::Mat>& out,
+            const std::vector<std::string>& output_names);
 
  protected:
   ncnn::Net model_;

@@ -23,6 +23,9 @@ namespace types {
 /// Object data type.
 /// Used in object detection models
 struct Object : Box {
+  Object() {}
+  Object(float x, float y, float w, float h, int class_id, float confidence)
+      : Box(x, y, w, h), class_id(class_id), confidence(confidence) {}
   int class_id;      /// Object class ID
   float confidence;  /// Detection score
 };

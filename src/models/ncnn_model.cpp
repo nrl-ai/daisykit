@@ -108,5 +108,69 @@ int NCNNModel::Infer(const ncnn::Mat& in, ncnn::Mat& out,
   return 0;
 }
 
+int NCNNModel::Infer(const ncnn::Mat& in, std::map<std::string, ncnn::Mat>& out,
+                     const std::string& input_name,
+                     const std::vector<std::string>& output_names) {
+  if (in.empty()) {
+    return -1;
+  }
+
+  ncnn::MutexLockGuard g(model_mutex_);
+  ncnn::Extractor ex = model_.create_extractor();
+  ex.input(input_name.c_str(), in);
+
+  // Extract outputs
+  for (auto name : output_names) {
+    // Prepare placeholders for outputs
+    out.insert(std::make_pair(name, ncnn::Mat()));
+    // Extract output
+    ex.extract(name.c_str(), out[name]);
+  }
+
+  return 0;
+}
+
+int NCNNModel::Infer(const std::map<std::string, ncnn::Mat>& in,
+                     std::map<std::string, ncnn::Mat>& out,
+                     const std::vector<std::string>& output_names) {
+  if (in.empty()) {
+    return -1;
+  }
+
+  ncnn::MutexLockGuard g(model_mutex_);
+  ncnn::Extractor ex = model_.create_extractor();
+  for (auto const& input : in) {
+    ex.input(input.first.c_str(), input.second);
+  }
+
+  // Extract outputs
+  for (auto name : output_names) {
+    // Prepare placeholders for outputs
+    out.insert(std::make_pair(name, ncnn::Mat()));
+    // Extract output
+    ex.extract(name.c_str(), out[name]);
+  }
+
+  return 0;
+}
+
+int NCNNModel::Infer(const std::map<std::string, ncnn::Mat>& in, ncnn::Mat& out,
+                     std::string& output_name) {
+  if (in.empty()) {
+    return -1;
+  }
+
+  ncnn::MutexLockGuard g(model_mutex_);
+  ncnn::Extractor ex = model_.create_extractor();
+  for (auto const& input : in) {
+    ex.input(input.first.c_str(), input.second);
+  }
+
+  // Extract output
+  ex.extract(output_name.c_str(), out);
+
+  return 0;
+}
+
 }  // namespace models
 }  // namespace daisykit
