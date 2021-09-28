@@ -67,11 +67,13 @@ else()
         option(NCNN_VULKAN "" ${DAISYKIT_WITH_VULKAN})
     endif()
     include_directories(${ncnn_FIND_PATH}/include/ncnn)
+
+    message(${ncnn_FIND_PATH}/lib/cmake/ncnn)
+    set(ncnn_DIR ${ncnn_FIND_PATH}/lib/cmake/ncnn)
+    find_package(ncnn)
 endif()
 
-message(${ncnn_FIND_PATH}/lib/cmake/ncnn)
-set(ncnn_DIR ${ncnn_FIND_PATH}/lib/cmake/ncnn)
-find_package(ncnn)
+
 if(NOT ncnn)
   message("Missing prebuilt ncnn. Building from source.")
   option(NCNN_BUILD_BENCHMARK "" OFF)

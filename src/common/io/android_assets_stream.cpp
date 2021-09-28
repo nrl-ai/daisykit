@@ -61,6 +61,6 @@ AssetIStream::AssetIStream(const std::string& file)
 
 AssetIStream::~AssetIStream() { delete rdbuf(); }
 
-void AssetIStream::setAssetManager(AAssetManager* m) { manager = m; }
+void AssetIStream::SetAssetManager(AAssetManager* m) { manager = m; }
 
 AAssetManager* AssetIStream::manager;

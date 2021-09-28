@@ -8,3 +8,4 @@ __pycache__
 *.pyc
 *.so
 /.vscode/settings.json
+/third_party/ncnn-*

@@ -55,7 +55,7 @@ class DataReader {
   /// This API requires AAssetManager to get file from Android assets.
   /// It reads file from `path`, and put read data into `data` buffer.
   /// Return 0 on success, otherwise return a negative number.
-  int DataReader::ReadAndroidAsset(const std::string& path, char** data) const;
+  int ReadAndroidAsset(const std::string& path, char** data) const;
 #endif
 
  private:
