@@ -15,6 +15,7 @@
 #include "daisykitsdk/common/logging/mjpeg_server.h"
 
 #include <fstream>
+#include <iostream>
 
 namespace daisykit {
 namespace logging {
