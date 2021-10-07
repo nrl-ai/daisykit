@@ -9,7 +9,6 @@ set( CMAKE_CXX_STANDARD 11 )
 set( CMAKE_CXX_STANDARD_REQUIRED ON )
 
 add_subdirectory(pybind11)
-add_subdirectory(pybind11_opencv_numpy)
 include_directories(pybind11_opencv_numpy)
 
 if("${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" STREQUAL "")
