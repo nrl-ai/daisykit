@@ -19,7 +19,8 @@
 namespace daisykit {
 namespace flows {
 
-FaceDetectorFlow::FaceDetectorFlow(const std::string& config_str) {
+FaceDetectorFlow::FaceDetectorFlow(const std::string& config_str,
+                                   bool show_fps) {
   nlohmann::json config = nlohmann::json::parse(config_str);
   face_detector_ = new models::FaceDetector(
       config["face_detection_model"]["model"],
@@ -38,6 +39,7 @@ FaceDetectorFlow::FaceDetectorFlow(const std::string& config_str) {
         config["facial_landmark_model"]["input_height"],
         config["facial_landmark_model"]["use_gpu"]);
   }
+  show_fps_ = show_fps;
 }
 
 #ifdef __ANDROID__
@@ -87,10 +89,11 @@ void FaceDetectorFlow::DrawResult(cv::Mat& rgb,
                                   std::vector<types::Face>& faces) {
   // Draw face bounding boxes and keypoints
   visualizers::FaceVisualizer::DrawFace(rgb, faces, true);
-  visualizers::BaseVisualizer::PutText(
-      rgb, std::string("FPS: ") + std::to_string(profiler.CurrentFPS()),
-      cv::Point(100, 100), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
-      cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
+  if (show_fps_)
+    visualizers::BaseVisualizer::PutText(
+        rgb, std::string("FPS: ") + std::to_string(profiler.CurrentFPS()),
+        cv::Point(100, 100), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10,
+        cv::Scalar(0, 0, 0), cv::Scalar(0, 255, 0));
 }
 
 }  // namespace flows

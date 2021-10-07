@@ -69,7 +69,6 @@ NCNNModel::NCNNModel(const std::string& param_file,
     std::cerr << "No GPU. Disabling GPU computation." << std::endl;
     use_gpu = false;
   }
-}
 #else
   use_gpu_ = false;
 #endif

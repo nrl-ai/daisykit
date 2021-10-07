@@ -32,7 +32,7 @@ namespace daisykit {
 namespace flows {
 class FaceDetectorFlow {
  public:
-  FaceDetectorFlow(const std::string& config_str);
+  FaceDetectorFlow(const std::string& config_str, bool show_fps = false);
 #ifdef __ANDROID__
   FaceDetectorFlow(AAssetManager* mgr, const std::string& config_str);
 #endif
@@ -45,6 +45,7 @@ class FaceDetectorFlow {
   models::FaceDetector* face_detector_;
   models::FacialLandmarkEstimator* facial_landmark_estimator_;
   Profiler profiler;
+  bool show_fps_;
 };
 
 }  // namespace flows

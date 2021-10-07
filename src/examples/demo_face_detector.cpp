@@ -34,7 +34,7 @@ int main(int, char**) {
   std::string config_str((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());
 
-  FaceDetectorFlow flow(config_str);
+  FaceDetectorFlow flow(config_str, true);
 
   Mat frame;
   VideoCapture cap(0);
