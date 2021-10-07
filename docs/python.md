@@ -17,6 +17,7 @@ sudo apt install libvulkan-dev # Optional - For GPU support
 Install DaisyKit
 
 ```
+pip3 install --upgrade pip # Ensure pip is updated
 pip3 install daisykit
 ```
 

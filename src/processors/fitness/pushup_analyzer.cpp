@@ -17,6 +17,8 @@
 #include "daisykitsdk/processors/signal_processors/signal_smoothing.h"
 #include "daisykitsdk/processors/signal_processors/z_score_filter.h"
 
+#include <chrono>
+
 namespace daisykit {
 namespace processors {
 

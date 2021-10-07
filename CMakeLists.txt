@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 
 project(daisykitsdk)
 
@@ -65,6 +65,9 @@ else()
             set(DAISYKIT_WITH_VULKAN OFF)
         endif()
         option(NCNN_VULKAN "" ${DAISYKIT_WITH_VULKAN})
+    endif()
+    if (DAISYKIT_WITH_VULKAN)
+        add_compile_definitions(DAISYKIT_WITH_VULKAN)
     endif()
     include_directories(${ncnn_FIND_PATH}/include/ncnn)
 

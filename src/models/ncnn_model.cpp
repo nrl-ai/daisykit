@@ -21,7 +21,9 @@ the operation of loading model, predicting model and other basics.
 #include "daisykitsdk/models/ncnn_model.h"
 
 // NCNN
+#ifdef DAISYKIT_WITH_VULKAN
 #include <gpu.h>
+#endif
 
 #include <iostream>
 #include <string>
@@ -31,21 +33,29 @@ namespace models {
 
 /// Initialize a NCNN model.
 NCNNModel::NCNNModel(bool use_gpu) {
+#ifdef DAISYKIT_WITH_VULKAN
   if (ncnn::get_gpu_count() == 0) {
     std::cerr << "No GPU. Disabling GPU computation." << std::endl;
     use_gpu = false;
   }
   use_gpu_ = use_gpu;
+#else
+  use_gpu_ = false;
+#endif
 }
 
 /// Initialize a NCNN from buffers.
 NCNNModel::NCNNModel(const char* param_buffer,
                      const unsigned char* weight_buffer, bool use_gpu) {
+#ifdef DAISYKIT_WITH_VULKAN
   use_gpu_ = use_gpu;
   if (ncnn::get_gpu_count() == 0) {
     std::cerr << "No GPU. Disabling GPU computation." << std::endl;
     use_gpu = false;
   }
+#else
+  use_gpu_ = false;
+#endif
   // TODO (vietanhdev): Handle model loading result
   LoadModel(param_buffer, weight_buffer, use_gpu);
 }
@@ -53,14 +63,19 @@ NCNNModel::NCNNModel(const char* param_buffer,
 /// Initialize a NCNN model from files.
 NCNNModel::NCNNModel(const std::string& param_file,
                      const std::string& weight_file, bool use_gpu) {
+#ifdef DAISYKIT_WITH_VULKAN
   use_gpu_ = use_gpu;
   if (ncnn::get_gpu_count() == 0) {
     std::cerr << "No GPU. Disabling GPU computation." << std::endl;
     use_gpu = false;
   }
-  // TODO (vietanhdev): Handle model loading result
-  LoadModel(param_file, weight_file, use_gpu);
 }
+#else
+  use_gpu_ = false;
+#endif
+// TODO (vietanhdev): Handle model loading result
+LoadModel(param_file, weight_file, use_gpu);
+}  // namespace models
 
 int NCNNModel::LoadModel(const char* param_buffer,
                          const unsigned char* weight_buffer, bool use_gpu) {
@@ -172,5 +187,5 @@ int NCNNModel::Infer(const std::map<std::string, ncnn::Mat>& in, ncnn::Mat& out,
   return 0;
 }
 
-}  // namespace models
+}  // namespace daisykit
 }  // namespace daisykit

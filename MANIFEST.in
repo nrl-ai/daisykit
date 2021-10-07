@@ -2,6 +2,7 @@ include *.txt
 include docs/python.md
 recursive-include include *
 recursive-include src *
+recursive-include third_party *
 recursive-include python/daisykit *
 recursive-include python/examples *
 recursive-include python/pybind11 *
