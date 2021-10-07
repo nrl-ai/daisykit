@@ -36,12 +36,16 @@ config = {
         "input_width": 320,
         "input_height": 320,
         "score_threshold": 0.7,
-        "iou_threshold": 0.5
+        "iou_threshold": 0.5,
+        "use_gpu": False
     },
     "with_landmark": True,
     "facial_landmark_model": {
         "model": get_asset_file("models/facial_landmark/pfld-sim.param"),
-        "weights": get_asset_file("models/facial_landmark/pfld-sim.bin")
+        "weights": get_asset_file("models/facial_landmark/pfld-sim.bin"),
+        "input_width": 112,
+        "input_height": 112,
+        "use_gpu": False
     }
 }
 
