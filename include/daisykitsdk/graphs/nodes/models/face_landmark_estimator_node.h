@@ -63,7 +63,7 @@ class FacialLandmarkEstimatorNode : public Node {
 
     // Convert to output packet
     PacketPtr output;
-    utils::TimePoint timestamp = utils::Timer::GetCurrentTime();
+    utils::TimePoint timestamp = utils::Timer::Now();
     output = std::make_shared<Packet>(std::static_pointer_cast<void>(faces),
                                       timestamp);
 

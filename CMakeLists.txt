@@ -46,7 +46,7 @@ option(DAISYKIT_ENABLE_BARCODE_SCANNER "Enable barcode scanner" ON)
 option(DAISYKIT_BUILD_EXAMPLES "Build examples" ON)
 option(DAISYKIT_BUILD_PYTHON "Build Python packages" OFF)
 option(DAISYKIT_BUILD_DOCS "Build documentation" OFF)
-option(DAISYKIT_BUILD_SHARED_LIB "Build shared lib for dasiykitsdk. Set this value to OFF for static lib." ON)
+option(DAISYKIT_BUILD_SHARED_LIB "Build shared lib for dasiykitsdk. Set this value to OFF for static lib." OFF)
 option(DAISYKIT_WITH_VULKAN "Build with Vulkan" ON)
 option(DAISYKIT_COPY_ASSETS "Copy assets to bin folder" ON)
 
@@ -100,7 +100,7 @@ set(sources
     src/models/facial_landmark_estimator.cpp
     src/models/background_matting.cpp
 
-    src/common/logging/mjpeg_writer.cpp
+    # src/common/logging/mjpeg_writer.cpp
     src/common/visualizers/base_visualizer.cpp
     src/common/profiler.cpp
     src/common/utils/timer.cpp

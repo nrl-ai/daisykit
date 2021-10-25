@@ -27,7 +27,7 @@ typedef std::chrono::high_resolution_clock::time_point TimePoint;
 class Timer {
  public:
   /// Get current time point.
-  static TimePoint GetCurrentTime();
+  static TimePoint Now();
   /// Get time eslapsed from `start` to `end` time points.
   static double CalcTimeElapsedMs(TimePoint start, TimePoint end);
   /// Get time eslapsed from `start` to now.

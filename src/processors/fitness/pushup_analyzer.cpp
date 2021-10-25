@@ -22,9 +22,7 @@
 namespace daisykit {
 namespace processors {
 
-PushupAnalyzer::PushupAnalyzer() {
-  debug_img_server_ = std::make_shared<logging::MJPEGServer>(8080);
-}
+PushupAnalyzer::PushupAnalyzer() {}
 
 int PushupAnalyzer::CountWithNewPoint(double data, bool is_pushing_up) {
   input_.push_back(data);
@@ -48,10 +46,7 @@ int PushupAnalyzer::CountWithNewPoint(double data, bool is_pushing_up) {
   }
 
   if (is_first_frame_) {
-    debug_img_server_->Start();
     is_first_frame_ = false;
-  } else {
-    debug_img_server_->WriteFrame(line_graph);
   }
 
   return (int)countPostions.size();
