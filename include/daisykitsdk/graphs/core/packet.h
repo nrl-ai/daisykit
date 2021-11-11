@@ -66,7 +66,7 @@ class Packet {
   template <typename T>
   static std::shared_ptr<Packet> Adopt(T* ptr) {
     std::shared_ptr<T> data(ptr);
-    utils::TimePoint timestamp = utils::Timer::GetCurrentTime();
+    utils::TimePoint timestamp = utils::Timer::Now();
     std::shared_ptr<Packet> packet = std::make_shared<Packet>(
         std::static_pointer_cast<void>(data), timestamp);
     return packet;
@@ -75,7 +75,7 @@ class Packet {
   /// Make a packet from a shared pointer to the data.
   template <typename T>
   static std::shared_ptr<Packet> MakePacket(std::shared_ptr<T> data) {
-    utils::TimePoint timestamp = utils::Timer::GetCurrentTime();
+    utils::TimePoint timestamp = utils::Timer::Now();
     std::shared_ptr<Packet> packet = std::make_shared<Packet>(
         std::static_pointer_cast<void>(data), timestamp);
     return packet;

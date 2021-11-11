@@ -15,7 +15,6 @@
 #ifndef DAISYKIT_PROCESSORS_FITNESS_PUSHUPS_PUSHUP_ANALYZER_H_
 #define DAISYKIT_PROCESSORS_FITNESS_PUSHUPS_PUSHUP_ANALYZER_H_
 
-#include "daisykitsdk/common/logging/mjpeg_server.h"
 
 #include <memory>
 #include <opencv2/opencv.hpp>
@@ -32,7 +31,6 @@ class PushupAnalyzer {
  private:
   int CountWithNewPoint(double data, bool is_pushing_up);
   double CalcOpticalFlow(const cv::Mat& img);
-  std::shared_ptr<logging::MJPEGServer> debug_img_server_;
   cv::Mat prvs_;
   std::vector<double> input_ = {0, 0, 0, 0, 0, 0, 0, 0};
   std::vector<bool> pushing_;

@@ -51,7 +51,7 @@ class FaceDetectorNode : public Node {
     face_detector_->Predict(img, *result);
 
     // Convert to output packet
-    utils::TimePoint timestamp = utils::Timer::GetCurrentTime();
+    utils::TimePoint timestamp = daisykit::utils::Timer::Now();
     out_packet = Packet::MakePacket<std::vector<daisykit::types::Face>>(result);
   }
 

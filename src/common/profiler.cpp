@@ -18,7 +18,7 @@
 namespace daisykit {
 
 Profiler::Profiler(double fps_count_duration) {
-  first_tp_ = utils::Timer::GetCurrentTime();
+  first_tp_ = utils::Timer::Now();
 }
 
 double Profiler::Tick() {
@@ -30,7 +30,7 @@ double Profiler::Tick() {
   if (uptime_sec > fps_count_duration_) {
     if (uptime_sec == 0) return 0;
     current_fps_ = frame_count_ / uptime_sec;
-    first_tp_ = utils::Timer::GetCurrentTime();
+    first_tp_ = utils::Timer::Now();
     frame_count_ = 0;
   }
   return current_fps_;
