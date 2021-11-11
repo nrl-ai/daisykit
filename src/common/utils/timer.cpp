@@ -21,9 +21,7 @@ namespace daisykit {
 namespace utils {
 
 // Get current time point.
-TimePoint Timer::Now() {
-  return std::chrono::high_resolution_clock::now();
-}
+TimePoint Timer::Now() { return std::chrono::high_resolution_clock::now(); }
 
 // Get time eslapsed from `start` to `end` time points.
 double Timer::CalcTimeElapsedMs(TimePoint start, TimePoint end) {

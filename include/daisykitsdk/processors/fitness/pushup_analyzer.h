@@ -15,7 +15,6 @@
 #ifndef DAISYKIT_PROCESSORS_FITNESS_PUSHUPS_PUSHUP_ANALYZER_H_
 #define DAISYKIT_PROCESSORS_FITNESS_PUSHUPS_PUSHUP_ANALYZER_H_
 
-
 #include <memory>
 #include <opencv2/opencv.hpp>
 
