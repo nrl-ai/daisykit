@@ -12,16 +12,16 @@ def find_version():
     with io.open("CMakeLists.txt", encoding="utf8") as f:
         version_file = f.read()
 
-    version_major = re.findall(r"DAISYKIT_VERSION_MAJOR (.+?)", version_file)
-    version_minor = re.findall(r"DAISYKIT_VERSION_MINOR (.+?)", version_file)
+    version_major = re.findall(r"DAISYKIT_VERSION_MAJOR ((\.|\d)+)", version_file)
+    version_minor = re.findall(r"DAISYKIT_VERSION_MINOR ((\.|\d)+)", version_file)
+    version_patch = None
+    if sys.platform == "darwin":
+        version_patch = re.findall(r"DAISYKIT_VERSION_PATCH_DARWIN ((\.|\d)+)", version_file)
+    else:
+        version_patch = re.findall(r"DAISYKIT_VERSION_PATCH_OTHERS ((\.|\d)+)", version_file)
 
-    if version_major and version_minor:
-        if sys.platform == "darwin":
-            daisykit_version = time.strftime("%Y.%m.%d", time.localtime())
-        else:
-            daisykit_version = time.strftime("%Y%m%d", time.localtime())
-
-        return version_major[0] + "." + version_minor[0] + "." + daisykit_version
+    if version_major and version_minor and version_patch:
+        return version_major[0][0] + "." + version_minor[0][0] + "." + version_patch[0][0]
     raise RuntimeError("Unable to find version string.")
 
 
@@ -149,6 +149,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],

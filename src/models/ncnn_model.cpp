@@ -72,8 +72,8 @@ NCNNModel::NCNNModel(const std::string& param_file,
 #else
   use_gpu_ = false;
 #endif
-// TODO (vietanhdev): Handle model loading result
-LoadModel(param_file, weight_file, use_gpu);
+  // TODO (vietanhdev): Handle model loading result
+  LoadModel(param_file, weight_file, use_gpu);
 }  // namespace models
 
 int NCNNModel::LoadModel(const char* param_buffer,
@@ -186,5 +186,5 @@ int NCNNModel::Infer(const std::map<std::string, ncnn::Mat>& in, ncnn::Mat& out,
   return 0;
 }
 
-}  // namespace daisykit
+}  // namespace models
 }  // namespace daisykit
