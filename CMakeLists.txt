@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.12)
 
 project(daisykitsdk)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 if(CMAKE_TOOLCHAIN_FILE)
     set(LIBRARY_OUTPUT_PATH_ROOT ${CMAKE_BINARY_DIR} CACHE PATH "root for library output, set this to change where android libs are compiled to")
@@ -151,6 +148,17 @@ if (DAISYKIT_ENABLE_BARCODE_SCANNER)
     target_link_libraries(daisykitsdk ZXing::ZXing)
 endif()
 
+
+if (WIN32)
+# Copy OpenCV library along with daisykit
+get_target_property(__dll_dbg opencv_world IMPORTED_LOCATION_DEBUG)
+get_target_property(__dll_release opencv_world  IMPORTED_LOCATION_RELEASE)
+add_custom_command(TARGET daisykitsdk POST_BUILD        # Adds a post-build event the TARGET
+COMMAND ${CMAKE_COMMAND} -E copy_if_different           # which executes "cmake - E copy_if_different..."
+    "$<$<CONFIG:debug>:${__dll_dbg}>$<$<CONFIG:release>:${__dll_release}>"      # <--this is in-file
+    "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+    COMMENT "Copy opencv_world")
+endif()
 
 # ==================================================
 # Build examples

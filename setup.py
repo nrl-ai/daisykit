@@ -4,6 +4,7 @@ import sys
 import time
 import re
 import subprocess
+import numpy as np
 
 from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext
@@ -70,7 +71,8 @@ class CMakeBuild(build_ext):
             "-DDAISYKIT_BUILD_DOCS=OFF",
             "-DDAISYKIT_COPY_ASSETS=OFF",
             "-DDAISYKIT_BUILD_SHARED_LIB=OFF",
-            "-DDAISYKIT_WITH_VULKAN=OFF"
+            "-DDAISYKIT_WITH_VULKAN=OFF",
+            "-DNUMPY_INCLUDE_DIR={}".format(np.get_include())
         ]
         build_args = []
 

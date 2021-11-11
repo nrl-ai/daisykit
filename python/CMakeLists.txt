@@ -18,7 +18,7 @@ if("${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" STREQUAL "")
     endif(MSVC OR CMAKE_GENERATOR STREQUAL "Xcode")
 endif("${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" STREQUAL "")
 
-include_directories(${pybind11_INCLUDE_DIR} ${PYTHON_INCLUDE_DIRS})
+include_directories(${pybind11_INCLUDE_DIR} ${PYTHON_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIR})
 pybind11_add_module(pydaisykit src/main.cpp pybind11_opencv_numpy/ndarray_converter.cpp)
 set_target_properties(pydaisykit PROPERTIES OUTPUT_NAME "daisykit")
 target_link_libraries(pydaisykit PUBLIC daisykitsdk)
