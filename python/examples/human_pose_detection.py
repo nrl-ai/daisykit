@@ -31,8 +31,6 @@ while(True):
     poses = human_pose_flow.Process(frame)
     human_pose_flow.DrawResult(frame, poses)
 
-    print(poses)
-
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
     # Display the resulting frame
