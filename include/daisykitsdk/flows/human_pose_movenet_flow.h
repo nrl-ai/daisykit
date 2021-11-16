@@ -15,6 +15,7 @@
 #ifndef DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
 #define DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
 
+#include "daisykitsdk/common/types.h"
 #include "daisykitsdk/models/body_detector.h"
 #include "daisykitsdk/models/pose_detector_movenet.h"
 
@@ -29,16 +30,10 @@ class HumanPoseMoveNetFlow {
  public:
   HumanPoseMoveNetFlow(const std::string& config_str);
 
-  void Process(cv::Mat& rgb);
-  void DrawResult(cv::Mat& rgb);
+  std::vector<types::HumanPose> Process(cv::Mat& rgb);
+  void DrawResult(cv::Mat& rgb, std::vector<types::HumanPose>& poses);
 
  private:
-  std::vector<types::Object> bodies_;
-  std::mutex bodies_lock_;
-
-  std::vector<std::vector<types::Keypoint>> keypoints_;
-  std::mutex keypoints_lock_;
-
   models::BodyDetector* body_detector_;
   models::PoseDetectorMoveNet* pose_detector_;
 };

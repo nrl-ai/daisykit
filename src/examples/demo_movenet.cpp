@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "daisykitsdk/common/types.h"
 #include "daisykitsdk/flows/human_pose_movenet_flow.h"
 #include "third_party/json.hpp"
 
@@ -21,6 +22,7 @@
 #include <opencv2/opencv.hpp>
 #include <streambuf>
 #include <string>
+#include <vector>
 
 using namespace cv;
 using namespace std;
@@ -43,8 +45,8 @@ int main(int, char**) {
     cv::Mat rgb;
     cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
 
-    flow.Process(rgb);
-    flow.DrawResult(rgb);
+    std::vector<HumanPose> poses = flow.Process(rgb);
+    flow.DrawResult(rgb, poses);
 
     cv::Mat draw;
     cv::cvtColor(rgb, draw, cv::COLOR_RGB2BGR);

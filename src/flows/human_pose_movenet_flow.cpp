@@ -31,40 +31,33 @@ HumanPoseMoveNetFlow::HumanPoseMoveNetFlow(const std::string& config_str) {
       config["human_pose_model"]["input_height"]);
 }
 
-void HumanPoseMoveNetFlow::Process(cv::Mat& rgb) {
+std::vector<types::HumanPose> HumanPoseMoveNetFlow::Process(cv::Mat& rgb) {
   // Detect background pose
   std::vector<types::Object> bodies;
   body_detector_->Predict(rgb, bodies);
-  {
-    const std::lock_guard<std::mutex> lock(bodies_lock_);
-    bodies_ = bodies;
-  }
 
   // Detect keypoints
   std::vector<std::vector<types::Keypoint>> keypoints;
   pose_detector_->PredictMulti(rgb, bodies, keypoints);
-  {
-    const std::lock_guard<std::mutex> lock(keypoints_lock_);
-    keypoints_ = keypoints;
+
+  // Prepare and return outputs
+  std::vector<types::HumanPose> poses;
+  for (size_t i = 0; i < bodies.size(); ++i) {
+    types::HumanPose pose(bodies[i], keypoints[i]);
+    poses.push_back(pose);
   }
+  return poses;
 }
 
-void HumanPoseMoveNetFlow::DrawResult(cv::Mat& rgb) {
-  // Draw body bounding boxes
-  {
-    const std::lock_guard<std::mutex> lock(bodies_lock_);
-    for (auto body : bodies_) {
-      cv::rectangle(rgb, cv::Rect(body.x, body.y, body.w, body.h),
-                    cv::Scalar(0, 255, 0), 2);
-    }
-  }
+void HumanPoseMoveNetFlow::DrawResult(cv::Mat& rgb,
+                                      std::vector<types::HumanPose>& poses) {
+  for (auto pose : poses) {
+    // Draw body bounding boxes
+    cv::rectangle(rgb, cv::Rect(pose.x, pose.y, pose.w, pose.h),
+                  cv::Scalar(0, 255, 0), 2);
 
-  // Draw body keypoints
-  {
-    const std::lock_guard<std::mutex> lock(keypoints_lock_);
-    for (auto kp_single : keypoints_) {
-      pose_detector_->DrawKeypoints(rgb, kp_single);
-    }
+    // Draw body keypoints
+    pose_detector_->DrawKeypoints(rgb, pose.keypoints);
   }
 }
 

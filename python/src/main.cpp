@@ -33,6 +33,40 @@ PYBIND11_MODULE(daisykit, m) {
       .def_readwrite("y", &types::Keypoint::y)
       .def_readwrite("confidence", &types::Keypoint::confidence);
 
+  py::class_<types::Box>(m, "Box")
+      .def(py::init<>())
+      .def(py::init<float, float, float, float>(), py::arg("x"), py::arg("y"),
+           py::arg("w"), py::arg("h"))
+      .def_readwrite("x", &types::Box::x)
+      .def_readwrite("y", &types::Box::y)
+      .def_readwrite("w", &types::Box::w)
+      .def_readwrite("h", &types::Box::h);
+
+  py::class_<types::Object>(m, "Object")
+      .def(py::init<>())
+      .def(py::init<float, float, float, float, int, float>(), py::arg("x"),
+           py::arg("y"), py::arg("w"), py::arg("h"), py::arg("class_id"),
+           py::arg("confidence"))
+      .def_readwrite("x", &types::Object::x)
+      .def_readwrite("y", &types::Object::y)
+      .def_readwrite("w", &types::Object::w)
+      .def_readwrite("h", &types::Object::h)
+      .def_readwrite("class_id", &types::Object::class_id)
+      .def_readwrite("confidence", &types::Object::confidence);
+
+  py::class_<types::HumanPose>(m, "HumanPose")
+      .def(py::init<>())
+      .def(
+          py::init<const types::Object&, const std::vector<types::Keypoint>&>(),
+          py::arg("body"), py::arg("keypoints"))
+      .def_readwrite("x", &types::HumanPose::x)
+      .def_readwrite("y", &types::HumanPose::y)
+      .def_readwrite("w", &types::HumanPose::w)
+      .def_readwrite("h", &types::HumanPose::h)
+      .def_readwrite("class_id", &types::HumanPose::class_id)
+      .def_readwrite("confidence", &types::HumanPose::confidence)
+      .def_readwrite("keypoints", &types::HumanPose::keypoints);
+
   py::class_<flows::FaceDetectorFlow>(m, "FaceDetectorFlow")
       .def(py::init<const std::string&>(), py::arg("config_path"))
       .def("Process", &flows::FaceDetectorFlow::Process)
@@ -55,6 +89,7 @@ PYBIND11_MODULE(daisykit, m) {
       .def(py::init<const std::string&>(), py::arg("config_path"))
       .def("Process", &flows::HumanPoseMoveNetFlow::Process, py::arg("image"))
       .def("DrawResult", &flows::HumanPoseMoveNetFlow::DrawResult,
+           py::arg("image"), py::arg("poses"),
            py::return_value_policy::reference_internal);
 
   m.doc() = R"pbdoc(
