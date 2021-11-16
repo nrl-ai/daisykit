@@ -8,7 +8,9 @@
 
 #include "daisykitsdk/common/types.h"
 #include "daisykitsdk/flows/background_matting_flow.h"
+#include "daisykitsdk/flows/barcode_scanner_flow.h"
 #include "daisykitsdk/flows/face_detector_flow.h"
+#include "daisykitsdk/flows/human_pose_movenet_flow.h"
 #include "ndarray_converter.h"
 
 using namespace daisykit;
@@ -42,6 +44,17 @@ PYBIND11_MODULE(daisykit, m) {
            py::arg("config_path"), py::arg("default_background"))
       .def("Process", &flows::BackgroundMattingFlow::Process)
       .def("DrawResult", &flows::BackgroundMattingFlow::DrawResult,
+           py::return_value_policy::reference_internal);
+
+  py::class_<flows::BarcodeScannerFlow>(m, "BarcodeScannerFlow")
+      .def(py::init<const std::string&>(), py::arg("config_path"))
+      .def("Process", &flows::BarcodeScannerFlow::Process, py::arg("image"),
+           py::arg("draw"));
+
+  py::class_<flows::HumanPoseMoveNetFlow>(m, "HumanPoseMoveNetFlow")
+      .def(py::init<const std::string&>(), py::arg("config_path"))
+      .def("Process", &flows::HumanPoseMoveNetFlow::Process, py::arg("image"))
+      .def("DrawResult", &flows::HumanPoseMoveNetFlow::DrawResult,
            py::return_value_policy::reference_internal);
 
   m.doc() = R"pbdoc(

@@ -173,11 +173,11 @@ endif()
 # ==================================================
 if (DAISYKIT_COPY_ASSETS)
     add_custom_target(configs ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/configs)
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/configs ${CMAKE_BINARY_DIR}/configs)
     add_custom_target(models ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/models ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/models)
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/models ${CMAKE_BINARY_DIR}/models)
     add_custom_target(images ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/images)
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets/images ${CMAKE_BINARY_DIR}/images)
 endif()
 
 # ==================================================
