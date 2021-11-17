@@ -22,7 +22,48 @@
 namespace daisykit {
 namespace models {
 
-DEFINE_LAYER_CREATOR(YoloV5Focus)
+// YOLOX use the same focus in yolov5
+class YoloXFocus : public ncnn::Layer {
+ public:
+  YoloXFocus() { one_blob_only = true; }
+
+  virtual int forward(const ncnn::Mat& bottom_blob, ncnn::Mat& top_blob,
+                      const ncnn::Option& opt) const {
+    int w = bottom_blob.w;
+    int h = bottom_blob.h;
+    int channels = bottom_blob.c;
+
+    int outw = w / 2;
+    int outh = h / 2;
+    int outc = channels * 4;
+
+    top_blob.create(outw, outh, outc, 4u, 1, opt.blob_allocator);
+    if (top_blob.empty()) return -100;
+
+#pragma omp parallel for num_threads(opt.num_threads)
+    for (int p = 0; p < outc; p++) {
+      const float* ptr =
+          bottom_blob.channel(p % channels).row((p / channels) % 2) +
+          ((p / channels) / 2);
+      float* outptr = top_blob.channel(p);
+
+      for (int i = 0; i < outh; i++) {
+        for (int j = 0; j < outw; j++) {
+          *outptr = *ptr;
+
+          outptr += 1;
+          ptr += 2;
+        }
+
+        ptr += w;
+      }
+    }
+
+    return 0;
+  }
+};
+
+DEFINE_LAYER_CREATOR(YoloXFocus)
 
 ObjectDetectorYOLOX::ObjectDetectorYOLOX(const char* param_buffer,
                                          const unsigned char* weight_buffer,
@@ -34,7 +75,7 @@ ObjectDetectorYOLOX::ObjectDetectorYOLOX(const char* param_buffer,
   iou_threshold_ = iou_threshold;
   assert(input_width == input_height);
   LoadModel(param_buffer, weight_buffer, use_gpu, [](ncnn::Net& model) {
-    model.register_custom_layer("YoloV5Focus", YoloV5Focus_layer_creator);
+    model.register_custom_layer("YoloV5Focus", YoloXFocus_layer_creator);
     return 0;
   });
 }
@@ -49,7 +90,7 @@ ObjectDetectorYOLOX::ObjectDetectorYOLOX(const std::string& param_file,
   iou_threshold_ = iou_threshold;
   assert(input_width == input_height);
   LoadModel(param_file, weight_file, use_gpu, [](ncnn::Net& model) {
-    model.register_custom_layer("YoloV5Focus", YoloV5Focus_layer_creator);
+    model.register_custom_layer("YoloV5Focus", YoloXFocus_layer_creator);
     return 0;
   });
 }

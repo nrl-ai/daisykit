@@ -27,10 +27,12 @@ HandPoseDetectorFlow::HandPoseDetectorFlow(const std::string& config_str) {
       config["hand_detection_model"]["score_threshold"],
       config["hand_detection_model"]["iou_threshold"],
       config["hand_detection_model"]["input_width"],
-      config["hand_detection_model"]["input_height"]);
+      config["hand_detection_model"]["input_height"],
+      config["hand_detection_model"]["use_gpu"]);
   hand_pose_detector_ = new models::HandPoseDetector(
       config["hand_pose_model"]["model"], config["hand_pose_model"]["weights"],
-      config["hand_pose_model"]["input_size"]);
+      config["hand_pose_model"]["input_size"],
+      config["hand_pose_model"]["use_gpu"]);
 }
 
 std::vector<types::ObjectWithKeypointsXYZ> HandPoseDetectorFlow::Process(

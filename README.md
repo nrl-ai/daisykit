@@ -1,6 +1,6 @@
 # Daisykit SDK
 
-**DaisyKit SDK** is the core of models and algorithms, which can be used to develop wrappers and applications for different platforms: mobile, embedded or web browsers.
+**DaisyKit SDK** is the core of models and algorithms, which can be used to develop AI applications on different platforms.
 
 **Website:** <https://daisykit.org/>.
 

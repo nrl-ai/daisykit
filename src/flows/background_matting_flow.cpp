@@ -23,7 +23,10 @@ BackgroundMattingFlow::BackgroundMattingFlow(
   nlohmann::json config = nlohmann::json::parse(config_str);
   background_matting_model_ = new models::BackgroundMatting(
       config["background_matting_model"]["model"],
-      config["background_matting_model"]["weights"]);
+      config["background_matting_model"]["weights"],
+      config["background_matting_model"]["input_width"],
+      config["background_matting_model"]["input_height"],
+      config["background_matting_model"]["use_gpu"]);
   background_ = default_background.clone();
 }
 
@@ -34,7 +37,10 @@ BackgroundMattingFlow::BackgroundMattingFlow(
   nlohmann::json config = nlohmann::json::parse(config_str);
   background_matting_model_ = new models::BackgroundMatting(
       mgr, config["background_matting_model"]["model"],
-      config["background_matting_model"]["weights"]);
+      config["background_matting_model"]["weights"],
+      config["background_matting_model"]["input_width"],
+      config["background_matting_model"]["input_height"],
+      config["background_matting_model"]["use_gpu"]);
   background_ = default_background.clone();
 }
 #endif

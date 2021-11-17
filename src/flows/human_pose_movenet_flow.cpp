@@ -23,12 +23,16 @@ HumanPoseMoveNetFlow::HumanPoseMoveNetFlow(const std::string& config_str) {
   nlohmann::json config = nlohmann::json::parse(config_str);
   body_detector_ =
       new models::BodyDetector(config["person_detection_model"]["model"],
-                               config["person_detection_model"]["weights"]);
+                               config["person_detection_model"]["weights"],
+                               config["person_detection_model"]["input_width"],
+                               config["person_detection_model"]["input_height"],
+                               config["person_detection_model"]["use_gpu"]);
   pose_detector_ = new models::PoseDetectorMoveNet(
       config["human_pose_model"]["model"],
       config["human_pose_model"]["weights"],
       config["human_pose_model"]["input_width"],
-      config["human_pose_model"]["input_height"]);
+      config["human_pose_model"]["input_height"],
+      config["human_pose_model"]["use_gpu"]);
 }
 
 std::vector<types::ObjectWithKeypoints> HumanPoseMoveNetFlow::Process(

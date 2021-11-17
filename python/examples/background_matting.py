@@ -6,7 +6,10 @@ from daisykit import BackgroundMattingFlow
 config = {
     "background_matting_model": {
         "model": get_asset_file("models/background_matting/erd/erdnet.param"),
-        "weights": get_asset_file("models/background_matting/erd/erdnet.bin")
+        "weights": get_asset_file("models/background_matting/erd/erdnet.bin"),
+        "input_width": 256,
+        "input_height": 256,
+        "use_gpu": False
     }
 }
 

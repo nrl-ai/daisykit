@@ -1,26 +1,27 @@
 import cv2
 import json
 from daisykit.utils import get_asset_file, to_py_type
-from daisykit import HumanPoseMoveNetFlow
+from daisykit import HandPoseDetectorFlow
 
 config = {
-    "person_detection_model": {
-        "model": get_asset_file("models/human_detection/ssd_mobilenetv2.param"),
-        "weights": get_asset_file("models/human_detection/ssd_mobilenetv2.bin"),
-        "input_width": 320,
-        "input_height": 320,
+    "hand_detection_model": {
+        "model": get_asset_file("models/hand_pose/yolox_hand_swish.param"),
+        "weights": get_asset_file("models/hand_pose/yolox_hand_swish.bin"),
+        "input_width": 256,
+        "input_height": 256,
+        "score_threshold": 0.45,
+        "iou_threshold": 0.65,
         "use_gpu": False
     },
-    "human_pose_model": {
-        "model": get_asset_file("models/human_pose_detection/movenet/lightning.param"),
-        "weights": get_asset_file("models/human_pose_detection/movenet/lightning.bin"),
-        "input_width": 192,
-        "input_height": 192,
+    "hand_pose_model": {
+        "model": get_asset_file("models/hand_pose/hand_lite-op.param"),
+        "weights": get_asset_file("models/hand_pose/hand_lite-op.bin"),
+        "input_size": 224,
         "use_gpu": False
     }
 }
 
-human_pose_flow = HumanPoseMoveNetFlow(json.dumps(config))
+flow = HandPoseDetectorFlow(json.dumps(config))
 
 # Open video stream from webcam
 vid = cv2.VideoCapture(0)
@@ -32,8 +33,8 @@ while(True):
 
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    poses = human_pose_flow.Process(frame)
-    human_pose_flow.DrawResult(frame, poses)
+    poses = flow.Process(frame)
+    flow.DrawResult(frame, poses)
 
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 

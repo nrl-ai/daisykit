@@ -33,7 +33,7 @@ class ObjectDetectorFlow {
   ObjectDetectorFlow(const std::string& config_str);
 
   std::vector<types::Object> Process(cv::Mat& rgb);
-  void DrawResult(cv::Mat& rgb, std::vector<types::Object>& poses);
+  void DrawResult(cv::Mat& rgb, std::vector<types::Object>& objects);
 
  private:
   models::ObjectDetectorYOLOX* detector_;
