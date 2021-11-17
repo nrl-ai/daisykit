@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
-#define DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
+#ifndef DAISYKIT_FLOWS_HAND_POSE_DETECTOR_FLOW_H_
+#define DAISYKIT_FLOWS_HAND_POSE_DETECTOR_FLOW_H_
 
 #include "daisykitsdk/common/types.h"
-#include "daisykitsdk/models/body_detector.h"
-#include "daisykitsdk/models/pose_detector_movenet.h"
+#include "daisykitsdk/models/hand_detector_yolox.h"
+#include "daisykitsdk/models/hand_pose_detector.h"
 
 #include <atomic>
 #include <mutex>
@@ -26,16 +26,19 @@
 
 namespace daisykit {
 namespace flows {
-class HumanPoseMoveNetFlow {
- public:
-  HumanPoseMoveNetFlow(const std::string& config_str);
 
-  std::vector<types::ObjectWithKeypoints> Process(cv::Mat& rgb);
-  void DrawResult(cv::Mat& rgb, std::vector<types::ObjectWithKeypoints>& poses);
+/// Hand pose detection flow with YOLOX and Mediapipe hand pose model.
+class HandPoseDetectorFlow {
+ public:
+  HandPoseDetectorFlow(const std::string& config_str);
+
+  std::vector<types::ObjectWithKeypointsXYZ> Process(cv::Mat& rgb);
+  void DrawResult(cv::Mat& rgb,
+                  std::vector<types::ObjectWithKeypointsXYZ>& poses);
 
  private:
-  models::BodyDetector* body_detector_;
-  models::PoseDetectorMoveNet* pose_detector_;
+  models::HandDetectorYOLOX* hand_detector_;
+  models::HandPoseDetector* hand_pose_detector_;
 };
 
 }  // namespace flows

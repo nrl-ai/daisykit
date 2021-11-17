@@ -4,8 +4,8 @@ from daisykit.utils import get_asset_file
 from daisykit import BarcodeScannerFlow
 
 config = {
-  "try_harder": True,
-  "try_rotate": True
+    "try_harder": True,
+    "try_rotate": True
 }
 
 barcode_scanner_flow = BarcodeScannerFlow(json.dumps(config))

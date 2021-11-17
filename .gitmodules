@@ -12,4 +12,4 @@
 	url = https://github.com/Tencent/ncnn.git
 [submodule "assets"]
 	path = assets
-	url = https://github.com/VNOpenAI/daisykit-assets.git
+	url = https://github.com/Daisykit-AI/daisykit-assets.git

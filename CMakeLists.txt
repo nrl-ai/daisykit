@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.12)
 
 project(daisykitsdk)
 
+# Use Release build type if not specified
+if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
+  if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+  endif()
+endif()
 
 if(CMAKE_TOOLCHAIN_FILE)
     set(LIBRARY_OUTPUT_PATH_ROOT ${CMAKE_BINARY_DIR} CACHE PATH "root for library output, set this to change where android libs are compiled to")
@@ -94,10 +100,13 @@ set(sources
     src/models/pose_detector_movenet.cpp
     src/models/action_classifier.cpp
     src/models/face_detector.cpp
-    src/models/facial_landmark_estimator.cpp
+    src/models/facial_landmark_detector.cpp
     src/models/background_matting.cpp
+    src/models/yolox_utils.cpp
+    src/models/hand_detector_yolox.cpp
+    src/models/hand_pose_detector.cpp
+    src/models/object_detector_yolox.cpp
 
-    # src/common/logging/mjpeg_writer.cpp
     src/common/visualizers/base_visualizer.cpp
     src/common/profiler.cpp
     src/common/utils/timer.cpp
@@ -114,10 +123,13 @@ set(sources
     src/graphs/core/packet.cpp
     src/graphs/core/transmission_profile.cpp
 
+
+    src/flows/object_detector_flow.cpp
     src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
     src/flows/background_matting_flow.cpp
     src/flows/human_pose_movenet_flow.cpp
+    src/flows/hand_pose_detector_flow.cpp
 
 )
 

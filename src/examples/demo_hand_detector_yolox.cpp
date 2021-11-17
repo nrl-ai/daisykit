@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/common/types.h"
-#include "daisykitsdk/flows/human_pose_movenet_flow.h"
+#include "daisykitsdk/models/hand_detector_yolox.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>
@@ -26,16 +26,13 @@
 
 using namespace cv;
 using namespace std;
-using json = nlohmann::json;
 using namespace daisykit::types;
-using namespace daisykit::flows;
+using namespace daisykit::models;
 
 int main(int, char**) {
-  std::ifstream t("configs/human_pose_movenet_config.json");
-  std::string config_str((std::istreambuf_iterator<char>(t)),
-                         std::istreambuf_iterator<char>());
-
-  HumanPoseMoveNetFlow flow(config_str);
+  HandDetectorYOLOX model("models/hand_pose/yolox_hand_relu.param",
+                          "models/hand_pose/yolox_hand_relu.bin", 0.3, 0.3, 256,
+                          256);
 
   Mat frame;
   VideoCapture cap(0);
@@ -45,11 +42,18 @@ int main(int, char**) {
     cv::Mat rgb;
     cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
 
-    std::vector<ObjectWithKeypoints> poses = flow.Process(rgb);
-    flow.DrawResult(rgb, poses);
+    std::vector<Object> hands;
+    model.Predict(rgb, hands);
 
     cv::Mat draw;
     cv::cvtColor(rgb, draw, cv::COLOR_RGB2BGR);
+
+    for (size_t i = 0; i < hands.size(); ++i) {
+      cv::rectangle(draw,
+                    cv::Rect(hands[i].x, hands[i].y, hands[i].w, hands[i].h),
+                    cv::Scalar(0, 255, 0), 2);
+    }
+
     imshow("Image", draw);
     waitKey(1);
   }

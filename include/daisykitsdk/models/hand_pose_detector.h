@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_MODELS_FACIAL_LANDMARK_ESTIMATOR_H_
-#define DAISYKIT_MODELS_FACIAL_LANDMARK_ESTIMATOR_H_
+#ifndef DAISYKIT_MODELS_HAND_POSE_DETECTOR_H_
+#define DAISYKIT_MODELS_HAND_POSE_DETECTOR_H_
 
 #include "daisykitsdk/common/types.h"
 #include "daisykitsdk/models/image_model.h"
@@ -28,32 +28,43 @@ namespace daisykit {
 namespace models {
 
 /// Facial landmark estimation model - 68 points.
-class FacialLandmarkEstimator : public NCNNModel, public ImageModel {
+class HandPoseDetector : public NCNNModel, public ImageModel {
  public:
-  FacialLandmarkEstimator(const char* param_buffer,
-                          const unsigned char* weight_buffer,
-                          int input_width = 112, int input_height = 112,
-                          bool use_gpu = false);
+  HandPoseDetector(const char* param_buffer, const unsigned char* weight_buffer,
+                   int input_size = 224, bool use_gpu = false);
 
-  FacialLandmarkEstimator(const std::string& param_file,
-                          const std::string& weight_file, int input_width = 112,
-                          int input_height = 112, bool use_gpu = false);
+  HandPoseDetector(const std::string& param_file,
+                   const std::string& weight_file, int input_size = 224,
+                   bool use_gpu = false);
 
   /// Detect keypoints for a single face.
   /// This function adds offset_x and offset_y to the keypoints.
   /// Return 0 on success, otherwise return error code.
-  int Predict(const cv::Mat& image, std::vector<types::Keypoint>& keypoints,
-              float offset_x = 0, float offset_y = 0);
+  int Predict(const cv::Mat& image, std::vector<types::KeypointXYZ>& keypoints,
+              float& lr_score, float offset_x = 0, float offset_y = 0);
 
   /// Detect keypoints for multiple faces.
   /// Modify faces vector to add landmark info. Return 0 on success, otherwise
   /// return the number of inference errors.
   int PredictMulti(const cv::Mat& image,
-                   std::vector<daisykit::types::Face>& faces);
+                   const std::vector<types::Object>& objects,
+                   std::vector<std::vector<types::KeypointXYZ>>& poses,
+                   std::vector<float>& lr_scores);
+
+  /// Draw keypoints and their joints.
+  void DrawHandPoses(
+      const cv::Mat& image,
+      const std::vector<types::ObjectWithKeypointsXYZ>& keypoints);
 
  private:
   /// Preprocess image data to obtain net input.
   void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;
+
+  /// Cache scale from preprocess step
+  /// For restoring on postprocess
+  float scale_;
+  int hpad_;
+  int wpad_;
 };
 
 }  // namespace models

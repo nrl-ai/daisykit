@@ -2,7 +2,7 @@
 
 DaisyKit Android is built on top of [DaisyKit SDK](/docs/getting-started/sdk/). It contains wrapper code, examples to use DaisyKit in Android mobile devices.
 
-**Github:** <https://github.com/VNOpenAI/daisykit-android>.
+**Github:** <https://github.com/Daisykit-AI/daisykit-android>.
 
 ![DaisyKit Architecture](images/daisykit-architecture.png)
 
@@ -19,13 +19,13 @@ DaisyKit Android is built on top of [DaisyKit SDK](/docs/getting-started/sdk/). 
 ### Step 1: Clone the source code
 
 ```
-git clone --recurse-submodules https://github.com/VNOpenAI/daisykit-android.git
+git clone --recurse-submodules https://github.com/Daisykit-AI/daisykit-android.git
 ```
 
 Or 
 
 ```
-git clone https://github.com/VNOpenAI/daisykit-android.git
+git clone https://github.com/Daisykit-AI/daisykit-android.git
 cd daisykit-android
 git submodule update --init
 ```

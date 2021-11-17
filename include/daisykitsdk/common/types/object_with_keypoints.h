@@ -12,16 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_KEYPOINT_H_
-#define DAISYKIT_COMMON_TYPES_KEYPOINT_H_
+#ifndef DAISYKIT_COMMON_TYPES_OBJECT_WITH_KEYPOINTS_H_
+#define DAISYKIT_COMMON_TYPES_OBJECT_WITH_KEYPOINTS_H_
+
+#include "daisykitsdk/common/types/keypoint.h"
+#include "daisykitsdk/common/types/object.h"
+
+#include <vector>
 
 namespace daisykit {
 namespace types {
 
-struct Keypoint {
-  float x;
-  float y;
-  float confidence;  /// Prediction probability
+/// Object with keypoints.
+struct ObjectWithKeypoints : Object {
+  std::vector<types::Keypoint> keypoints;
+
+  ObjectWithKeypoints() {}
+  ObjectWithKeypoints(const Object& body,
+                      const std::vector<types::Keypoint>& keypoints)
+      : Object(body), keypoints(keypoints) {}
 };
 
 }  // namespace types

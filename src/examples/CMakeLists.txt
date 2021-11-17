@@ -24,6 +24,14 @@ target_link_libraries(demo_face_detector_graph ${OpenCV_LIBS} daisykitsdk)
 add_executable(demo_movenet demo_movenet.cpp)
 target_link_libraries(demo_movenet ${OpenCV_LIBS} daisykitsdk)
 
+add_executable(demo_hand_detector_yolox demo_hand_detector_yolox.cpp)
+target_link_libraries(demo_hand_detector_yolox ${OpenCV_LIBS} daisykitsdk)
+
+add_executable(demo_hand_pose_detector demo_hand_pose_detector.cpp)
+target_link_libraries(demo_hand_pose_detector ${OpenCV_LIBS} daisykitsdk)
+
+add_executable(demo_object_detector demo_object_detector_yolox.cpp)
+target_link_libraries(demo_object_detector ${OpenCV_LIBS} daisykitsdk)
 
 # Copy OpenCV lib to run on Windows
 if (WIN32)

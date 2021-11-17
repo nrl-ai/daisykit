@@ -12,24 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_HUMAN_POSE_H_
-#define DAISYKIT_COMMON_TYPES_HUMAN_POSE_H_
-
-#include "daisykitsdk/common/types/keypoint.h"
-#include "daisykitsdk/common/types/object.h"
-
-#include <vector>
+#ifndef DAISYKIT_COMMON_TYPES_KEYPOINT_XYZ_H_
+#define DAISYKIT_COMMON_TYPES_KEYPOINT_XYZ_H_
 
 namespace daisykit {
 namespace types {
 
-/// Human pose data type.
-struct HumanPose : Object {
-  std::vector<types::Keypoint> keypoints;
-
-  HumanPose() {}
-  HumanPose(const Object& body, const std::vector<types::Keypoint>& keypoints)
-      : Object(body), keypoints(keypoints) {}
+struct KeypointXYZ {
+  float x;
+  float y;
+  float z;
+  float confidence;  /// Prediction probability
 };
 
 }  // namespace types

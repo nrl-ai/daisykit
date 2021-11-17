@@ -32,7 +32,7 @@ FaceDetectorFlow::FaceDetectorFlow(const std::string& config_str,
       config["face_detection_model"]["use_gpu"]);
   with_landmark_ = config["with_landmark"];
   if (with_landmark_) {
-    facial_landmark_estimator_ = new models::FacialLandmarkEstimator(
+    facial_landmark_detector_ = new models::FacialLandmarkDetector(
         config["facial_landmark_model"]["model"],
         config["facial_landmark_model"]["weights"],
         config["facial_landmark_model"]["input_width"],
@@ -55,7 +55,7 @@ FaceDetectorFlow::FaceDetectorFlow(AAssetManager* mgr,
       config["face_detection_model"]["input_height"]);
   with_landmark_ = config["with_landmark"];
   if (with_landmark_) {
-    facial_landmark_estimator_ = new models::FacialLandmarkEstimator(
+    facial_landmark_detector_ = new models::FacialLandmarkDetector(
         config["facial_landmark_model"]["model"],
         config["facial_landmark_model"]["weights"]);
   }
@@ -65,8 +65,8 @@ FaceDetectorFlow::FaceDetectorFlow(AAssetManager* mgr,
 FaceDetectorFlow::~FaceDetectorFlow() {
   delete face_detector_;
   face_detector_ = nullptr;
-  delete facial_landmark_estimator_;
-  facial_landmark_estimator_ = nullptr;
+  delete facial_landmark_detector_;
+  facial_landmark_detector_ = nullptr;
 }
 
 std::vector<types::Face> FaceDetectorFlow::Process(const cv::Mat& rgb) {
@@ -76,7 +76,7 @@ std::vector<types::Face> FaceDetectorFlow::Process(const cv::Mat& rgb) {
 
   // Detect landmarks
   if (with_landmark_) {
-    facial_landmark_estimator_->PredictMulti(rgb, faces);
+    facial_landmark_detector_->PredictMulti(rgb, faces);
   }
 
   // Tick profiler when processing is done

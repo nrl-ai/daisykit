@@ -25,6 +25,7 @@ namespace models {
 /// All models receiving an image as input should inherite this class.
 class ImageModel {
  public:
+  ImageModel(int input_size);
   ImageModel(int input_width, int input_height);
 
  protected:
@@ -35,6 +36,8 @@ class ImageModel {
   int InputWidth();
   /// Get net input height
   int InputHeight();
+  /// Get input size (in case input width = input height)
+  int InputSize();
 
  private:
   int input_width_;   /// Net input width

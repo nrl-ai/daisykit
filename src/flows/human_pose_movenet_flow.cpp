@@ -31,7 +31,8 @@ HumanPoseMoveNetFlow::HumanPoseMoveNetFlow(const std::string& config_str) {
       config["human_pose_model"]["input_height"]);
 }
 
-std::vector<types::HumanPose> HumanPoseMoveNetFlow::Process(cv::Mat& rgb) {
+std::vector<types::ObjectWithKeypoints> HumanPoseMoveNetFlow::Process(
+    cv::Mat& rgb) {
   // Detect background pose
   std::vector<types::Object> bodies;
   body_detector_->Predict(rgb, bodies);
@@ -41,16 +42,16 @@ std::vector<types::HumanPose> HumanPoseMoveNetFlow::Process(cv::Mat& rgb) {
   pose_detector_->PredictMulti(rgb, bodies, keypoints);
 
   // Prepare and return outputs
-  std::vector<types::HumanPose> poses;
+  std::vector<types::ObjectWithKeypoints> poses;
   for (size_t i = 0; i < bodies.size(); ++i) {
-    types::HumanPose pose(bodies[i], keypoints[i]);
+    types::ObjectWithKeypoints pose(bodies[i], keypoints[i]);
     poses.push_back(pose);
   }
   return poses;
 }
 
-void HumanPoseMoveNetFlow::DrawResult(cv::Mat& rgb,
-                                      std::vector<types::HumanPose>& poses) {
+void HumanPoseMoveNetFlow::DrawResult(
+    cv::Mat& rgb, std::vector<types::ObjectWithKeypoints>& poses) {
   for (auto pose : poses) {
     // Draw body bounding boxes
     cv::rectangle(rgb, cv::Rect(pose.x, pose.y, pose.w, pose.h),

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/models/facial_landmark_estimator.h"
+#include "daisykitsdk/models/facial_landmark_detector.h"
 
 #include <string>
 #include <vector>
@@ -20,21 +20,21 @@
 namespace daisykit {
 namespace models {
 
-FacialLandmarkEstimator::FacialLandmarkEstimator(
+FacialLandmarkDetector::FacialLandmarkDetector(
     const char* param_buffer, const unsigned char* weight_buffer,
     int input_width, int input_height, bool use_gpu)
     : NCNNModel(param_buffer, weight_buffer, use_gpu),
       ImageModel(input_width, input_height) {}
 
-FacialLandmarkEstimator::FacialLandmarkEstimator(const std::string& param_file,
-                                                 const std::string& weight_file,
-                                                 int input_width,
-                                                 int input_height, bool use_gpu)
+FacialLandmarkDetector::FacialLandmarkDetector(const std::string& param_file,
+                                               const std::string& weight_file,
+                                               int input_width,
+                                               int input_height, bool use_gpu)
     : NCNNModel(param_file, weight_file, use_gpu),
       ImageModel(input_width, input_height) {}
 
-void FacialLandmarkEstimator::Preprocess(const cv::Mat& image,
-                                         ncnn::Mat& net_input) {
+void FacialLandmarkDetector::Preprocess(const cv::Mat& image,
+                                        ncnn::Mat& net_input) {
   // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();
   net_input =
@@ -44,9 +44,9 @@ void FacialLandmarkEstimator::Preprocess(const cv::Mat& image,
   net_input.substract_mean_normalize(0, norm_vals);
 }
 
-int FacialLandmarkEstimator::Predict(const cv::Mat& image,
-                                     std::vector<types::Keypoint>& keypoints,
-                                     float offset_x, float offset_y) {
+int FacialLandmarkDetector::Predict(const cv::Mat& image,
+                                    std::vector<types::Keypoint>& keypoints,
+                                    float offset_x, float offset_y) {
   // Preprocess
   ncnn::Mat in;
   Preprocess(image, in);
@@ -74,8 +74,8 @@ int FacialLandmarkEstimator::Predict(const cv::Mat& image,
   return 0;
 }
 
-int FacialLandmarkEstimator::PredictMulti(const cv::Mat& image,
-                                          std::vector<types::Face>& faces) {
+int FacialLandmarkDetector::PredictMulti(const cv::Mat& image,
+                                         std::vector<types::Face>& faces) {
   int num_errors = 0;
   int img_width = image.cols;
   int img_height = image.rows;

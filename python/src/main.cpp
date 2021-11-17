@@ -54,24 +54,24 @@ PYBIND11_MODULE(daisykit, m) {
       .def_readwrite("class_id", &types::Object::class_id)
       .def_readwrite("confidence", &types::Object::confidence);
 
-  py::class_<types::HumanPose>(m, "HumanPose")
+  py::class_<ObjectWithKeypoints>(m, "HumanPose")
       .def(py::init<>())
       .def(
           py::init<const types::Object&, const std::vector<types::Keypoint>&>(),
           py::arg("body"), py::arg("keypoints"))
-      .def_readwrite("x", &types::HumanPose::x)
-      .def_readwrite("y", &types::HumanPose::y)
-      .def_readwrite("w", &types::HumanPose::w)
-      .def_readwrite("h", &types::HumanPose::h)
-      .def_readwrite("class_id", &types::HumanPose::class_id)
-      .def_readwrite("confidence", &types::HumanPose::confidence)
-      .def_readwrite("keypoints", &types::HumanPose::keypoints);
+      .def_readwrite("x", &ObjectWithKeypoints::x)
+      .def_readwrite("y", &ObjectWithKeypoints::y)
+      .def_readwrite("w", &ObjectWithKeypoints::w)
+      .def_readwrite("h", &ObjectWithKeypoints::h)
+      .def_readwrite("class_id", &ObjectWithKeypoints::class_id)
+      .def_readwrite("confidence", &ObjectWithKeypoints::confidence)
+      .def_readwrite("keypoints", &ObjectWithKeypoints::keypoints);
 
   py::class_<flows::FaceDetectorFlow>(m, "FaceDetectorFlow")
       .def(py::init<const std::string&>(), py::arg("config_path"))
       .def("Process", &flows::FaceDetectorFlow::Process)
-      .def("DrawResult", &flows::FaceDetectorFlow::DrawResult,
-           py::return_value_policy::reference_internal);
+      .def("DrawResult", &flows::FaceDetectorFlow::DrawResult, py::arg("image"),
+           py::arg("faces"), py::return_value_policy::reference_internal);
 
   py::class_<flows::BackgroundMattingFlow>(m, "BackgroundMattingFlow")
       .def(py::init<const std::string&, const cv::Mat&>(),

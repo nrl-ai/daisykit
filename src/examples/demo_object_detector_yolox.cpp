@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykitsdk/common/types.h"
-#include "daisykitsdk/flows/human_pose_movenet_flow.h"
+#include "daisykitsdk/flows/object_detector_flow.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>
@@ -31,11 +31,11 @@ using namespace daisykit::types;
 using namespace daisykit::flows;
 
 int main(int, char**) {
-  std::ifstream t("configs/human_pose_movenet_config.json");
+  std::ifstream t("configs/object_detector_yolox_config.json");
   std::string config_str((std::istreambuf_iterator<char>(t)),
                          std::istreambuf_iterator<char>());
 
-  HumanPoseMoveNetFlow flow(config_str);
+  ObjectDetectorFlow flow(config_str);
 
   Mat frame;
   VideoCapture cap(0);
@@ -45,8 +45,8 @@ int main(int, char**) {
     cv::Mat rgb;
     cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
 
-    std::vector<ObjectWithKeypoints> poses = flow.Process(rgb);
-    flow.DrawResult(rgb, poses);
+    std::vector<Object> objects = flow.Process(rgb);
+    flow.DrawResult(rgb, objects);
 
     cv::Mat draw;
     cv::cvtColor(rgb, draw, cv::COLOR_RGB2BGR);

@@ -55,12 +55,12 @@ void FaceDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   float scale = 1.f;
 
   if (w > h) {
-    scale = (float)InputWidth() / w;
-    w = InputWidth();
+    scale = (float)InputSize() / w;
+    w = InputSize();
     h = h * scale;
   } else {
-    scale = (float)InputHeight() / h;
-    h = InputHeight();
+    scale = (float)InputSize() / h;
+    h = InputSize();
     w = w * scale;
   }
 

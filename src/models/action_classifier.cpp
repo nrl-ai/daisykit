@@ -43,7 +43,7 @@ ActionClassifier::ActionClassifier(const std::string& param_file,
 }
 
 void ActionClassifier::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
-  cv::Mat rgb = processors::ImgUtils::SquarePadding(image, InputWidth());
+  cv::Mat rgb = processors::ImgUtils::SquarePadding(image, InputSize());
   net_input =
       ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols,
                                     rgb.rows, InputWidth(), InputHeight());

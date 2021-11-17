@@ -1,6 +1,6 @@
 import cv2
 import json
-from daisykit.utils import get_asset_file
+from daisykit.utils import get_asset_file, to_py_type
 import daisykit
 
 config = {
@@ -42,6 +42,9 @@ while(True):
     face_detector_flow.DrawResult(frame, faces)
 
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+    # Convert faces to Python list of dict
+    faces = to_py_type(faces)
 
     # Display the resulting frame
     cv2.imshow('frame', frame)

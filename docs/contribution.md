@@ -8,7 +8,7 @@ DaisyKit follows [Google C++ Style Guide](https://google.github.io/styleguide/cp
 
 - Source code file names: `.cpp` for source file and `.h` for header files.
 
-Coding convention for the code base should be formatted and checked by [clang-format](https://clang.llvm.org/docs/ClangFormat.html). Configuration file `.clang-format` for code formatting can be found [here](https://github.com/VNOpenAI/daisykit/blob/master/.clang-format).
+Coding convention for the code base should be formatted and checked by [clang-format](https://clang.llvm.org/docs/ClangFormat.html). Configuration file `.clang-format` for code formatting can be found [here](https://github.com/Daisykit-AI/daisykit/blob/master/.clang-format).
 
 **Setup for Visual Studio Code (VS Code)**
 
@@ -154,18 +154,18 @@ Create a new branch for development => Write some code => Test your new code => 
 
 ## III. Contribute to DaisyKit SDK
 
-Create a pull request to <https://github.com/VNOpenAI/daisykit>. Visit repository for the setup instructions.
+Create a pull request to <https://github.com/Daisykit-AI/daisykit>. Visit repository for the setup instructions.
 
 **Next tasks:** Build model training code, inference code, design and build flow architecture, write documentation and tutorials.
 
 ## IV. Contribute to DaisyKit Android
 
-Create a pull request to <https://github.com/VNOpenAI/daisykit-android>. Visit repository for the setup instructions.
+Create a pull request to <https://github.com/Daisykit-AI/daisykit-android>. Visit repository for the setup instructions.
 
 **Next tasks:** Build wrappers for Kotlin, Java and example applications.
 
 ## V. Contribute to Daisykit iOS
 
-Create a pull request to <https://github.com/VNOpenAI/daisykit-ios>. Visit repository for the setup instructions.
+Create a pull request to <https://github.com/Daisykit-AI/daisykit-ios>. Visit repository for the setup instructions.
 
 **Next tasks:** Build base app, wrappers for Swift, Objective-C and example applications.

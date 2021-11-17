@@ -12,33 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
-#define DAISYKIT_FLOWS_PUSHUP_COUNTER_FLOW_H_
+#ifndef DAISYKIT_COMMON_TYPES_OBJECT_WITH_KEYPOINTS_XYZ_H_
+#define DAISYKIT_COMMON_TYPES_OBJECT_WITH_KEYPOINTS_XYZ_H_
 
 #include "daisykitsdk/common/types.h"
-#include "daisykitsdk/models/body_detector.h"
-#include "daisykitsdk/models/pose_detector_movenet.h"
 
-#include <atomic>
-#include <mutex>
-#include <opencv2/opencv.hpp>
-#include <string>
+#include <vector>
 
 namespace daisykit {
-namespace flows {
-class HumanPoseMoveNetFlow {
- public:
-  HumanPoseMoveNetFlow(const std::string& config_str);
+namespace types {
 
-  std::vector<types::ObjectWithKeypoints> Process(cv::Mat& rgb);
-  void DrawResult(cv::Mat& rgb, std::vector<types::ObjectWithKeypoints>& poses);
+/// Object with keypoints.
+struct ObjectWithKeypointsXYZ : Object {
+  std::vector<types::KeypointXYZ> keypoints;
 
- private:
-  models::BodyDetector* body_detector_;
-  models::PoseDetectorMoveNet* pose_detector_;
+  ObjectWithKeypointsXYZ() {}
+  ObjectWithKeypointsXYZ(const Object& body,
+                         const std::vector<types::KeypointXYZ>& keypoints)
+      : Object(body), keypoints(keypoints) {}
 };
 
-}  // namespace flows
+}  // namespace types
 }  // namespace daisykit
 
 #endif

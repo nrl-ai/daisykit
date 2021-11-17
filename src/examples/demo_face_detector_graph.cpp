@@ -15,7 +15,7 @@
 #include "daisykitsdk/graphs/core/graph.h"
 #include "daisykitsdk/graphs/core/node.h"
 #include "daisykitsdk/graphs/nodes/models/face_detector_node.h"
-#include "daisykitsdk/graphs/nodes/models/face_landmark_estimator_node.h"
+#include "daisykitsdk/graphs/nodes/models/face_landmark_detector_node.h"
 #include "daisykitsdk/graphs/nodes/packet_distributor_node.h"
 #include "daisykitsdk/graphs/nodes/visualizers/face_visualizer_node.h"
 #include "third_party/json.hpp"
@@ -45,10 +45,10 @@ int main(int, char**) {
           "models/face_detection/yolo_fastest_with_mask/"
           "yolo-fastest-opt.bin",
           NodeType::kAsyncNode);
-  std::shared_ptr<nodes::FacialLandmarkEstimatorNode>
-      facial_landmark_estimator_node =
-          std::make_shared<nodes::FacialLandmarkEstimatorNode>(
-              "facial_landmark_estimator",
+  std::shared_ptr<nodes::FacialLandmarkDetectorNode>
+      facial_landmark_detector_node =
+          std::make_shared<nodes::FacialLandmarkDetectorNode>(
+              "facial_landmark_detector",
               "models/facial_landmark/pfld-sim.param",
               "models/facial_landmark/pfld-sim.bin", NodeType::kAsyncNode);
   std::shared_ptr<nodes::FaceVisualizerNode> face_visualizer_node =
@@ -64,16 +64,16 @@ int main(int, char**) {
                  TransmissionProfile(2, true), true);
 
   Graph::Connect(packet_distributor_node.get(), "output",
-                 facial_landmark_estimator_node.get(), "image",
+                 facial_landmark_detector_node.get(), "image",
                  TransmissionProfile(2, true), true);
   Graph::Connect(face_detector_node.get(), "output",
-                 facial_landmark_estimator_node.get(), "faces",
+                 facial_landmark_detector_node.get(), "faces",
                  TransmissionProfile(2, true), true);
 
   Graph::Connect(packet_distributor_node.get(), "output",
                  face_visualizer_node.get(), "image",
                  TransmissionProfile(2, true), true);
-  Graph::Connect(facial_landmark_estimator_node.get(), "output",
+  Graph::Connect(facial_landmark_detector_node.get(), "output",
                  face_visualizer_node.get(), "faces",
                  TransmissionProfile(2, true), true);
 
@@ -81,7 +81,7 @@ int main(int, char**) {
   // This method also start worker threads of asynchronous node
   packet_distributor_node->Activate();
   face_detector_node->Activate();
-  facial_landmark_estimator_node->Activate();
+  facial_landmark_detector_node->Activate();
   face_visualizer_node->Activate();
 
   VideoCapture cap(0);

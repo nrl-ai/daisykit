@@ -17,6 +17,8 @@
 
 #include "daisykitsdk/graphs/core/node.h"
 
+#include <opencv2/opencv.hpp>
+
 #include <chrono>
 #include <memory>
 

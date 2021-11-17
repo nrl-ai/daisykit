@@ -1,19 +1,19 @@
 import cv2
 import json
-from daisykit.utils import get_asset_file
+from daisykit.utils import get_asset_file, to_py_type
 from daisykit import HumanPoseMoveNetFlow
 
 config = {
-  "person_detection_model": {
-    "model": get_asset_file("models/human_detection/ssd_mobilenetv2.param"),
-    "weights": get_asset_file("models/human_detection/ssd_mobilenetv2.bin")
-  },
-  "human_pose_model": {
-    "model": get_asset_file("models/human_pose_detection/movenet/lightning.param"),
-    "weights": get_asset_file("models/human_pose_detection/movenet/lightning.bin"),
-    "input_width": 192,
-    "input_height": 192
-  }
+    "person_detection_model": {
+        "model": get_asset_file("models/human_detection/ssd_mobilenetv2.param"),
+        "weights": get_asset_file("models/human_detection/ssd_mobilenetv2.bin")
+    },
+    "human_pose_model": {
+        "model": get_asset_file("models/human_pose_detection/movenet/lightning.param"),
+        "weights": get_asset_file("models/human_pose_detection/movenet/lightning.bin"),
+        "input_width": 192,
+        "input_height": 192
+    }
 }
 
 human_pose_flow = HumanPoseMoveNetFlow(json.dumps(config))
@@ -32,6 +32,9 @@ while(True):
     human_pose_flow.DrawResult(frame, poses)
 
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+    # Convert poses to Python list of dict
+    poses = to_py_type(poses)
 
     # Display the resulting frame
     cv2.imshow('frame', frame)

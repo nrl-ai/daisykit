@@ -18,7 +18,7 @@
 #include "daisykitsdk/common/profiler.h"
 #include "daisykitsdk/common/types.h"
 #include "daisykitsdk/models/face_detector.h"
-#include "daisykitsdk/models/facial_landmark_estimator.h"
+#include "daisykitsdk/models/facial_landmark_detector.h"
 
 #include <mutex>
 #include <opencv2/opencv.hpp>
@@ -43,7 +43,7 @@ class FaceDetectorFlow {
  private:
   bool with_landmark_ = false;
   models::FaceDetector* face_detector_;
-  models::FacialLandmarkEstimator* facial_landmark_estimator_;
+  models::FacialLandmarkDetector* facial_landmark_detector_;
   Profiler profiler;
   bool show_fps_;
 };

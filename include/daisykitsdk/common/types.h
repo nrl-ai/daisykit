@@ -18,8 +18,10 @@
 #include "daisykitsdk/common/types/action.h"
 #include "daisykitsdk/common/types/box.h"
 #include "daisykitsdk/common/types/face.h"
-#include "daisykitsdk/common/types/human_pose.h"
 #include "daisykitsdk/common/types/keypoint.h"
+#include "daisykitsdk/common/types/keypoint_xyz.h"
 #include "daisykitsdk/common/types/object.h"
+#include "daisykitsdk/common/types/object_with_keypoints.h"
+#include "daisykitsdk/common/types/object_with_keypoints_xyz.h"
 
 #endif

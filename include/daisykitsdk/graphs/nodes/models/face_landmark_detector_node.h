@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_GRAPHS_NODES_MODELS_FACIAL_LANDMARK_ESTIMATOR_NODE_H_
-#define DAISYKIT_GRAPHS_NODES_MODELS_FACIAL_LANDMARK_ESTIMATOR_NODE_H_
+#ifndef DAISYKIT_GRAPHS_NODES_MODELS_FACIAL_LANDMARK_DETECTOR_NODE_H_
+#define DAISYKIT_GRAPHS_NODES_MODELS_FACIAL_LANDMARK_DETECTOR_NODE_H_
 
 #include "daisykitsdk/graphs/core/node.h"
 
-#include "daisykitsdk/models/facial_landmark_estimator.h"
+#include "daisykitsdk/models/facial_landmark_detector.h"
 
 #include <chrono>
 #include <memory>
@@ -27,20 +27,20 @@ namespace graphs {
 
 namespace nodes {
 
-/// Face landmark estimator node.
+/// Face landmark detector node.
 /// Receives an image from "image" and face bounding boxes from "faces", add
 /// landmark info to "faces" packet and push the output through "output".
-class FacialLandmarkEstimatorNode : public Node {
+class FacialLandmarkDetectorNode : public Node {
  public:
-  FacialLandmarkEstimatorNode(const std::string& node_name,
-                              const std::string& param_file,
-                              const std::string& weight_file,
-                              NodeType node_type = NodeType::kSyncNode)
+  FacialLandmarkDetectorNode(const std::string& node_name,
+                             const std::string& param_file,
+                             const std::string& weight_file,
+                             NodeType node_type = NodeType::kSyncNode)
       : Node(node_name, node_type) {
     // Init model
-    facial_landmark_estimator_ =
-        std::make_shared<models::FacialLandmarkEstimator>(param_file,
-                                                          weight_file);
+    facial_landmark_detector_ =
+        std::make_shared<models::FacialLandmarkDetector>(param_file,
+                                                         weight_file);
   }
 
   void Tick() {
@@ -59,7 +59,7 @@ class FacialLandmarkEstimatorNode : public Node {
     cv::Mat img = *inputs["image"]->GetData<cv::Mat>();
 
     // Modify faces to add landmark info
-    facial_landmark_estimator_->PredictMulti(img, *faces);
+    facial_landmark_detector_->PredictMulti(img, *faces);
 
     // Convert to output packet
     PacketPtr output;
@@ -73,7 +73,7 @@ class FacialLandmarkEstimatorNode : public Node {
   }
 
  private:
-  std::shared_ptr<models::FacialLandmarkEstimator> facial_landmark_estimator_;
+  std::shared_ptr<models::FacialLandmarkDetector> facial_landmark_detector_;
 };
 
 }  // namespace nodes

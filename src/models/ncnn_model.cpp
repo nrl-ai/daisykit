@@ -76,10 +76,14 @@ NCNNModel::NCNNModel(const std::string& param_file,
   LoadModel(param_file, weight_file, use_gpu);
 }  // namespace models
 
-int NCNNModel::LoadModel(const char* param_buffer,
-                         const unsigned char* weight_buffer, bool use_gpu) {
-  // https://github.com/VNOpenAI/daisykit/commit/89fbf2fcf34c75662c23d5f48abc3a538fae7e93#r56348806
+int NCNNModel::LoadModel(
+    const char* param_buffer, const unsigned char* weight_buffer, bool use_gpu,
+    std::function<int(ncnn::Net&)> before_model_load_hook) {
+  // https://github.com/Daisykit-AI/daisykit/commit/89fbf2fcf34c75662c23d5f48abc3a538fae7e93#r56348806
   model_.clear();
+  if (before_model_load_hook) {
+    before_model_load_hook(model_);
+  }
   model_.opt.use_vulkan_compute = use_gpu;
   if (model_.load_param_mem(param_buffer) != 0) {
     std::cerr << "Failed to load model params from buffer." << std::endl;
@@ -92,9 +96,13 @@ int NCNNModel::LoadModel(const char* param_buffer,
   return 0;
 }
 
-int NCNNModel::LoadModel(const std::string& param_file,
-                         const std::string& weight_file, bool use_gpu) {
+int NCNNModel::LoadModel(
+    const std::string& param_file, const std::string& weight_file, bool use_gpu,
+    std::function<int(ncnn::Net&)> before_model_load_hook) {
   model_.clear();
+  if (before_model_load_hook) {
+    before_model_load_hook(model_);
+  }
   model_.opt.use_vulkan_compute = use_gpu;
   if (model_.load_param(param_file.c_str()) != 0) {
     std::cerr << "Failed to load model params from buffer." << std::endl;
