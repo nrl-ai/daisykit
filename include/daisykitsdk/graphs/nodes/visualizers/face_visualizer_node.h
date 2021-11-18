@@ -69,10 +69,10 @@ class FaceVisualizerNode : public Node {
     if (faces != nullptr) {
       visualizers::FaceVisualizer::DrawFace(draw, *faces, with_landmark_);
       double fps = profiler.Tick();
-      visualizers::BaseVisualizer::PutText(
-          draw, std::string("FPS: ") + std::to_string(fps), cv::Point(100, 100),
-          cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10, cv::Scalar(0, 0, 0),
-          cv::Scalar(0, 255, 0));
+      // visualizers::BaseVisualizer::PutText(
+      //     draw, std::string("FPS: ") + std::to_string(fps), cv::Point(100,
+      //     100), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10, cv::Scalar(0, 0, 0),
+      //     cv::Scalar(0, 255, 0));
     }
 
     cv::cvtColor(draw, draw, cv::COLOR_RGB2BGR);

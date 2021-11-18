@@ -24,10 +24,14 @@
 #include <string>
 #include <vector>
 
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
 namespace daisykit {
 namespace models {
 
-/// Facial landmark estimation model - 68 points.
+/// Hand pose model.
 class HandPoseDetector : public NCNNModel, public ImageModel {
  public:
   HandPoseDetector(const char* param_buffer, const unsigned char* weight_buffer,
@@ -36,6 +40,12 @@ class HandPoseDetector : public NCNNModel, public ImageModel {
   HandPoseDetector(const std::string& param_file,
                    const std::string& weight_file, int input_size = 224,
                    bool use_gpu = false);
+
+#ifdef __ANDROID__
+  HandPoseDetector(AAssetManager* mgr, const std::string& param_file,
+                   const std::string& weight_file, int input_size = 224,
+                   bool use_gpu = false);
+#endif
 
   /// Detect keypoints for a single face.
   /// This function adds offset_x and offset_y to the keypoints.

@@ -1,10 +1,15 @@
-# Daisykit SDK
+# Daisykit
 
-**DaisyKit SDK** is the core of models and algorithms, which can be used to develop AI applications on different platforms.
+Daisykit is an AI toolkit for software engineers to Deploy AI Systems Yourself (DAISY). We develop this package with a focus on the ease of deployment. This repository contains:
+
+- Daisykit SDK, the core of models and algorithms.
+- Daisykit Python.
 
 **Website:** <https://daisykit.org/>.
 
-![DaisyKit SDK](docs/images/daisykit-architecture.png)
+![DaisyKit Architecture](docs/images/daisykit-architecture.png)
+
+**Our development plan for Daisykit. We are working to build the whole system gradually.**
 
 ## Environment Setup
 

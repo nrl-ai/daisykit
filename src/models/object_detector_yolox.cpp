@@ -95,6 +95,24 @@ ObjectDetectorYOLOX::ObjectDetectorYOLOX(const std::string& param_file,
   });
 }
 
+#if __ANDROID__
+ObjectDetectorYOLOX::ObjectDetectorYOLOX(AAssetManager* mgr,
+                                         const std::string& param_file,
+                                         const std::string& weight_file,
+                                         float score_threshold,
+                                         float iou_threshold, int input_width,
+                                         int input_height, bool use_gpu)
+    : NCNNModel(), ImageModel(input_width, input_height) {
+  score_threshold_ = score_threshold;
+  iou_threshold_ = iou_threshold;
+  assert(input_width == input_height);
+  LoadModel(mgr, param_file, weight_file, use_gpu, [](ncnn::Net& model) {
+    model.register_custom_layer("YoloV5Focus", YoloXFocus_layer_creator);
+    return 0;
+  });
+}
+#endif
+
 void ObjectDetectorYOLOX::SetClassNames(
     const std::vector<std::string>& class_names) {
   class_names_ = class_names;

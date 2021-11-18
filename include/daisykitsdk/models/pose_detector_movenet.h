@@ -24,6 +24,10 @@
 #include <string>
 #include <vector>
 
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
 namespace daisykit {
 namespace models {
 
@@ -37,6 +41,12 @@ class PoseDetectorMoveNet : public NCNNModel, public ImageModel {
   PoseDetectorMoveNet(const std::string& param_file,
                       const std::string& weight_file, int input_width = 256,
                       int input_height = 256, bool use_gpu = false);
+
+#ifdef __ANDROID__
+  PoseDetectorMoveNet(AAssetManager* mgr, const std::string& param_file,
+                      const std::string& weight_file, int input_width = 256,
+                      int input_height = 256, bool use_gpu = false);
+#endif
 
   /// Detect single human pose.
   /// This function adds offset_x and offset_y to the keypoints.

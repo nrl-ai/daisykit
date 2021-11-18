@@ -34,7 +34,8 @@ class FaceDetectorFlow {
  public:
   FaceDetectorFlow(const std::string& config_str, bool show_fps = false);
 #ifdef __ANDROID__
-  FaceDetectorFlow(AAssetManager* mgr, const std::string& config_str);
+  FaceDetectorFlow(AAssetManager* mgr, const std::string& config_str,
+                   bool show_fps = false);
 #endif
   ~FaceDetectorFlow();
   std::vector<types::Face> Process(const cv::Mat& rgb);

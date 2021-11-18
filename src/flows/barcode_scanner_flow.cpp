@@ -36,17 +36,6 @@ BarcodeScannerFlow::BarcodeScannerFlow(const std::string& config_str) {
   hints_.setTryRotate(config["try_rotate"]);
 }
 
-#ifdef __ANDROID__
-BarcodeScannerFlow::BarcodeScannerFlow(AAssetManager* mgr,
-                                       const std::string& config_str) {
-  nlohmann::json config = nlohmann::json::parse(config_str);
-  // Setting for barcode reader
-  hints_.setEanAddOnSymbol(EanAddOnSymbol::Read);
-  hints_.setTryHarder(config["try_harder"]);
-  hints_.setTryRotate(config["try_rotate"]);
-}
-#endif
-
 std::string BarcodeScannerFlow::Process(cv::Mat& rgb, bool draw) {
   ZXing::ImageView image{rgb.data, rgb.cols, rgb.rows, ZXing::ImageFormat::RGB};
   auto results = ZXing::ReadBarcodes(image, hints_);

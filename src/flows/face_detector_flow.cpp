@@ -44,7 +44,8 @@ FaceDetectorFlow::FaceDetectorFlow(const std::string& config_str,
 
 #ifdef __ANDROID__
 FaceDetectorFlow::FaceDetectorFlow(AAssetManager* mgr,
-                                   const std::string& config_str) {
+                                   const std::string& config_str,
+                                   bool show_fps) {
   nlohmann::json config = nlohmann::json::parse(config_str);
   face_detector_ = new models::FaceDetector(
       mgr, config["face_detection_model"]["model"],
@@ -52,13 +53,18 @@ FaceDetectorFlow::FaceDetectorFlow(AAssetManager* mgr,
       config["face_detection_model"]["score_threshold"],
       config["face_detection_model"]["iou_threshold"],
       config["face_detection_model"]["input_width"],
-      config["face_detection_model"]["input_height"]);
+      config["face_detection_model"]["input_height"],
+      config["face_detection_model"]["use_gpu"]);
   with_landmark_ = config["with_landmark"];
   if (with_landmark_) {
     facial_landmark_detector_ = new models::FacialLandmarkDetector(
-        config["facial_landmark_model"]["model"],
-        config["facial_landmark_model"]["weights"]);
+        mgr, config["facial_landmark_model"]["model"],
+        config["facial_landmark_model"]["weights"],
+        config["facial_landmark_model"]["input_width"],
+        config["facial_landmark_model"]["input_height"],
+        config["facial_landmark_model"]["use_gpu"]);
   }
+  show_fps_ = show_fps;
 }
 #endif
 

@@ -75,6 +75,22 @@ ObjectDetectorFlow::ObjectDetectorFlow(const std::string& config_str) {
   detector_->SetClassNames(config["object_detection_model"]["class_names"]);
 }
 
+#ifdef __ANDROID__
+ObjectDetectorFlow::ObjectDetectorFlow(AAssetManager* mgr,
+                                       const std::string& config_str) {
+  nlohmann::json config = nlohmann::json::parse(config_str);
+  detector_ = new models::ObjectDetectorYOLOX(
+      mgr, config["object_detection_model"]["model"],
+      config["object_detection_model"]["weights"],
+      config["object_detection_model"]["score_threshold"],
+      config["object_detection_model"]["iou_threshold"],
+      config["object_detection_model"]["input_width"],
+      config["object_detection_model"]["input_height"],
+      config["object_detection_model"]["use_gpu"]);
+  detector_->SetClassNames(config["object_detection_model"]["class_names"]);
+}
+#endif
+
 std::vector<types::Object> ObjectDetectorFlow::Process(cv::Mat& rgb) {
   // Detect
   std::vector<types::Object> objects;

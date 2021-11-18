@@ -14,6 +14,7 @@
 
 #include "daisykitsdk/models/image_model.h"
 
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -35,9 +36,11 @@ int ImageModel::InputWidth() { return input_width_; }
 int ImageModel::InputHeight() { return input_height_; }
 
 int ImageModel::InputSize() {
-  std::cerr << "Input width is different from Input height. Getting input size "
-               "may be wrong."
-            << std::endl;
+  if (input_width_ != input_height_)
+    std::cerr
+        << "Input width is different from Input height. Getting input size "
+           "may be wrong."
+        << std::endl;
   return input_width_;
 }
 

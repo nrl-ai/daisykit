@@ -30,6 +30,15 @@ HandPoseDetector::HandPoseDetector(const std::string& param_file,
                                    int input_size, bool use_gpu)
     : NCNNModel(param_file, weight_file, use_gpu), ImageModel(input_size) {}
 
+#if __ANDROID__
+HandPoseDetector::HandPoseDetector(AAssetManager* mgr,
+                                   const std::string& param_file,
+                                   const std::string& weight_file,
+                                   int input_size, bool use_gpu)
+    : NCNNModel(mgr, param_file, weight_file, use_gpu),
+      ImageModel(input_size) {}
+#endif
+
 void HandPoseDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();

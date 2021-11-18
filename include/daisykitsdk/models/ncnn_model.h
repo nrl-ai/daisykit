@@ -27,6 +27,10 @@ the operation of loading model, predicting model and other basics.
 #include <map>
 #include <string>
 
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
 namespace daisykit {
 namespace models {
 
@@ -58,6 +62,20 @@ class NCNNModel {
   int LoadModel(const std::string& param_file, const std::string& weight_file,
                 bool use_gpu = false,
                 std::function<int(ncnn::Net&)> before_model_load_hook = {});
+
+#ifdef __ANDROID__
+  /// Initialize a NCNN model from files.
+  NCNNModel(AAssetManager* mgr, const std::string& param_file,
+            const std::string& weight_file, bool use_gpu = false);
+
+  /// Load model from param and weight file.
+  /// This function only works if file access is supported. Be careful when use
+  /// it for multiplatform applications. Instead, use IO module for loading
+  /// models from different sources.
+  int LoadModel(AAssetManager* mgr, const std::string& param_file,
+                const std::string& weight_file, bool use_gpu = false,
+                std::function<int(ncnn::Net&)> before_model_load_hook = {});
+#endif
 
   /// Inference function for NCNN model with 1 input and 1 output. The inference
   /// output is written into `out`. Return 0 on success, otherwise return error

@@ -1,13 +1,30 @@
 import io
 import os
 import sys
-import time
 import re
 import subprocess
-import numpy as np
+# import numpy as np
 
 from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext
+
+# Obtain the numpy include directory.
+# This logic works across numpy versions.
+numpy_available = False
+numpy_include = ""
+try:
+    import numpy as np
+    from numpy.distutils.system_info import get_info
+
+    try:
+        numpy_include = np.get_include()
+    except AttributeError:
+        numpy_include = np.get_numpy_include()
+
+    numpy_available = True
+except ImportError as e:
+    print("Numpy was not installed!")
+
 
 def find_version():
     with io.open("CMakeLists.txt", encoding="utf8") as f:
@@ -71,9 +88,11 @@ class CMakeBuild(build_ext):
             "-DDAISYKIT_BUILD_DOCS=OFF",
             "-DDAISYKIT_COPY_ASSETS=OFF",
             "-DDAISYKIT_BUILD_SHARED_LIB=OFF",
-            "-DDAISYKIT_WITH_VULKAN=OFF",
-            "-DNUMPY_INCLUDE_DIR={}".format(np.get_include())
+            "-DDAISYKIT_WITH_VULKAN=OFF"
         ]
+        if numpy_available:
+            cmake_args.append("-DNUMPY_INCLUDE_DIR={}".format(numpy_include))
+
         build_args = []
 
         if self.compiler.compiler_type != "msvc":

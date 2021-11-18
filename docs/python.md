@@ -2,11 +2,19 @@
 
 <https://pypi.org/project/daisykit/>
 
-Deploy AI Systems Yourself (DAISY) Kit. DaisyKit Python is the wrapper of DaisyKit SDK, an AI framework focusing on the ease of deployment. This package only supports Ubuntu Linux - Python 3 now. We will add support for other platforms and models in the future.
+Deploy AI Systems Yourself (DAISY) Kit. DaisyKit Python is the wrapper of DaisyKit SDK, an AI framework focusing on the ease of deployment. At present, this package only has prebuilt distribution for Windows - Python 3. For other platform, you need to compile from source.
 
-## Install and run example
+## How to install ?
 
-Install dependencies. Below commands are for Ubuntu. You can try other installation methods based on your OS.
+**For Windows:**
+
+```
+pip3 install daisykit
+```
+
+**For Ubuntu:**
+
+- Install dependencies
 
 ```
 sudo apt install pybind11-dev # Pybind11 - For Python/C++ Wrapper
@@ -14,12 +22,25 @@ sudo apt install libopencv-dev # For OpenCV
 sudo apt install libvulkan-dev # Optional - For GPU support
 ```
 
-Install DaisyKit
+- Install DaisyKit (compile from source)
 
 ```
 pip3 install --upgrade pip # Ensure pip is updated
 pip3 install daisykit
 ```
+
+**For other platforms:**
+
+- Install OpenCV, Pybind11 and Vulkan development package (if you want GPu support)
+
+- Install DaisyKit (compile from source)
+
+```
+pip3 install --upgrade pip # Ensure pip is updated
+pip3 install daisykit
+```
+
+## Examples
 
 **Object detection:**
 
@@ -374,33 +395,8 @@ vid.release()
 cv2.destroyAllWindows()
 ```
 
-## Build Python package
+## Bug report
 
-Build environment: Ubuntu.
+Please open an issue on our official repository if you find any error.
 
-```
-sudo apt install ninja-build
-python3 -m pip install --user --upgrade twine
-```
-
-Build package:
-
-```
-python3 setup.py sdist
-```
-
-or
-
-```
-bash scripts/build_python.sh
-```
-
-Upload to Pypi (for DaisyKit authors only)
-
-```
-twine upload dist/*
-```
-
-## TODO
-
-- Multiplatform build.
+<https://github.com/Daisykit-AI/daisykit>

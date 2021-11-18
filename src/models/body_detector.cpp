@@ -32,6 +32,14 @@ BodyDetector::BodyDetector(const std::string& param_file,
     : NCNNModel(param_file, weight_file, use_gpu),
       ImageModel(input_width, input_height) {}
 
+#if __ANDROID__
+BodyDetector::BodyDetector(AAssetManager* mgr, const std::string& param_file,
+                           const std::string& weight_file, int input_width,
+                           int input_height, bool use_gpu)
+    : NCNNModel(mgr, param_file, weight_file, use_gpu),
+      ImageModel(input_width, input_height) {}
+#endif
+
 void BodyDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();
@@ -93,6 +101,8 @@ int BodyDetector::Predict(const cv::Mat& image,
 
     objects[i] = object;
   }
+
+  return 0;
 }
 
 }  // namespace models

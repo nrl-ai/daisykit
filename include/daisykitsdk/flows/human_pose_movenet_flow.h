@@ -24,11 +24,18 @@
 #include <opencv2/opencv.hpp>
 #include <string>
 
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
 namespace daisykit {
 namespace flows {
 class HumanPoseMoveNetFlow {
  public:
   HumanPoseMoveNetFlow(const std::string& config_str);
+#ifdef __ANDROID__
+  HumanPoseMoveNetFlow(AAssetManager* mgr, const std::string& config_str);
+#endif
 
   std::vector<types::ObjectWithKeypoints> Process(cv::Mat& rgb);
   void DrawResult(cv::Mat& rgb, std::vector<types::ObjectWithKeypoints>& poses);

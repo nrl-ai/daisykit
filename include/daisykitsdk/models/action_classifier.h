@@ -21,6 +21,10 @@
 
 #include <opencv2/opencv.hpp>
 
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
 namespace daisykit {
 namespace models {
 
@@ -35,6 +39,13 @@ class ActionClassifier : public NCNNModel, public ImageModel {
                    const std::string& weight_file, bool smooth = true,
                    int input_width = 224, int input_height = 224,
                    bool use_gpu = false);
+
+#ifdef __ANDROID__
+  ActionClassifier(AAssetManager* mgr, const std::string& param_file,
+                   const std::string& weight_file, bool smooth = true,
+                   int input_width = 224, int input_height = 224,
+                   bool use_gpu = false);
+#endif
 
   /// Classify actions.
   /// Return 0 on success, otherwise return error code.

@@ -24,6 +24,10 @@
 #include <string>
 #include <vector>
 
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
 namespace daisykit {
 namespace models {
 
@@ -39,6 +43,13 @@ class FaceDetector : public NCNNModel, public ImageModel {
                float score_threshold = 0.7, float iou_threshold = 0.5,
                int input_width = 320, int input_height = 320,
                bool use_gpu = false);
+
+#ifdef __ANDROID__
+  FaceDetector(AAssetManager* mgr, const std::string& param_file,
+               const std::string& weight_file, float score_threshold = 0.7,
+               float iou_threshold = 0.5, int input_width = 320,
+               int input_height = 320, bool use_gpu = false);
+#endif
 
   /// Detect faces in an image.
   /// Return 0 on success, otherwise return error code.

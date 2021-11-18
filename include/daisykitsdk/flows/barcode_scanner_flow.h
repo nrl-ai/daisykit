@@ -29,9 +29,6 @@ namespace flows {
 class BarcodeScannerFlow {
  public:
   BarcodeScannerFlow(const std::string& config_str);
-#ifdef __ANDROID__
-  BarcodeScannerFlow(AAssetManager* mgr, const std::string& config_str);
-#endif
   std::string Process(cv::Mat& rgb, bool draw = true);
 
  private:

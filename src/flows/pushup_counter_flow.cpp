@@ -44,6 +44,34 @@ PushupCounterFlow::PushupCounterFlow(const std::string& config_str) {
   num_pushups_ = 0;
 }
 
+#ifdef __ANDROID__
+PushupCounterFlow::PushupCounterFlow(AAssetManager* mgr,
+                                     const std::string& config_str) {
+  nlohmann::json config = nlohmann::json::parse(config_str);
+  body_detector_ =
+      new models::BodyDetector(mgr, config["person_detection_model"]["model"],
+                               config["person_detection_model"]["weights"],
+                               config["person_detection_model"]["input_width"],
+                               config["person_detection_model"]["input_height"],
+                               config["person_detection_model"]["use_gpu"]);
+  pose_detector_ =
+      new models::PoseDetector(mgr, config["human_pose_model"]["model"],
+                               config["human_pose_model"]["weights"],
+                               config["human_pose_model"]["input_width"],
+                               config["human_pose_model"]["input_height"],
+                               config["human_pose_model"]["use_gpu"]);
+  action_classifier_ = new models::ActionClassifier(
+      mgr, config["action_recognition_model"]["model"],
+      config["action_recognition_model"]["weights"],
+      config["action_recognition_model"]["smooth"],
+      config["action_recognition_model"]["input_width"],
+      config["action_recognition_model"]["input_height"],
+      config["action_recognition_model"]["use_gpu"]);
+  pushup_analyzer_ = new processors::PushupAnalyzer();
+  num_pushups_ = 0;
+}
+#endif
+
 void PushupCounterFlow::Process(cv::Mat& rgb) {
   // Detect background pose
   std::vector<types::Object> bodies;

@@ -24,6 +24,10 @@
 #include <string>
 #include <vector>
 
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
 namespace daisykit {
 namespace models {
 
@@ -36,6 +40,12 @@ class BodyDetector : public NCNNModel, public ImageModel {
 
   BodyDetector(const std::string& param_file, const std::string& weight_file,
                int width = 320, int height = 320, bool use_gpu = false);
+
+#ifdef __ANDROID__
+  BodyDetector(AAssetManager* mgr, const std::string& param_file,
+               const std::string& weight_file, int width = 320,
+               int height = 320, bool use_gpu = false);
+#endif
 
   /// Detect human bodies.
   /// Return 0 on success, otherwise return error code.

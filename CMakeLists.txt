@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.10.2)
 
 project(daisykitsdk)
 
@@ -29,9 +29,9 @@ endif()
 set(DAISYKIT_VERSION_MAJOR 0)
 set(DAISYKIT_VERSION_MINOR 1)
 # macos / ios only accepts a.b.c.d.e where a=24bit b/c/d/e=10bit
-set(DAISYKIT_VERSION_PATCH_DARWIN 21.11.18)
+set(DAISYKIT_VERSION_PATCH_DARWIN 21.11.19)
 # for other OSes
-set(DAISYKIT_VERSION_PATCH_OTHERS 20211118)
+set(DAISYKIT_VERSION_PATCH_OTHERS 20211119)
 
 if(APPLE OR IOS)
     set(DAISYKIT_VERSION_STRING ${DAISYKIT_VERSION_MAJOR}.${DAISYKIT_VERSION_MINOR}.${DAISYKIT_VERSION_PATCH_DARWIN})
@@ -58,7 +58,8 @@ include_directories(include .)
 if(ANDROID)
 MESSAGE(STATUS "COMPILE_ANDROID")
     set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/third_party/opencv-mobile-4.5.3-android/sdk/native/jni)
-    set(ncnn_FIND_PATH ${CMAKE_SOURCE_DIR}/third_party/ncnn-20210720-android-vulkan/${ANDROID_ABI})
+    set(ncnn_DIR ${CMAKE_SOURCE_DIR}/third_party/ncnn-20210720-android-vulkan/${ANDROID_ABI}/lib/cmake/ncnn)
+    find_package(ncnn REQUIRED)
 else()
     if (DAISYKIT_WITH_VULKAN)
         find_package(Vulkan)
@@ -79,8 +80,7 @@ else()
     find_package(ncnn)
 endif()
 
-
-if(NOT ncnn)
+if(NOT ${ncnn_FOUND})
   message("Missing prebuilt ncnn. Building from source.")
   option(NCNN_BUILD_BENCHMARK "" OFF)
   option(NCNN_PYTHON "" OFF)
@@ -90,7 +90,7 @@ if(NOT ncnn)
   add_subdirectory(third_party/ncnn ${CMAKE_BINARY_DIR}/bin_ncnn)
 endif()
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV REQUIRED PATHS ${OpenCV_DIR})
 
 set(sources
     src/models/ncnn_model.cpp

@@ -24,6 +24,10 @@
 #include <string>
 #include <vector>
 
+#ifdef __ANDROID__
+#include <android/asset_manager_jni.h>
+#endif
+
 namespace daisykit {
 namespace models {
 
@@ -38,6 +42,12 @@ class FacialLandmarkDetector : public NCNNModel, public ImageModel {
   FacialLandmarkDetector(const std::string& param_file,
                          const std::string& weight_file, int input_width = 112,
                          int input_height = 112, bool use_gpu = false);
+
+#ifdef __ANDROID__
+  FacialLandmarkDetector(AAssetManager* mgr, const std::string& param_file,
+                         const std::string& weight_file, int input_width = 112,
+                         int input_height = 112, bool use_gpu = false);
+#endif
 
   /// Detect keypoints for a single face.
   /// This function adds offset_x and offset_y to the keypoints.

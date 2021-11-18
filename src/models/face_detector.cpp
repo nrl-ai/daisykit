@@ -41,6 +41,18 @@ FaceDetector::FaceDetector(const std::string& param_file,
   iou_threshold_ = iou_threshold;
 }
 
+#if __ANDROID__
+FaceDetector::FaceDetector(AAssetManager* mgr, const std::string& param_file,
+                           const std::string& weight_file,
+                           float score_threshold, float iou_threshold,
+                           int input_width, int input_height, bool use_gpu)
+    : NCNNModel(mgr, param_file, weight_file, use_gpu),
+      ImageModel(input_width, input_height) {
+  score_threshold_ = score_threshold;
+  iou_threshold_ = iou_threshold;
+}
+#endif
+
 void FaceDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();

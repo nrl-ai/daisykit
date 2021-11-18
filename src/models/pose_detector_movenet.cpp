@@ -47,6 +47,21 @@ PoseDetectorMoveNet::PoseDetectorMoveNet(const std::string& param_file,
   PrepareFeatureKeypointsParams(input_width);
 }
 
+#if __ANDROID__
+PoseDetectorMoveNet::PoseDetectorMoveNet(AAssetManager* mgr,
+                                         const std::string& param_file,
+                                         const std::string& weight_file,
+                                         int input_width, int input_height,
+                                         bool use_gpu)
+    : NCNNModel(mgr, param_file, weight_file, use_gpu),
+      ImageModel(input_width, input_height) {
+  assert(input_width ==
+         input_height);  // Current MoveNet has input size 192x192 or 256x256
+
+  PrepareFeatureKeypointsParams(input_width);
+}
+#endif
+
 void PoseDetectorMoveNet::PrepareFeatureKeypointsParams(float input_size) {
   if (input_size == 192) {
     feature_size_ = 48;
@@ -222,15 +237,21 @@ int PoseDetectorMoveNet::PredictMulti(
     if (y1 < 0) y1 = 0;
     if (x2 < 0) x2 = 0;
     if (y2 < 0) y2 = 0;
-    if (x1 > img_width) x1 = img_width;
-    if (y1 > img_height) y1 = img_height;
-    if (x2 > img_width) x2 = img_width;
-    if (y2 > img_height) y2 = img_height;
+    if (x1 >= img_width) x1 = img_width - 1;
+    if (y1 >= img_height) y1 = img_height - 1;
+    if (x2 >= img_width) x2 = img_width - 1;
+    if (y2 >= img_height) y2 = img_height - 1;
 
-    cv::Mat roi = image(cv::Rect(x1, y1, x2 - x1, y2 - y1)).clone();
     std::vector<types::Keypoint> keypoints_single;
-    if (Predict(roi, keypoints_single, x1, y1) != 0) {
-      ++num_errors;
+    if (x2 - x1 > 20 && y2 - y1 > 20) {
+      cv::Mat roi =
+          image(cv::Rect(int(x1), int(y1), int(x2 - x1), int(y2 - y1))).clone();
+      int rows = roi.rows;
+      int cols = roi.cols;
+      int empty = roi.empty();
+      if (Predict(roi, keypoints_single, x1, y1) != 0) {
+        ++num_errors;
+      }
     }
     poses.push_back(keypoints_single);
   }

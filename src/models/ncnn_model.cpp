@@ -115,6 +115,44 @@ int NCNNModel::LoadModel(
   return 0;
 }
 
+#if __ANDROID__
+/// Initialize a NCNN model from files.
+NCNNModel::NCNNModel(AAssetManager* mgr, const std::string& param_file,
+                     const std::string& weight_file, bool use_gpu) {
+#ifdef DAISYKIT_WITH_VULKAN
+  use_gpu_ = use_gpu;
+  if (ncnn::get_gpu_count() == 0) {
+    std::cerr << "No GPU. Disabling GPU computation." << std::endl;
+    use_gpu = false;
+  }
+#else
+  use_gpu_ = false;
+#endif
+  // TODO (vietanhdev): Handle model loading result
+  LoadModel(mgr, param_file, weight_file, use_gpu);
+}  // namespace models
+
+int NCNNModel::LoadModel(
+    AAssetManager* mgr, const std::string& param_file,
+    const std::string& weight_file, bool use_gpu,
+    std::function<int(ncnn::Net&)> before_model_load_hook) {
+  model_.clear();
+  if (before_model_load_hook) {
+    before_model_load_hook(model_);
+  }
+  model_.opt.use_vulkan_compute = use_gpu;
+  if (model_.load_param(mgr, param_file.c_str()) != 0) {
+    std::cerr << "Failed to load model params from buffer." << std::endl;
+    return -1;
+  }
+  if (model_.load_model(mgr, weight_file.c_str()) != 0) {
+    std::cerr << "Failed to load model params from buffer." << std::endl;
+    return -2;
+  }
+  return 0;
+}
+#endif
+
 int NCNNModel::Infer(const ncnn::Mat& in, ncnn::Mat& out,
                      const std::string& input_name,
                      const std::string& output_name) {

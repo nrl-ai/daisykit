@@ -35,6 +35,25 @@ HumanPoseMoveNetFlow::HumanPoseMoveNetFlow(const std::string& config_str) {
       config["human_pose_model"]["use_gpu"]);
 }
 
+#ifdef __ANDROID__
+HumanPoseMoveNetFlow::HumanPoseMoveNetFlow(AAssetManager* mgr,
+                                           const std::string& config_str) {
+  nlohmann::json config = nlohmann::json::parse(config_str);
+  body_detector_ =
+      new models::BodyDetector(mgr, config["person_detection_model"]["model"],
+                               config["person_detection_model"]["weights"],
+                               config["person_detection_model"]["input_width"],
+                               config["person_detection_model"]["input_height"],
+                               config["person_detection_model"]["use_gpu"]);
+  pose_detector_ = new models::PoseDetectorMoveNet(
+      mgr, config["human_pose_model"]["model"],
+      config["human_pose_model"]["weights"],
+      config["human_pose_model"]["input_width"],
+      config["human_pose_model"]["input_height"],
+      config["human_pose_model"]["use_gpu"]);
+}
+#endif
+
 std::vector<types::ObjectWithKeypoints> HumanPoseMoveNetFlow::Process(
     cv::Mat& rgb) {
   // Detect background pose

@@ -42,6 +42,18 @@ ActionClassifier::ActionClassifier(const std::string& param_file,
   smooth_ = smooth;
 }
 
+#if __ANDROID__
+ActionClassifier::ActionClassifier(AAssetManager* mgr,
+                                   const std::string& param_file,
+                                   const std::string& weight_file, bool smooth,
+                                   int input_width, int input_height,
+                                   bool use_gpu)
+    : NCNNModel(mgr, param_file, weight_file, use_gpu),
+      ImageModel(input_width, input_height) {
+  smooth_ = smooth;
+}
+#endif
+
 void ActionClassifier::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   cv::Mat rgb = processors::ImgUtils::SquarePadding(image, InputSize());
   net_input =

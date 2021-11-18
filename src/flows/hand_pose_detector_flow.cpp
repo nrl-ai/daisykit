@@ -35,6 +35,26 @@ HandPoseDetectorFlow::HandPoseDetectorFlow(const std::string& config_str) {
       config["hand_pose_model"]["use_gpu"]);
 }
 
+#ifdef __ANDROID__
+HandPoseDetectorFlow::HandPoseDetectorFlow(AAssetManager* mgr,
+                                           const std::string& config_str) {
+  nlohmann::json config = nlohmann::json::parse(config_str);
+  hand_detector_ = new models::HandDetectorYOLOX(
+      mgr, config["hand_detection_model"]["model"],
+      config["hand_detection_model"]["weights"],
+      config["hand_detection_model"]["score_threshold"],
+      config["hand_detection_model"]["iou_threshold"],
+      config["hand_detection_model"]["input_width"],
+      config["hand_detection_model"]["input_height"],
+      config["hand_detection_model"]["use_gpu"]);
+  hand_pose_detector_ =
+      new models::HandPoseDetector(mgr, config["hand_pose_model"]["model"],
+                                   config["hand_pose_model"]["weights"],
+                                   config["hand_pose_model"]["input_size"],
+                                   config["hand_pose_model"]["use_gpu"]);
+}
+#endif
+
 std::vector<types::ObjectWithKeypointsXYZ> HandPoseDetectorFlow::Process(
     cv::Mat& rgb) {
   // Detect hands
