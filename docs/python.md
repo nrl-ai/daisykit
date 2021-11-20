@@ -395,6 +395,16 @@ vid.release()
 cv2.destroyAllWindows()
 ```
 
+## Note for Python build
+
+Current CD (continuous delivery) flow is partial, which means we only have prebuilt linux wheels for x86_64 and for Windows.
+
+- Prebuilt wheels for linux x86_64 are built with Github actions.
+- Windows wheels (64bit) are built manually on a local machine.
+- macOS prebuilt wheels are not available for now. However, you can install dependencies (OpenCV, Vulkan) manually, then install Daisykit with pip command.
+
+We will be happy if you can make a pull request to make the CD build fully automated. A good choice is using Github flow for all building tasks.
+
 ## Bug report
 
 Please open an issue on our official repository if you find any error.
