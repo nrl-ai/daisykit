@@ -140,7 +140,7 @@ int HandPoseDetector::PredictMulti(
 }
 
 void HandPoseDetector::DrawHandPoses(
-    const cv::Mat& image,
+    cv::Mat& image,
     const std::vector<types::ObjectWithKeypointsXYZ>& objects) {
   static const char* class_names[] = {"left_hand", "right_hand"};
   static const unsigned char colors[19][3] = {

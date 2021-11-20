@@ -63,7 +63,7 @@ class HandPoseDetector : public NCNNModel, public ImageModel {
 
   /// Draw keypoints and their joints.
   void DrawHandPoses(
-      const cv::Mat& image,
+      cv::Mat& image,
       const std::vector<types::ObjectWithKeypointsXYZ>& keypoints);
 
  private:
