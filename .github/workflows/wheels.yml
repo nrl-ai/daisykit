@@ -46,8 +46,8 @@ jobs:
       matrix:
         # os: [windows-latest, ubuntu-latest, macos-latest] # TODO: install OpenCV C++ and reactivate build for Windows and macOS 
         os: [ubuntu-latest]
-        python: [37]
-        bitness: [64]
+        python: [36, 37, 38, 39, 310]
+        bitness: [32, 64]
         # manylinux_image: [manylinux1, manylinux2010]
         manylinux_image: [manylinux2014]
         include:
@@ -59,11 +59,11 @@ jobs:
           #   bitness: 32
           #   platform_id: win32
           - os: ubuntu-latest
+            bitness: 32
+            platform_id: manylinux_i686
+          - os: ubuntu-latest
             bitness: 64
             platform_id: manylinux_x86_64
-          # - os: ubuntu-latest
-          #   bitness: 32
-          #   platform_id: manylinux_i686
           # - os: macos-latest
           #   bitness: 64
           #   platform_id: macosx_x86_64
@@ -96,6 +96,7 @@ jobs:
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
           CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
+          CIBW_MANYLINUX_AARCH64_IMAGE: ${{ matrix.manylinux_image }}
           # Install OpenCV for linux
           # CIBW_BEFORE_ALL_LINUX: yum install -y opencv opencv-devel
           CIBW_BEFORE_ALL_LINUX: bash build_tools/github/install_cv4.sh
@@ -104,7 +105,7 @@ jobs:
           # CIBW_BEFORE_ALL_MACOS:
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: bash build_tools/github/repair_windows_wheels.sh {wheel} {dest_dir} ${{ matrix.bitness }}
           CIBW_BEFORE_TEST_WINDOWS: bash build_tools/github/build_minimal_windows_image.sh ${{ matrix.python }} ${{ matrix.bitness }}
-          CIBW_TEST_REQUIRES: pytest pandas threadpoolctl
+          CIBW_TEST_REQUIRES: pytest threadpoolctl
           CIBW_TEST_COMMAND: bash {project}/build_tools/github/test_wheels.sh
           CIBW_TEST_COMMAND_WINDOWS: bash {project}/build_tools/github/test_windows_wheels.sh ${{ matrix.python }} ${{ matrix.bitness }}
           CIBW_BUILD_VERBOSITY: 1
