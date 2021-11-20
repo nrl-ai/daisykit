@@ -135,7 +135,7 @@ int PoseDetector::PredictMulti(
 
 // Draw pose
 void PoseDetector::DrawKeypoints(
-    const cv::Mat& image, const std::vector<types::Keypoint>& keypoints) {
+    cv::Mat& image, const std::vector<types::Keypoint>& keypoints) {
   float threshold = 0.2;
   // draw bone
   static const int joint_pairs[16][2] = {

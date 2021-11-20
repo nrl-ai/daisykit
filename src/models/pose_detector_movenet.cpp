@@ -261,7 +261,7 @@ int PoseDetectorMoveNet::PredictMulti(
 
 // Draw pose
 void PoseDetectorMoveNet::DrawKeypoints(
-    const cv::Mat& image, const std::vector<types::Keypoint>& keypoints) {
+    cv::Mat& image, const std::vector<types::Keypoint>& keypoints) {
   int skele_index[][2] = {{0, 1},  {0, 2},   {1, 3},  {2, 4},   {0, 5},
                           {0, 6},  {5, 6},   {5, 7},  {7, 9},   {6, 8},
                           {8, 10}, {11, 12}, {5, 11}, {11, 13}, {13, 15},

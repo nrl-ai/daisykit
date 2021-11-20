@@ -60,7 +60,7 @@ class PoseDetector : public NCNNModel, public ImageModel {
                    std::vector<std::vector<types::Keypoint>>& poses);
 
   /// Draw keypoints and their joints.
-  void DrawKeypoints(const cv::Mat& image,
+  void DrawKeypoints(cv::Mat& image,
                      const std::vector<types::Keypoint>& keypoints);
 
  private:
