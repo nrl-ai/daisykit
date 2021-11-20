@@ -3,10 +3,19 @@ import os
 import sys
 import re
 import subprocess
-# import numpy as np
 
 from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext
+
+
+# Initialize submodules
+if os.path.exists(".git"):
+    import pip._internal.vcs.git as git
+    g = git.Git()  # NOTE: pip API's are internal, this has to be refactored
+    g.run_command(["submodule", "sync"])
+    g.run_command(
+        ["submodule", "update", "--init", "--recursive"]
+    )
 
 # Obtain the numpy include directory.
 # This logic works across numpy versions.
@@ -165,7 +174,6 @@ setup(
     classifiers=[
         "Programming Language :: C++",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -175,7 +183,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     license="Apache License 2.0",
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     packages=find_packages("python"),
     package_dir={"": "python"},
     install_requires=requirements,

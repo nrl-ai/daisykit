@@ -1,9 +1,5 @@
 eval "$(conda shell.bash hook)"
 
-conda activate dk35
-pip install numpy
-python setup.py bdist_wheel
-
 conda activate dk36
 pip install numpy
 python setup.py bdist_wheel
