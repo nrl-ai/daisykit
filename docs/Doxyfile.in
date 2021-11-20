@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "DaisyKit Documentation"
-PROJECT_NUMBER         = dev-0.0.1
+PROJECT_NUMBER         = dev-0.1.x
 PROJECT_BRIEF          = "AI framework focusing on the ease of deployment"
 PROJECT_LOGO           = images/logo.svg
 OUTPUT_DIRECTORY       = _build
