@@ -16,7 +16,8 @@ except ImportError:
 if sys.version_info < (3, 0):
     sys.exit("Sorry, Python < 3.0 is not supported")
 
-requirements = ["numpy", "tqdm", "requests", "portalocker", "opencv-python"]
+# Newer versions of opencv don't have wheels for i686
+requirements = ["numpy", "tqdm", "requests", "portalocker", "opencv-python<=4.5.1.48"]
 
 setup(
     name="daisykit",
@@ -30,16 +31,16 @@ setup(
     classifiers=[
         "Programming Language :: C++",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],
     license="Apache License 2.0",
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     packages=find_packages(),
     package_dir={"": "."},
     package_data={"daisykit": ["daisykit${PYTHON_MODULE_PREFIX}${PYTHON_MODULE_EXTENSION}"]},

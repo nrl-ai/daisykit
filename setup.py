@@ -155,7 +155,8 @@ class CMakeBuild(build_ext):
 if sys.version_info < (3, 0):
     sys.exit("Sorry, Python < 3.0 is not supported")
 
-requirements = ["numpy", "tqdm", "requests", "portalocker", "opencv-python"]
+# Newer versions of opencv don't have wheels for i686
+requirements = ["numpy", "tqdm", "requests", "portalocker", "opencv-python<=4.5.1.48"]
 
 with io.open("docs/python.md", encoding="utf-8") as h:
     long_description = h.read()
