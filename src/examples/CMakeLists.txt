@@ -43,6 +43,6 @@ add_custom_command(TARGET demo_pushup_classifier POST_BUILD        # Adds a post
     "$<$<CONFIG:debug>:${__dll_dbg}>$<$<CONFIG:release>:${__dll_release}>"      # <--this is in-file
     $<TARGET_FILE_DIR:demo_pushup_classifier>                        # <--this is out-file path
         # another dll copy if needed here
-    COMMENT "    [1718_34_ATK] copy dlls realsense2 and opencv_world")
+    COMMENT "Copy opencv_world")
 
 endif()

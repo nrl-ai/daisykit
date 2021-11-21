@@ -29,9 +29,9 @@ endif()
 set(DAISYKIT_VERSION_MAJOR 0)
 set(DAISYKIT_VERSION_MINOR 1)
 # macos / ios only accepts a.b.c.d.e where a=24bit b/c/d/e=10bit
-set(DAISYKIT_VERSION_PATCH_DARWIN 21.11.20)
+set(DAISYKIT_VERSION_PATCH_DARWIN 21.11.21)
 # for other OSes
-set(DAISYKIT_VERSION_PATCH_OTHERS 20211120)
+set(DAISYKIT_VERSION_PATCH_OTHERS 20211121)
 
 if(APPLE OR IOS)
     set(DAISYKIT_VERSION_STRING ${DAISYKIT_VERSION_MAJOR}.${DAISYKIT_VERSION_MINOR}.${DAISYKIT_VERSION_PATCH_DARWIN})
@@ -166,9 +166,10 @@ if (WIN32)
 get_target_property(__dll_dbg opencv_world IMPORTED_LOCATION_DEBUG)
 get_target_property(__dll_release opencv_world  IMPORTED_LOCATION_RELEASE)
 add_custom_command(TARGET daisykitsdk POST_BUILD        # Adds a post-build event the TARGET
-COMMAND ${CMAKE_COMMAND} -E copy_if_different           # which executes "cmake - E copy_if_different..."
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different           # which executes "cmake - E copy_if_different..."
     "$<$<CONFIG:debug>:${__dll_dbg}>$<$<CONFIG:release>:${__dll_release}>"      # <--this is in-file
-    "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+    $<TARGET_FILE_DIR:daisykitsdk>                        # <--this is out-file path
+        # another dll copy if needed here
     COMMENT "Copy opencv_world")
 endif()
 

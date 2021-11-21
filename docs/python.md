@@ -31,7 +31,7 @@ pip3 install daisykit
 
 **For other platforms:**
 
-- Install OpenCV, Pybind11 and Vulkan development package (if you want GPu support)
+- Install OpenCV, Pybind11 and Vulkan development package (if you want GPU support)
 
 - Install DaisyKit (compile from source)
 
@@ -404,6 +404,14 @@ Current CD (continuous delivery) flow is partial, which means we only have prebu
 - macOS prebuilt wheels are not available for now. However, you can install dependencies (OpenCV, Vulkan) manually, then install Daisykit with pip command.
 
 We will be happy if you can make a pull request to make the CD build fully automated. A good choice is using Github flow for all building tasks.
+
+**Current steps for Windows build:**
+
+```sh
+bash ./build_tools/py_windows/build_dk_all_pythons_windows.sh
+bash ./build_tools/py_windows/build_dk_python_source_dist.sh
+bash ./build_tools/upload_pypi.sh
+```
 
 ## Bug report
 

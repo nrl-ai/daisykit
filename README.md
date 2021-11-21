@@ -13,13 +13,23 @@ Daisykit is an AI toolkit for software engineers to Deploy AI Systems Yourself (
 
 ## Environment Setup
 
-- Install OpenCV. In Ubuntu:
+For Ubuntu, we need build tools from `build-essential` package. For Windows, Visual Studio 2019 is recommended.
+
+- Install OpenCV.
+
+**Ubuntu:**
 
 ```
 sudo apt install libopencv-dev
 ```
 
-- Install Vulkan development package. In Ubuntu:
+**Windows:**
+
+Download and extract OpenCV from [the official website](https://opencv.org/releases/), and add `OpenCV_DIR` to path.
+
+- Install Vulkan development package.
+
+**Ubuntu:**
 
 ```
 sudo apt install -y libvulkan-dev vulkan-utils
@@ -38,6 +48,8 @@ git submodule update --init
 
 - Build
 
+**Ubuntu:**
+
 ```
 mkdir build
 cd build
@@ -45,11 +57,27 @@ cmake .. -Dncnn_FIND_PATH="<path to ncnn lib>"
 make
 ```
 
-- Run face detection example
+**Windows:**
 
 ```
-cd build/bin
-./demo_face_detector_graph
+mkdir build
+cd build
+cmake -G "Visual Studio 16 2019" -Dncnn_FIND_PATH="<path to ncnn lib>" ..
+cmake --build . --config Release
+```
+
+- Run face detection example
+
+**Ubuntu:**
+
+```
+./bin/demo_face_detector_graph
+```
+
+**Windows:**
+
+```
+./bin/Release/demo_face_detector_graph
 ```
 
 ## Coding convention

@@ -262,6 +262,7 @@ int PoseDetectorMoveNet::PredictMulti(
 // Draw pose
 void PoseDetectorMoveNet::DrawKeypoints(
     cv::Mat& image, const std::vector<types::Keypoint>& keypoints) {
+  float threshold = 0.3;
   int skele_index[][2] = {{0, 1},  {0, 2},   {1, 3},  {2, 4},   {0, 5},
                           {0, 6},  {5, 6},   {5, 7},  {7, 9},   {6, 8},
                           {8, 10}, {11, 12}, {5, 11}, {11, 13}, {13, 15},
@@ -273,9 +274,9 @@ void PoseDetectorMoveNet::DrawKeypoints(
       {0, 0, 255}, {0, 0, 255}, {0, 0, 255},
   };
 
-  for (int i = 0; i < kNumJoints; i++) {
-    if (keypoints[skele_index[i][0]].confidence > 0.3 &&
-        keypoints[skele_index[i][1]].confidence > 0.3)
+  for (int i = 0; i < 18; i++) {
+    if (keypoints[skele_index[i][0]].confidence > threshold &&
+        keypoints[skele_index[i][1]].confidence > threshold)
       cv::line(
           image,
           cv::Point(keypoints[skele_index[i][0]].x,
@@ -285,8 +286,8 @@ void PoseDetectorMoveNet::DrawKeypoints(
           cv::Scalar(color_index[i][0], color_index[i][1], color_index[i][2]),
           2);
   }
-  for (int i = 0; i < 16; i++) {
-    if (keypoints[i].confidence > 0.3)
+  for (int i = 0; i < 17; i++) {
+    if (keypoints[i].confidence > threshold)
       cv::circle(image, cv::Point(keypoints[i].x, keypoints[i].y), 3,
                  cv::Scalar(100, 255, 150), -1);
   }
