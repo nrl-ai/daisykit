@@ -30,4 +30,16 @@ if("${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" STREQUAL "")
         ${PROJECT_SOURCE_DIR}/daisykit/daisykit${PYTHON_MODULE_PREFIX}${PYTHON_MODULE_EXTENSION})
 endif("${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" STREQUAL "")
 
+if (WIN32)
+# Copy OpenCV library along with daisykit
+get_target_property(__dll_dbg opencv_world IMPORTED_LOCATION_DEBUG)
+get_target_property(__dll_release opencv_world  IMPORTED_LOCATION_RELEASE)
+add_custom_command(TARGET pydaisykit POST_BUILD        # Adds a post-build event the TARGET
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different           # which executes "cmake - E copy_if_different..."
+    "$<$<CONFIG:debug>:${__dll_dbg}>$<$<CONFIG:release>:${__dll_release}>"      # <--this is in-file
+    $<TARGET_FILE_DIR:pydaisykit>                        # <--this is out-file path
+        # another dll copy if needed here
+    COMMENT "Copy opencv_world")
+endif()
+
 configure_file(setup.py.i ${PROJECT_SOURCE_DIR}/setup.py)
