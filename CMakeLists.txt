@@ -29,9 +29,9 @@ endif()
 set(DAISYKIT_VERSION_MAJOR 0)
 set(DAISYKIT_VERSION_MINOR 1)
 # macos / ios only accepts a.b.c.d.e where a=24bit b/c/d/e=10bit
-set(DAISYKIT_VERSION_PATCH_DARWIN 21.11.22)
+set(DAISYKIT_VERSION_PATCH_DARWIN 21.11.23)
 # for other OSes
-set(DAISYKIT_VERSION_PATCH_OTHERS 20211122)
+set(DAISYKIT_VERSION_PATCH_OTHERS 20211123)
 
 if(APPLE OR IOS)
     set(DAISYKIT_VERSION_STRING ${DAISYKIT_VERSION_MAJOR}.${DAISYKIT_VERSION_MINOR}.${DAISYKIT_VERSION_PATCH_DARWIN})
@@ -123,14 +123,12 @@ set(sources
     src/graphs/core/packet.cpp
     src/graphs/core/transmission_profile.cpp
 
-
     src/flows/object_detector_flow.cpp
     src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
     src/flows/background_matting_flow.cpp
     src/flows/human_pose_movenet_flow.cpp
     src/flows/hand_pose_detector_flow.cpp
-
 )
 
 # Add platform specific source files
