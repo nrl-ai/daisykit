@@ -7,6 +7,10 @@ Daisykit is an AI toolkit for software engineers to Deploy AI Systems Yourself (
 
 **Website:** <https://daisykit.org/>.
 
+**Demo Video:** <https://www.youtube.com/watch?v=zKP8sgGoFMc>.
+
+https://user-images.githubusercontent.com/18329471/143721185-d4d095dd-48b8-481c-81c7-904c1536a6b8.mp4
+
 ![DaisyKit Architecture](docs/images/daisykit-architecture.png)
 
 **Our development plan for Daisykit. We are working to build the whole system gradually.**
