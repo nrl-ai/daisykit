@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/flows/barcode_scanner_flow.h"
+#include "daisykit/flows/barcode_scanner_flow.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>

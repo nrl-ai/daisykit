@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/flows/object_detector_flow.h"
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
+#include "daisykit/flows/object_detector_flow.h"
+#include "daisykit/common/visualizers/base_visualizer.h"
 #include "third_party/json.hpp"
 
 namespace daisykit {

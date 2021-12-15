@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/models/pose_detector_movenet.h"
+#include "daisykit/models/pose_detector_movenet.h"
 
 #include <string>
 #include <vector>

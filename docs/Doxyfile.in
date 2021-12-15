@@ -115,7 +115,7 @@ WARN_LOGFILE           =
 INPUT                  =../README.md \
                         android.md \
                         python.md \
-                        ../include/daisykitsdk/README.md \
+                        ../include/daisykit/README.md \
                         models.md \
                         contribution.md \
                         ../include \

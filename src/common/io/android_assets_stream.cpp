@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/common/io/android_assets_stream.h"
+#include "daisykit/common/io/android_assets_stream.h"
 
 AssetStreambuf::AssetStreambuf(AAssetManager* manager,
                                const std::string& filename)

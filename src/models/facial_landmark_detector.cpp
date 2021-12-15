@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/models/facial_landmark_detector.h"
+#include "daisykit/models/facial_landmark_detector.h"
 
 #include <string>
 #include <vector>

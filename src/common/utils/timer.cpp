@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/common/utils/timer.h"
+#include "daisykit/common/utils/timer.h"
 
 #include <chrono>
 #include <ctime>

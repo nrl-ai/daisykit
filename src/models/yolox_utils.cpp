@@ -14,8 +14,8 @@
 // Most code in this file was taken from NCNN library
 // https://opensource.org/licenses/BSD-3-Clause
 
-#include "daisykitsdk/models/yolox_utils.h"
-#include "daisykitsdk/common/types.h"
+#include "daisykit/models/yolox_utils.h"
+#include "daisykit/common/types.h"
 
 #include <iostream>
 

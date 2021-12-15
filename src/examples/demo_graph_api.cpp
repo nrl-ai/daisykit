@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/graphs/core/graph.h"
-#include "daisykitsdk/graphs/core/node.h"
-#include "daisykitsdk/graphs/nodes/img_proc/binarize_node.h"
-#include "daisykitsdk/graphs/nodes/img_proc/grayscale_node.h"
-#include "daisykitsdk/graphs/nodes/img_proc/img_viz_node.h"
+#include "daisykit/graphs/core/graph.h"
+#include "daisykit/graphs/core/node.h"
+#include "daisykit/graphs/nodes/img_proc/binarize_node.h"
+#include "daisykit/graphs/nodes/img_proc/grayscale_node.h"
+#include "daisykit/graphs/nodes/img_proc/img_viz_node.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>

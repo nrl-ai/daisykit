@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/processors/signal_processors/z_score_filter.h"
+#include "daisykit/processors/signal_processors/z_score_filter.h"
 
 #include <algorithm>
 #include <cmath>

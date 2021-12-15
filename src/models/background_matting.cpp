@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/models/background_matting.h"
-#include "daisykitsdk/processors/image_processors/img_utils.h"
+#include "daisykit/models/background_matting.h"
+#include "daisykit/processors/image_processors/img_utils.h"
 
 #include <string>
 #include <vector>

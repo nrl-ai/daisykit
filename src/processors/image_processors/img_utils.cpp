@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/processors/image_processors/img_utils.h"
+#include "daisykit/processors/image_processors/img_utils.h"
 
 namespace daisykit {
 namespace processors {

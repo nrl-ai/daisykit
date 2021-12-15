@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/common/types.h"
-#include "daisykitsdk/flows/face_detector_flow.h"
+#include "daisykit/common/types.h"
+#include "daisykit/flows/face_detector_flow.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>

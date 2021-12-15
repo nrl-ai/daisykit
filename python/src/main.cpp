@@ -6,13 +6,13 @@
 #include <iostream>
 #include <string>
 
-#include "daisykitsdk/common/types.h"
-#include "daisykitsdk/flows/background_matting_flow.h"
-#include "daisykitsdk/flows/barcode_scanner_flow.h"
-#include "daisykitsdk/flows/face_detector_flow.h"
-#include "daisykitsdk/flows/hand_pose_detector_flow.h"
-#include "daisykitsdk/flows/human_pose_movenet_flow.h"
-#include "daisykitsdk/flows/object_detector_flow.h"
+#include "daisykit/common/types.h"
+#include "daisykit/flows/background_matting_flow.h"
+#include "daisykit/flows/barcode_scanner_flow.h"
+#include "daisykit/flows/face_detector_flow.h"
+#include "daisykit/flows/hand_pose_detector_flow.h"
+#include "daisykit/flows/human_pose_movenet_flow.h"
+#include "daisykit/flows/object_detector_flow.h"
 #include "ndarray_converter.h"
 
 using namespace daisykit;

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/graphs/core/transmission_profile.h"
+#include "daisykit/graphs/core/transmission_profile.h"
 
 namespace daisykit {
 namespace graphs {

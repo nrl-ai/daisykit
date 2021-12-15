@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/models/action_classifier.h"
+#include "daisykit/models/action_classifier.h"
 
 #include <stdio.h>
 #include <iostream>

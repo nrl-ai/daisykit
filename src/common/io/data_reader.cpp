@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/common/io/data_reader.h"
+#include "daisykit/common/io/data_reader.h"
 
 #include <iostream>
 

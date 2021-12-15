@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
+#include "daisykit/common/visualizers/base_visualizer.h"
 
 namespace daisykit {
 namespace visualizers {

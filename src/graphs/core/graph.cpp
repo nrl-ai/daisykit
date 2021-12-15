@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/graphs/core/graph.h"
-#include "daisykitsdk/graphs/core/node.h"
+#include "daisykit/graphs/core/graph.h"
+#include "daisykit/graphs/core/node.h"
 
 #include <map>
 #include <string>

@@ -54,10 +54,10 @@ bash scripts/format_code.sh
 #ifndef DAISYKIT_GRAPHS_CORE_NODE_H_
 #define DAISYKIT_GRAPHS_CORE_NODE_H_
 
-#include "daisykitsdk/common/types.h"
-#include "daisykitsdk/graphs/core/connection.h"
-#include "daisykitsdk/graphs/core/node_type.h"
-#include "daisykitsdk/graphs/core/packet.h"
+#include "daisykit/common/types.h"
+#include "daisykit/graphs/core/connection.h"
+#include "daisykit/graphs/core/node_type.h"
+#include "daisykit/graphs/core/packet.h"
 
 #include <atomic>
 #include <chrono>

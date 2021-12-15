@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/graphs/core/graph.h"
-#include "daisykitsdk/graphs/core/node.h"
-#include "daisykitsdk/graphs/nodes/models/face_detector_node.h"
-#include "daisykitsdk/graphs/nodes/models/face_landmark_detector_node.h"
-#include "daisykitsdk/graphs/nodes/packet_distributor_node.h"
-#include "daisykitsdk/graphs/nodes/visualizers/face_visualizer_node.h"
+#include "daisykit/graphs/core/graph.h"
+#include "daisykit/graphs/core/node.h"
+#include "daisykit/graphs/nodes/models/face_detector_node.h"
+#include "daisykit/graphs/nodes/models/face_landmark_detector_node.h"
+#include "daisykit/graphs/nodes/packet_distributor_node.h"
+#include "daisykit/graphs/nodes/visualizers/face_visualizer_node.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>

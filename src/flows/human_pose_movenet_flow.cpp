@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/flows/human_pose_movenet_flow.h"
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
+#include "daisykit/flows/human_pose_movenet_flow.h"
+#include "daisykit/common/visualizers/base_visualizer.h"
 #include "third_party/json.hpp"
 
 namespace daisykit {

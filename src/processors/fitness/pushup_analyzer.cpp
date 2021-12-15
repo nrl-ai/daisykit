@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/processors/fitness/pushup_analyzer.h"
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
-#include "daisykitsdk/processors/signal_processors/signal_smoothing.h"
-#include "daisykitsdk/processors/signal_processors/z_score_filter.h"
+#include "daisykit/processors/fitness/pushup_analyzer.h"
+#include "daisykit/common/visualizers/base_visualizer.h"
+#include "daisykit/processors/signal_processors/signal_smoothing.h"
+#include "daisykit/processors/signal_processors/z_score_filter.h"
 
 #include <chrono>
 

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/common/types.h"
-#include "daisykitsdk/models/hand_detector_yolox.h"
+#include "daisykit/common/types.h"
+#include "daisykit/models/hand_detector_yolox.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>

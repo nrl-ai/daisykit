@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/flows/barcode_scanner_flow.h"
+#include "daisykit/flows/barcode_scanner_flow.h"
 #include "GTIN.h"
 #include "ReadBarcode.h"
 #include "TextUtfEncoding.h"
-#include "daisykitsdk/common/visualizers/base_visualizer.h"
+#include "daisykit/common/visualizers/base_visualizer.h"
 #include "third_party/json.hpp"
 
 #include <iostream>

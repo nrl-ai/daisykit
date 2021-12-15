@@ -18,7 +18,7 @@ All models should be inherited from this class to guarantee
 the operation of loading model, predicting model and other basics.
 */
 
-#include "daisykitsdk/models/ncnn_model.h"
+#include "daisykit/models/ncnn_model.h"
 
 // NCNN
 #ifdef DAISYKIT_WITH_VULKAN

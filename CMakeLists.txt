@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10.2)
 
-project(daisykitsdk)
+project(Daisykit)
 
 # Use Release build type if not specified
 if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
@@ -81,14 +81,23 @@ else()
 endif()
 
 if(NOT ${ncnn_FOUND})
-  message("Missing prebuilt ncnn. Building from source.")
-  option(NCNN_BUILD_BENCHMARK "" OFF)
-  option(NCNN_PYTHON "" OFF)
-  option(NCNN_BUILD_TOOLS "" OFF)
-  option(NCNN_BUILD_EXAMPLES "" OFF)
-  option(NCNN_VULKAN "" ${DAISYKIT_WITH_VULKAN})
-  add_subdirectory(third_party/ncnn ${CMAKE_BINARY_DIR}/bin_ncnn)
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/ncnn/CMakeLists.txt")
+        message(FATAL_ERROR "The submodules were not downloaded! Please update submodules with \"git submodule update --init --recursive\" and try again.")
+    endif()
+    message("Missing prebuilt ncnn. Building from source.")
+    option(NCNN_INSTALL_SDK "" OFF)
+    option(NCNN_VULKAN "" ${DAISYKIT_WITH_VULKAN})
+    option(NCNN_VULKAN_ONLINE_SPIRV "" ${DAISYKIT_WITH_VULKAN})
+    option(NCNN_BUILD_BENCHMARK "" OFF)
+    option(NCNN_BUILD_TESTS "" OFF)
+    option(NCNN_BUILD_TOOLS "" OFF)
+    option(NCNN_BUILD_EXAMPLES "" OFF)
+    add_subdirectory(third_party/ncnn ${CMAKE_BINARY_DIR}/bin_ncnn)
+    include_directories(${CMAKE_BINARY_DIR}/bin_ncnn/src)
+    include_directories(third_party/ncnn/src)
 endif()
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 find_package(OpenCV REQUIRED PATHS ${OpenCV_DIR})
 
@@ -140,10 +149,8 @@ endif()
 # Add barcode scanner
 if (DAISYKIT_ENABLE_BARCODE_SCANNER)
     add_subdirectory(third_party/zxing-cpp)
-    include_directories(third_party/zxing-cpp/core/src)
-    include_directories(third_party/zxing-cpp/opencv/src)
-    set(sources ${sources} 
-        src/flows/barcode_scanner_flow.cpp)
+    include_directories(third_party/zxing-cpp/src)
+    set(sources ${sources} src/flows/barcode_scanner_flow.cpp)
 endif()
 
 if (DAISYKIT_BUILD_SHARED_LIB)

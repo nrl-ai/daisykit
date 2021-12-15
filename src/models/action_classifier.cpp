@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/models/action_classifier.h"
-#include "daisykitsdk/processors/image_processors/img_utils.h"
+#include "daisykit/models/action_classifier.h"
+#include "daisykit/processors/image_processors/img_utils.h"
 
 #include <algorithm>
 #include <chrono>

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykitsdk/graphs/core/node.h"
-#include "daisykitsdk/common/types.h"
-#include "daisykitsdk/graphs/core/connection.h"
-#include "daisykitsdk/graphs/core/node_type.h"
-#include "daisykitsdk/graphs/core/packet.h"
+#include "daisykit/graphs/core/node.h"
+#include "daisykit/common/types.h"
+#include "daisykit/graphs/core/connection.h"
+#include "daisykit/graphs/core/node_type.h"
+#include "daisykit/graphs/core/packet.h"
 
 #include <atomic>
 #include <chrono>
