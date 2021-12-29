@@ -44,14 +44,11 @@ jobs:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        os: [macos-10.15, macos-11]
+        os: [macos-latest]
         python: [36, 37, 38, 39, 310]
         bitness: [64]
         include:
-          - os: macos-10.5
-            bitness: 64
-            platform_id: macosx_x86_64
-          - os: macos-11
+          - os: macos-latest
             bitness: 64
             platform_id: macosx_x86_64
 

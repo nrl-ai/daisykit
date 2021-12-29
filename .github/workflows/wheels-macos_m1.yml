@@ -44,13 +44,13 @@ jobs:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        os: [macos-M1]
+        os: [macos-11]
         python: [36, 37, 38, 39, 310]
         bitness: [64]
         include:
-          - os: macos-M1
+          - os: macos-11
             bitness: 64
-            platform_id: macosx_x64
+            platform_id: macosx_x86_64
 
     steps:
       - name: Checkout daisykit
@@ -70,10 +70,13 @@ jobs:
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           CIBW_BEFORE_ALL_MACOS: brew install opencv
           CIBW_TEST_REQUIRES: pytest threadpoolctl
-          CIBW_TEST_COMMAND: bash {project}/build_tools/github/test_wheels.sh
+          # CIBW_TEST_COMMAND: bash {project}/build_tools/github/test_wheels.sh
           CIBW_BUILD_VERBOSITY: 1
 
-        run: bash build_tools/github/build_wheels.sh
+        run: |
+            export MACOSX_DEPLOYMENT_TARGET=11.0
+            arch -arm64 python${{ matrix.python-version }} -m pip install toml && python${{ matrix.python-version }} -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join(c["build-system"]["requires"]))' | python${{ matrix.python-version }} -m pip install -r /dev/stdin
+            arch -arm64 python${{ matrix.python-version }} setup.py bdist_wheel --py-limited-api=cp37 --dist-dir=wheelhouse -v
 
       - name: Store artifacts
         uses: actions/upload-artifact@v2
