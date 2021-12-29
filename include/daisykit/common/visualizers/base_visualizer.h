@@ -60,10 +60,9 @@ class BaseVisualizer {
       int n_last_values = -1  /// Number of values from the end of values
                               /// vector. Set to -1 to show all values.
   ) {
-    auto begin_elm = n_last_values == -1 ? vals.begin()
-                                         : vals.size() > n_last_values
-                                               ? vals.end() - n_last_values
-                                               : vals.begin();
+    auto begin_elm = n_last_values == -1           ? vals.begin()
+                     : vals.size() > n_last_values ? vals.end() - n_last_values
+                                                   : vals.begin();
     auto it = minmax_element(begin_elm, vals.end());
     float scale = 1. / ceil(*it.second - *it.first);
     float bias = *it.first;
