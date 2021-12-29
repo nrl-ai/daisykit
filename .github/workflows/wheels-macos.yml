@@ -1,0 +1,89 @@
+# Workflow to build and test wheels
+name: Wheel builder macOS
+
+on:
+  # schedule:
+  #   # Nightly build at 3:42 A.M.
+  #   - cron: "42 3 */1 * *"
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  #   branches:
+  #     - main
+  # Manual run
+  workflow_dispatch:
+
+jobs:
+  # Check whether to build the wheels and the source tarball
+  check_build_trigger:
+    name: Check build trigger
+    runs-on: ubuntu-latest
+    if: github.repository == 'Daisykit-AI/daisykit'
+    outputs:
+      build: ${{ steps.check_build_trigger.outputs.build }}
+
+    steps:
+      - name: Checkout daisykit
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - id: check_build_trigger
+        name: Check build trigger
+        run: bash build_tools/github/check_build_trigger.sh
+
+  # Build the wheels
+  build_wheels:
+    name: Build wheel for cp${{ matrix.python }}-${{ matrix.platform_id }}
+    runs-on: ${{ matrix.os }}
+    needs: check_build_trigger
+    if: needs.check_build_trigger.outputs.build
+
+    strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+      matrix:
+        os: [macos-10.15, macos-11]
+        python: [36, 37, 38, 39, 310]
+        bitness: [64]
+        include:
+          - os: macos-10.5
+            bitness: 64
+            platform_id: macosx_x86_64
+          - os: macos-11
+            bitness: 64
+            platform_id: macosx_x86_64
+
+    steps:
+      - name: Checkout daisykit
+        uses: actions/checkout@v1
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'  # update once build dependencies are available
+
+      - name: Build and test wheels
+        env:
+          CONFTEST_PATH: ${{ github.workspace }}/conftest.py
+          CONFTEST_NAME: conftest.py
+          CIBW_ENVIRONMENT: OMP_NUM_THREADS=2
+                            OPENBLAS_NUM_THREADS=2
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          CIBW_BEFORE_ALL_MACOS: brew install opencv
+          CIBW_TEST_REQUIRES: pytest threadpoolctl
+          CIBW_TEST_COMMAND: bash {project}/build_tools/github/test_wheels.sh
+          CIBW_BUILD_VERBOSITY: 1
+
+        run: bash build_tools/github/build_wheels.sh
+
+      - name: Store artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: wheelhouse/*.whl
+
+      - name: Upload wheels for daisykit
+        run: |
+          python -m pip install twine
+          python -m twine upload -u ${{ secrets.DAISYKIT_PYPI_USERNAME }} -p ${{ secrets.DAISYKIT_PYPI_PASSWORD }} --skip-existing wheelhouse/daisykit-*

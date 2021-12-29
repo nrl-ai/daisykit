@@ -16,8 +16,12 @@ except ImportError:
 if sys.version_info < (3, 0):
     sys.exit("Sorry, Python < 3.0 is not supported")
 
-# Newer versions of opencv don't have wheels for i686
-requirements = ["numpy", "tqdm", "requests", "portalocker", "opencv-python<=4.5.1.48"]
+requirements = ["numpy", "tqdm", "requests", "portalocker"]
+if sys.platform == "darwin":
+    requirements.append("opencv-python")
+else:
+    # Newer versions of opencv don't have wheels for i686
+    requirements.append("opencv-python<=4.5.1.48")
 
 setup(
     name="daisykit",
