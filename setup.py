@@ -162,7 +162,7 @@ else:
     # Newer versions of opencv don't have wheels for i686
     requirements.append("opencv-python<=4.5.1.48")
 
-with io.open("docs/python.md", encoding="utf-8") as h:
+with io.open("docs/pipy-doc.md", encoding="utf-8") as h:
     long_description = h.read()
 
 setup(

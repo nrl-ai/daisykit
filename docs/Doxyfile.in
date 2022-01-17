@@ -115,6 +115,12 @@ WARN_LOGFILE           =
 INPUT                  =../README.md \
                         android.md \
                         python.md \
+                        python/face_detection.md \
+                        python/human_pose.md \
+                        python/background_matting.md \
+                        python/hand_pose.md \
+                        python/barcode.md \
+                        python/object_detection.md \
                         ../include/daisykit/README.md \
                         models.md \
                         contribution.md \
