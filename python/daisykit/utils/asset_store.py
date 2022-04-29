@@ -34,7 +34,7 @@ _asset_sha1 = {
 
 _split_asset_bins = {}
 
-github_repo_url = "https://github.com/Daisykit-AI/daisykit-assets/raw/master/"
+github_repo_url = "https://github.com/DaisyLabSolutions/daisykit-assets/raw/master/"
 _url_format = "{repo_url}{file_name}"
 
 

@@ -63,4 +63,4 @@ bash ./build_tools/upload_pypi.sh
 
 Please open an issue on our official repository if you find any error.
 
-<https://github.com/Daisykit-AI/daisykit>
+<https://github.com/DaisyLabSolutions/daisykit>

@@ -1,9 +1,12 @@
-# DaisyKit Python
+# Daisykit Python
 
 <https://pypi.org/project/daisykit/>
 
-Deploy AI Systems Yourself (DAISY) Kit. DaisyKit Python is the wrapper of DaisyKit SDK, an AI framework focusing on the ease of deployment. At present, this package only has prebuilt distribution for Windows - Python 3. For other platform, you need to compile from source.
+Daisykit is an easy AI toolkit for software engineers to integrate pretrained AI models and pipelines into their projects. You DON'T need to be an AI engineer to build AI software. This open source project includes:
 
+- **Daisykit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
+- **Daisykit Python** wrapper for easy integration with Python.
+- **Daisykit Android** - Example app demonstrate how to use Daisykit SDK in Android.
 ## How to install ?
 
 **For Windows:**
@@ -66,4 +69,4 @@ bash ./build_tools/upload_pypi.sh
 
 Please open an issue on our official repository if you find any error.
 
-<https://github.com/Daisykit-AI/daisykit>
+<https://github.com/DaisyLabSolutions/daisykit>

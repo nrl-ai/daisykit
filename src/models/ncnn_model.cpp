@@ -79,7 +79,7 @@ NCNNModel::NCNNModel(const std::string& param_file,
 int NCNNModel::LoadModel(
     const char* param_buffer, const unsigned char* weight_buffer, bool use_gpu,
     std::function<int(ncnn::Net&)> before_model_load_hook) {
-  // https://github.com/Daisykit-AI/daisykit/commit/89fbf2fcf34c75662c23d5f48abc3a538fae7e93#r56348806
+  // https://github.com/DaisyLabSolutions/daisykit/commit/89fbf2fcf34c75662c23d5f48abc3a538fae7e93#r56348806
   model_.clear();
   if (before_model_load_hook) {
     before_model_load_hook(model_);

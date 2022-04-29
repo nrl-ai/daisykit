@@ -18,7 +18,7 @@ with your webcam. First, we initialize the flow with a `config`
 dictionary. It contains information about the models used in the flow.
 `get_asset_file()` function will automatically download the models
 and weights files from
-[*https://github.com/Daisykit-AI/daisykit-assets*](https://github.com/Daisykit-AI/daisykit-assets),
+[*https://github.com/DaisyLabSolutions/daisykit-assets*](https://github.com/DaisyLabSolutions/daisykit-assets),
 so you don’t have to care about downloading them manually. The
 downloading only happens the first time we use the models. After that,
 you can run this code offline. You also can download all files yourself
