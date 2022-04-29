@@ -1,14 +1,16 @@
-# Daisykit
+# Daisykit - **D.A.I.S.Y: Deploy AI Systems Yourself!**
 
-<https://daisykit.org/>.
-
-Daisykit is an easy AI toolkit for software engineers to integrate pretrained AI models and pipelines into their projects. You DON'T need to be an AI engineer to build AI software. This open source project includes:
+[Daisykit](https://daisykit.org/>) is an easy AI toolkit for software engineers to integrate pretrained AI models and pipelines into their projects. You DON'T need to be an AI engineer to build AI software. This open source project includes:
 
 - **Daisykit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
 - **Daisykit Python** wrapper for easy integration with Python.
 - **Daisykit Android** - Example app demonstrate how to use Daisykit SDK in Android.
 
-**D.A.I.S.Y: Deploy AI Systems Yourself!**
+**Links:**
+
+- **Python Package:** <https://pypi.org/project/daisykit/> [![Pypi Downloads](https://pepy.tech/badge/daisykit/month)](https://pypi.org/project/daisykit/)
+- **Documentation:** <https://daisykit.org/>
+
 
 https://user-images.githubusercontent.com/18329471/143721185-d4d095dd-48b8-481c-81c7-904c1536a6b8.mp4
 
