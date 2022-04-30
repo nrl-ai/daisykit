@@ -45,7 +45,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python: [36, 37, 38, 39, 310]
+        python: [36, 37, 38, 39]
         bitness: [32, 64]
         manylinux_image: [manylinux2014]
         include:
@@ -57,9 +57,9 @@ jobs:
             platform_id: manylinux_x86_64
         exclude:
           # Exclude i686 for Python 3.10 due to numpy installation error
-          - os: ubuntu-latest
-            bitness: 32
-            python: 310
+          # - os: ubuntu-latest
+          #   bitness: 32
+          #   python: 310
           - os: macos-latest
             bitness: 32
 

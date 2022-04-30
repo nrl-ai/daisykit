@@ -86,7 +86,7 @@ jobs:
         set "CI_BUILD=1" && python setup.py bdist_wheel --py-limited-api=cp36 --dist-dir=%cd%\wheelhouse -v
       shell: cmd
       env:
-        OPENCV_DIR: ${{ github.workspace }}/ext/vcpkg/installed/
+        OpenCV_DIR: ${{ github.workspace }}/ext/vcpkg/installed/x64-windows/share/opencv
 
     - name: Saving all wheels
       uses: actions/upload-artifact@v2
