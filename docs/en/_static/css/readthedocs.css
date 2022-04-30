@@ -1,0 +1,6 @@
+.header-logo {
+    background-image: url("../logo_with_text.svg");
+    background-size: 256px 40px;
+    height: 40px;
+    width: 256px;
+}

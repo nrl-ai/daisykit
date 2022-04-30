@@ -169,7 +169,7 @@ setup(
     author_email="daisykit.team@gmail.com",
     maintainer="DaisyKit Team",
     maintainer_email="daisykit.team@gmail.com",
-    description="Deploy AI Systems Yourself (DAISY) Kit. DaisyKit Python is the wrapper of DaisyKit SDK, an AI framework focusing on the ease of deployment.",
+    description="Deploy AI Systems Yourself (DAISY) Kit. DaisyKit Python is the wrapper of DaisyKit SDK, an easy AI framework for everyone.",
     long_description=long_description,
     long_description_content_type='text/markdown',
     url="https://docs.daisykit.org/",

@@ -21,7 +21,7 @@ VS Code can use clang-format to format source code file (Ctrl+Shift+i).
 {BasedOnStyle: Google, PointerAlignment: Left, IncludeBlocks: Preserve, DerivePointerAlignment: false}
 ```
 
-![Configure Clang Format for VS Code - DaisyKit project](config-clang-format-vscode.png)
+![Configure Clang Format for VS Code - DaisyKit project](images/config-clang-format-vscode.png)
 
 **Run code format for the whole project on Ubuntu (should be done before committing your code):**
 
