@@ -41,14 +41,11 @@ def find_version():
 
     version_major = re.findall(r"DAISYKIT_VERSION_MAJOR ((\.|\d)+)", version_file)
     version_minor = re.findall(r"DAISYKIT_VERSION_MINOR ((\.|\d)+)", version_file)
-    version_patch = None
-    if sys.platform == "darwin":
-        version_patch = re.findall(r"DAISYKIT_VERSION_PATCH_DARWIN ((\.|\d)+)", version_file)
-    else:
-        version_patch = re.findall(r"DAISYKIT_VERSION_PATCH_OTHERS ((\.|\d)+)", version_file)
+    version_patch = re.findall(r"DAISYKIT_VERSION_PATCH ((\.|\d)+)", version_file)
+    version_build = re.findall(r"DAISYKIT_VERSION_BUILD ((\.|\d)+)", version_file)
 
     if version_major and version_minor and version_patch:
-        return version_major[0][0] + "." + version_minor[0][0] + "." + version_patch[0][0]
+        return version_major[0][0] + "." + version_minor[0][0] + "." + version_patch[0][0] + "." + version_build[0][0]
     raise RuntimeError("Unable to find version string.")
 
 
