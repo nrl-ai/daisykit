@@ -71,7 +71,7 @@ jobs:
         cd vcpkg
         .\bootstrap-vcpkg.bat
     
-    - name: Install Opencv
+    - name: Install OpenCV
       if: ${{ steps.vcpkg-cache.outputs.cache-hit != 'true' }}
       run: |
         cd ${{ github.workspace }}
