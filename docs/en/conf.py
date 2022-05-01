@@ -91,13 +91,13 @@ html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
     'menu': [
         {
-            'name': 'GitHub',
+            'name': 'Daisykit GitHub',
             'url': 'https://github.com/DaisyLabSolutions/daisykit'
         },
     ],
     # Specify the language of shared menu
     'menu_lang': 'en',
-    'theme_logo_url': 'https://docs.daisykit.org/'
+    'logo_url': 'https://docs.daisykit.org/'
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
