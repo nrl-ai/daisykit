@@ -12,7 +12,7 @@ masks or not.
 
 ![](/images/python/image14.gif)
 
-## Sequential flow
+## 1. Sequential flow
 
 Source code: `src/examples/demo_face_detector.cpp`.
 
@@ -65,7 +65,7 @@ int main(int, char**) {
 Update the configurations by modifying config files in `assets/configs`.
 
 
-## Multithreading mode with graph
+## 2. Multithreading mode with graph
 
 In order to use multithreading mode (graph mode) to improve the FPS, try the example in `src/examples/demo_face_detector_graph.cpp`.
 

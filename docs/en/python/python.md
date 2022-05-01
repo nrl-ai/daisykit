@@ -44,7 +44,7 @@ pip3 install --upgrade pip # Ensure pip is updated
 pip3 install daisykit
 ```
 
-## Note for Python build
+## 2. Note for Python build
 
 Current CD (continuous delivery) flow is partial, which means we only have prebuilt linux wheels for x86_64 and for Windows.
 
@@ -61,9 +61,3 @@ bash ./build_tools/py_windows/build_dk_all_pythons_windows.sh
 bash ./build_tools/py_windows/build_dk_python_source_dist.sh
 bash ./build_tools/upload_pypi.sh
 ```
-
-## Bug report
-
-Please open an issue on our official repository if you find any error.
-
-<https://github.com/DaisyLabSolutions/daisykit>
