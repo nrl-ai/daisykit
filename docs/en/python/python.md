@@ -7,7 +7,8 @@ Daisykit is an easy AI toolkit for software engineers to integrate pretrained AI
 - **Daisykit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
 - **Daisykit Python** wrapper for easy integration with Python.
 - **Daisykit Android** - Example app demonstrate how to use Daisykit SDK in Android.
-## How to install ?
+
+## 1. Installation
 
 **For Windows:**
 
@@ -42,7 +43,6 @@ pip3 install daisykit
 pip3 install --upgrade pip # Ensure pip is updated
 pip3 install daisykit
 ```
-
 
 ## Note for Python build
 

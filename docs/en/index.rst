@@ -13,6 +13,17 @@ Welcome to Daisykit's documentation!
    python/barcode.md
    python/object_detection.md
 
+.. toctree::
+   :maxdepth: 2
+   :caption: C++ Tutorials
+
+   cpp/cpp.md
+   cpp/face_detection.md
+   cpp/human_pose.md
+   cpp/background_matting.md
+   cpp/hand_pose.md
+   cpp/barcode.md
+   cpp/object_detection.md
 
 .. toctree::
    :maxdepth: 1

@@ -93,23 +93,7 @@ cmake --build . --config Release
 
 ## Coding convention
 
-Read coding convention and contribution guidelines [here](https://docs.daisykit.org/md_contribution.html).
-
-## Build documentation
-
-- Step 1: Install **doxygen** first.
-
-- Step 2: Build the documentation:
-
-```
-cd docs
-doxygen Doxyfile.in
-```
-
-- Step 3: Deploy html documentation from `docs/_build/html`.
-
-- Step 4: Our lastest documentation is deployed at <https://docs.daisykit.org>.
-
+Read coding convention and contribution guidelines [here](https://docs.daisykit.org/en/latest/contribution.html).
 ## Known issues and problems
 
 **1. Slow model inference - Low FPS**
