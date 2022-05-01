@@ -1,6 +1,9 @@
 eval "$(conda shell.bash hook)"
 
 brew install ninja
+brew install opencv
+
+export OpenCV_DIR="/opt/homebrew/Cellar/opencv/4.5.5_2/"
 
 export MACOSX_DEPLOYMENT_TARGET=12.0
 

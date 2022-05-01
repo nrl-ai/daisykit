@@ -9,3 +9,4 @@ __pycache__
 *.so
 /.vscode/settings.json
 /third_party/ncnn-*
+.DS_Store
