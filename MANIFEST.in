@@ -1,5 +1,5 @@
 include *.txt
-include docs/python.md
+include docs/pipy-doc.md
 recursive-include include *
 recursive-include src *
 recursive-include third_party *
