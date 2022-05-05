@@ -4,6 +4,7 @@
 [![docs](https://img.shields.io/badge/docs-latest-blue)](https://daisykit.readthedocs.io/en/latest/)
 [![license](https://img.shields.io/github/license/DaisyLabSolutions/daisykit.svg)](https://github.com/DaisyLabSolutions/daisykit/blob/master/LICENSE)
 [![open issues](https://isitmaintained.com/badge/open/DaisyLabSolutions/daisykit.svg)](https://github.com/DaisyLabSolutions/daisykit/issues)
+[![Pypi Downloads](https://pepy.tech/badge/daisykit/month)](https://pypi.org/project/daisykit/)
 
 [Daisykit](https://daisykit.org/>) is an easy AI toolkit for software engineers to integrate pretrained AI models and pipelines into their projects. You DON'T need to be an AI engineer to build AI software. This open source project includes:
 
@@ -13,7 +14,7 @@
 
 **Links:**
 
-- **Python Package:** <https://pypi.org/project/daisykit/> [![Pypi Downloads](https://pepy.tech/badge/daisykit/month)](https://pypi.org/project/daisykit/)
+- **Python Package:** <https://pypi.org/project/daisykit/>
 - **Documentation:** <https://daisykit.org/>
 
 
