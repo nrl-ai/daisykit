@@ -4,42 +4,35 @@
 
 ## 1. Environment Setup
 
-For Ubuntu, we need build tools from `build-essential` package. For Windows, Visual Studio 2019 is recommended.
+### Ubuntu
 
-- Install OpenCV.
-
-**Ubuntu:**
+Install packages from Terminal
 
 ```
-sudo apt install libopencv-dev
-```
-
-**Windows:**
-
-Download and extract OpenCV from [the official website](https://opencv.org/releases/), and add `OpenCV_DIR` to path.
-
-- Install Vulkan development package.
-
-**Ubuntu:**
-
-```
+sudo apt install -y build-essential libopencv-dev
 sudo apt install -y libvulkan-dev vulkan-utils
-sudo apt install mesa-vulkan-drivers # For Intel GPU support
+sudo apt install -y mesa-vulkan-drivers # For Intel GPU support
 ```
 
+### Windows
+
+For Windows, Visual Studio 2019 + Git Bash is recommended.
+
+- Download and extract OpenCV from [the official website](https://opencv.org/releases/), and add `OpenCV_DIR` to path.
 - Download [precompiled NCNN](https://github.com/Tencent/ncnn/releases), extract it (version for your development computer).
 
-## 2. Build and Run on PC
+## 2. Build and run C++ examples
 
-- Initialize / Update submodules
+Clone the source code:
 
 ```
-git submodule update --init
+git clone https://github.com/DaisyLabSolutions/daisykit.git --recursive
+cd daisykit
 ```
+### Ubuntu
 
-- Build
+Build Daisykit:
 
-**Ubuntu:**
 
 ```
 mkdir build
@@ -48,7 +41,18 @@ cmake .. -Dncnn_FIND_PATH="<path to ncnn lib>"
 make
 ```
 
-**Windows:**
+Run face detection example:
+
+```
+./bin/demo_face_detector_graph
+```
+
+If you dont specify `ncnn_FIND_PATH`, NCNN will be built from scratch.
+
+### Windows
+
+Build Daisykit:
+
 
 ```
 mkdir build
@@ -57,15 +61,7 @@ cmake -G "Visual Studio 16 2019" -Dncnn_FIND_PATH="<path to ncnn lib>" ..
 cmake --build . --config Release
 ```
 
-- Run face detection example
-
-**Ubuntu:**
-
-```
-./bin/demo_face_detector_graph
-```
-
-**Windows:**
+Run face detection example:
 
 ```
 ./bin/Release/demo_face_detector_graph
