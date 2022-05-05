@@ -19,7 +19,7 @@ sudo apt install -y mesa-vulkan-drivers # For Intel GPU support
 For Windows, Visual Studio 2019 + Git Bash is recommended.
 
 - Download and extract OpenCV from [the official website](https://opencv.org/releases/), and add `OpenCV_DIR` to path.
-- Download [precompiled NCNN](https://github.com/Tencent/ncnn/releases), extract it (version for your development computer).
+- Download [precompiled NCNN](https://github.com/Tencent/ncnn/releases).
 
 ## 2. Build and run C++ examples
 
