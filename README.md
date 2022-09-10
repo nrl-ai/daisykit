@@ -6,7 +6,7 @@
 [![open issues](https://isitmaintained.com/badge/open/DaisyLabSolutions/daisykit.svg)](https://github.com/DaisyLabSolutions/daisykit/issues)
 [![Pypi Downloads](https://pepy.tech/badge/daisykit/month)](https://pypi.org/project/daisykit/)
 
-[Daisykit](https://daisykit.org/>) is an easy AI toolkit for software engineers to integrate pretrained AI models and pipelines into their projects. You DON'T need to be an AI engineer to build AI software. This open source project includes:
+[Daisykit](https://daisykit.org/>) is an easy AI toolkit with face mask detection, pose detection, background matting, barcode detection and more. This open source project includes:
 
 - **Daisykit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
 - **Daisykit Python** wrapper for easy integration with Python.
