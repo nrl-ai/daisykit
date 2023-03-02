@@ -47,7 +47,7 @@ pip3 install daisykit
 
 ## Examples
 
-Read [Documentation](https://docs.daisykit.org/).
+Read [Documentation](https://daisykit.nrl.ai).
 
 ## Note for Python build
 
@@ -71,4 +71,4 @@ bash ./build_tools/upload_pypi.sh
 
 Please open an issue on our official repository if you find any error.
 
-<https://github.com/DaisyLabSolutions/daisykit>
+<https://github.com/nrl-ai/daisykit>

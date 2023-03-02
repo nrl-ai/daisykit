@@ -2,8 +2,8 @@
 
 [![PyPI](https://img.shields.io/pypi/v/daisykit)](https://pypi.org/project/daisykit)
 [![docs](https://img.shields.io/badge/docs-latest-blue)](https://daisykit.readthedocs.io/en/latest/)
-[![license](https://img.shields.io/github/license/DaisyLabSolutions/daisykit.svg)](https://github.com/DaisyLabSolutions/daisykit/blob/master/LICENSE)
-[![open issues](https://isitmaintained.com/badge/open/DaisyLabSolutions/daisykit.svg)](https://github.com/DaisyLabSolutions/daisykit/issues)
+[![license](https://img.shields.io/github/license/nrl-ai/daisykit.svg)](https://github.com/nrl-ai/daisykit/blob/master/LICENSE)
+[![open issues](https://isitmaintained.com/badge/open/nrl-ai/daisykit.svg)](https://github.com/nrl-ai/daisykit/issues)
 [![Pypi Downloads](https://pepy.tech/badge/daisykit/month)](https://pypi.org/project/daisykit/)
 
 [Daisykit](https://daisykit.org/>) is an easy AI toolkit with face mask detection, pose detection, background matting, barcode detection and more. This open source project includes:
@@ -47,7 +47,7 @@ For Windows, Visual Studio 2019 + Git Bash is recommended.
 Clone the source code:
 
 ```
-git clone https://github.com/DaisyLabSolutions/daisykit.git --recursive
+git clone https://github.com/nrl-ai/daisykit.git --recursive
 cd daisykit
 ```
 ### Ubuntu
@@ -105,4 +105,4 @@ This toolkit is developed on top of other source code. Including
 - Toolchains setup from [ncnn](https://github.com/Tencent/ncnn).
 - QR Scanner from [ZXing-CPP](https://github.com/nu-book/zxing-cpp).
 - JSON support from [nlohmann/json](https://github.com/nlohmann/json).
-- Pretrained AI models from different sources: <https://docs.daisykit.org/en/latest/models.html>.
+- Pretrained AI models from different sources: <https://daisykit.nrl.ai/docs/models>.

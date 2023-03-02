@@ -19,7 +19,7 @@ jobs:
   check_build_trigger:
     name: Check build trigger
     runs-on: ubuntu-latest
-    if: github.repository == 'DaisyLabSolutions/daisykit'
+    if: github.repository == 'nrl-ai/daisykit'
     outputs:
       build: ${{ steps.check_build_trigger.outputs.build }}
 
