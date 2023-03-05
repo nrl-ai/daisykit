@@ -90,7 +90,7 @@ Run face detection example:
 
 ## 3. C++ Coding convention
 
-Read coding convention and contribution guidelines [here](/en/latest/contribution.html).
+Read coding convention and contribution guidelines [here](https://daisykit.nrl.ai/docs/contribution).
 
 ## 4. Known issues and problems
 
