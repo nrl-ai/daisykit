@@ -33,16 +33,18 @@ target_link_libraries(demo_hand_pose_detector ${OpenCV_LIBS} daisykitsdk)
 add_executable(demo_object_detector demo_object_detector_yolox.cpp)
 target_link_libraries(demo_object_detector ${OpenCV_LIBS} daisykitsdk)
 
+add_executable(demo_face_detector_with_landmark demo_face_detector_with_landmark.cpp)
+target_link_libraries(demo_face_detector_with_landmark ${OpenCV_LIBS} daisykitsdk)
+
 # Copy OpenCV lib to run on Windows
-if (WIN32)
+if(WIN32)
+    get_target_property(__dll_dbg opencv_world IMPORTED_LOCATION_DEBUG)
+    get_target_property(__dll_release opencv_world IMPORTED_LOCATION_RELEASE)
+    add_custom_command(TARGET demo_pushup_classifier POST_BUILD # Adds a post-build event the TARGET
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different # which executes "cmake - E copy_if_different..."
+        "$<$<CONFIG:debug>:${__dll_dbg}>$<$<CONFIG:release>:${__dll_release}>" # <--this is in-file
+        $<TARGET_FILE_DIR:demo_pushup_classifier> # <--this is out-file path
 
-get_target_property(__dll_dbg opencv_world IMPORTED_LOCATION_DEBUG)
-get_target_property(__dll_release opencv_world  IMPORTED_LOCATION_RELEASE)
-add_custom_command(TARGET demo_pushup_classifier POST_BUILD        # Adds a post-build event the TARGET
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different           # which executes "cmake - E copy_if_different..."
-    "$<$<CONFIG:debug>:${__dll_dbg}>$<$<CONFIG:release>:${__dll_release}>"      # <--this is in-file
-    $<TARGET_FILE_DIR:demo_pushup_classifier>                        # <--this is out-file path
         # another dll copy if needed here
-    COMMENT "Copy opencv_world")
-
+        COMMENT "Copy opencv_world")
 endif()

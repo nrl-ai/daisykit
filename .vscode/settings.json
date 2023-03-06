@@ -67,7 +67,13 @@
     "variant": "cpp",
     "bit": "cpp",
     "netfwd": "cpp",
-    "core": "cpp"
+    "core": "cpp",
+    "codecvt": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "ranges": "cpp",
+    "stop_token": "cpp",
+    "parentbad": "cpp"
   },
   "C_Cpp.clang_format_style": "{BasedOnStyle: Google, PointerAlignment: Left, IncludeBlocks: Preserve, DerivePointerAlignment: false}",
   "files.insertFinalNewline": true,
