@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <vector>
-#include "config.h"
+#include "anchor_cfg.h"
+#include "net.h"
 #include "opencv2/opencv.hpp"
 
 namespace daisykit {

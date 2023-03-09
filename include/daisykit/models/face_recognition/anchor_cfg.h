@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_MODELS_FACE_RECOGNITION_CONFIG_H_
-#define DAISYKIT_MODELS_FACE_RECOGNITION_CONFIG_H_
+#ifndef DAISYKIT_MODELS_FACE_RECOGNITION_ANCHOR_CFG_H_
+#define DAISYKIT_MODELS_FACE_RECOGNITION_ANCHOR_CFG_H_
 
 #include <stdio.h>
 #include <map>
 #include <vector>
-#include "net.h"
 namespace daisykit {
 namespace models {
 

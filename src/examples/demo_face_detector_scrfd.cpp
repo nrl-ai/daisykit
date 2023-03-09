@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykit/common/types.h"
-#include "daisykit/models/face_recognition/face_detector_with_landmark.h"
+#include "daisykit/models/face_recognition/face_detector_scrfd.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>
@@ -28,19 +28,20 @@ using namespace std;
 using json = nlohmann::json;
 using namespace daisykit;
 using namespace daisykit::models;
-FaceDetectorWithLandmark* face_detector = new FaceDetectorWithLandmark(
-    "models/face_detection_retina/retina.param",
-    "models/face_detection_retina/retina.bin", 320, 320, 0.7, 0.5, true);
+FaceDetectorSCRFD* face_detector = new FaceDetectorSCRFD(
+    "models/face_detection_scrfd/scrfd_2.5g_1.param",
+    "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
 
 int main(int, char**) {
   Mat frame;
-  VideoCapture cap(0);
+  VideoCapture cap("/home/haobk/st.mp4");
 
   while (1) {
     cap >> frame;
     std::vector<types::FaceDet> faces = face_detector->Predict(frame);
     cv::Mat draw = frame.clone();
     face_detector->DrawFaceDets(draw, faces);
+    // std::cout << "number faces " << faces.size() << std::endl;
     imshow("Image", draw);
     waitKey(1);
   }

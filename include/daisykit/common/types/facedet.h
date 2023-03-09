@@ -27,8 +27,12 @@ namespace types {
 /// Also includes other information such as wearing mask or not, facial landmark
 struct FaceDet {
   cv::Rect boxes;
+  float confidence;
   Landmark landmark;
   cv::Mat face_aligned;
+  float Area() const {
+    return (boxes.br().x - boxes.tl().x) * (boxes.br().y - boxes.tl().y);
+  }
 };
 
 }  // namespace types

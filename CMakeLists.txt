@@ -140,10 +140,11 @@ set(sources
     src/models/hand_pose_detector.cpp
     src/models/object_detector_yolox.cpp
     src/models/face_recognition/anchor_generator.cpp
-    src/models/face_recognition/config.cpp
+    src/models/face_recognition/anchor_cfg.cpp
     src/models/face_recognition/face_alignment.cpp
     src/models/face_recognition/face_detector_with_landmark.cpp
     src/models/face_recognition/tools.cpp
+    src/models/face_recognition/face_detector_scrfd.cpp
 
     src/common/visualizers/base_visualizer.cpp
     src/common/profiler.cpp

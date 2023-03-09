@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykit/models/face_recognition/config.h"
+#include "daisykit/models/face_recognition/anchor_cfg.h"
 
 namespace daisykit {
 namespace models {

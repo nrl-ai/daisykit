@@ -110,11 +110,8 @@ std::vector<daisykit::types::FaceDet> FaceDetectorWithLandmark::Predict(
     ncnn::Mat pts = (ncnn::Mat)out[output_names_[i + 2]];
     ac_[i / 3].FilterAnchor(cls, reg, pts, proposals, cls_threshold_);
   }
-
   std::vector<Anchor> result;
-
   NMS_CPU(proposals, nms_threshold_, result);
-
   for (int i = 0; i < result.size(); i++) {
     daisykit::types::FaceDet det;
     cv::Rect rect(

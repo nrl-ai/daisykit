@@ -73,7 +73,8 @@
     "concepts": "cpp",
     "ranges": "cpp",
     "stop_token": "cpp",
-    "parentbad": "cpp"
+    "parentbad": "cpp",
+    "*.ipp": "cpp"
   },
   "C_Cpp.clang_format_style": "{BasedOnStyle: Google, PointerAlignment: Left, IncludeBlocks: Preserve, DerivePointerAlignment: false}",
   "files.insertFinalNewline": true,

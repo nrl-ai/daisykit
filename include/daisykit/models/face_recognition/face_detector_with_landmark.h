@@ -16,8 +16,8 @@
 #define DAISYKIT_MODELS_FACE_DETECTOR_WITH_LANDMARK_H_
 
 #include "daisykit/common/types.h"
+#include "daisykit/models/face_recognition/anchor_cfg.h"
 #include "daisykit/models/face_recognition/anchor_generator.h"
-#include "daisykit/models/face_recognition/config.h"
 #include "daisykit/models/face_recognition/face_alignment.h"
 #include "daisykit/models/face_recognition/tools.h"
 #include "daisykit/models/image_model.h"
