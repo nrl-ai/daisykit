@@ -15,6 +15,8 @@
 #include "daisykit/common/types.h"
 #include "daisykit/models/face_recognition/face_alignment.h"
 #include "daisykit/models/face_recognition/face_detector_scrfd.h"
+#include "daisykit/models/face_recognition/face_extractor.h"
+#include "daisykit/models/face_recognition/face_manager.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>
@@ -29,22 +31,59 @@ using namespace std;
 using json = nlohmann::json;
 using namespace daisykit;
 using namespace daisykit::models;
+
 FaceDetectorSCRFD* face_detector = new FaceDetectorSCRFD(
     "models/face_detection_scrfd/scrfd_2.5g_1.param",
     "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
 FaceAligner* face_aligner = new FaceAligner();
 
+FaceExtractor* face_extractor =
+    new FaceExtractor("models/face_extraction/iresnet50_1.param",
+                      "models/face_extraction/iresnet50_1.bin", 112, true);
+
+FaceManager* face_manager = new FaceManager("./data", 1000, 512, 1, 1.01);
+
 int main(int, char**) {
+  std::vector<types::FaceDet> faces;
+  std::vector<types::FaceInfor> result;
+  // add face
+  cv::Mat regis_img = cv::imread("/home/haobk/Desktop/demo1/hao.jpg");
+  faces.clear();
+  faces = face_detector->Predict(regis_img);
+  if (faces.size() != 1) {
+    std::cout << "Have to register only one face";
+    return 0;
+  } else {
+    face_aligner->AlignMutipleFaces(regis_img, faces);
+    face_extractor->Predict(faces);
+
+    if (faces.size() == 1) {
+      if (face_manager->InsertFeature(faces[0].feature, "Hao",
+                                      1))  // feature, name, id
+        std::cout << "Insert Successfull";
+    }
+  }
+
   Mat frame;
-  VideoCapture cap("/home/haobk/Desktop/Demo.mkv");
+  VideoCapture cap(0);
 
   while (1) {
     cap >> frame;
-    std::vector<types::FaceDet> faces = face_detector->Predict(frame);
-    std::cout << faces.size() << std::endl;
+    faces = face_detector->Predict(frame);
     face_aligner->AlignMutipleFaces(frame, faces);
+    face_extractor->Predict(faces);
     cv::Mat draw = frame.clone();
     face_detector->DrawFaceDets(draw, faces);
+    for (auto face : faces) {
+      if (face_manager->Search(result, face.feature))
+        for (types::FaceInfor& faceif : result) {
+          std::cout << faceif.name << " " << faceif.distance << "\n";
+
+          cv::putText(draw, faceif.name + "_" + std::to_string(faceif.distance),
+                      cv::Point(face.boxes.tl().x, face.boxes.tl().y - 10),
+                      cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 2);
+        }
+    }
     imshow("Image", draw);
     waitKey(1);
   }

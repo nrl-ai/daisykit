@@ -12,28 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_FACE_DET_H_
-#define DAISYKIT_COMMON_TYPES_FACE_DET_H_
-#include "daisykit/common/types/landmark.h"
-
-#include <opencv2/opencv.hpp>
+#ifndef DAISYKIT_COMMON_TYPES_FACEINFOR_H_
+#define DAISYKIT_COMMON_TYPES_FACEINFOR_H_
 
 #include <vector>
-
 namespace daisykit {
 namespace types {
 
-/// Human face data type.
-/// Also includes other information such as wearing mask or not, facial landmark
-struct FaceDet {
-  cv::Rect boxes;
-  float confidence;
-  Landmark landmark;
-  cv::Mat aligned_face;
-  std::vector<float> feature;
-  float Area() const {
-    return (boxes.br().x - boxes.tl().x) * (boxes.br().y - boxes.tl().y);
-  }
+struct FaceInfor {
+  std::string name;
+  int id;
+  float distance;
 };
 
 }  // namespace types

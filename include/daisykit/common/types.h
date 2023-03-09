@@ -19,11 +19,12 @@
 #include "daisykit/common/types/box.h"
 #include "daisykit/common/types/face.h"
 #include "daisykit/common/types/facedet.h"
+#include "daisykit/common/types/faceinfor.h"
+#include "daisykit/common/types/featureset.h"
 #include "daisykit/common/types/keypoint.h"
 #include "daisykit/common/types/keypoint_xyz.h"
 #include "daisykit/common/types/landmark.h"
 #include "daisykit/common/types/object.h"
 #include "daisykit/common/types/object_with_keypoints.h"
 #include "daisykit/common/types/object_with_keypoints_xyz.h"
-
 #endif

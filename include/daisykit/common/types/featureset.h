@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_FEATURE_H_
-#define DAISYKIT_COMMON_TYPES_FEATURE_H_
-
-#include <opencv2/opencv.hpp>
-
+#ifndef DAISYKIT_COMMON_TYPES_FEATURESET_H_
+#define DAISYKIT_COMMON_TYPES_FEATURESET_H_
+#include <string>
+#include <vector>
 namespace daisykit {
 namespace types {
 
-struct Feature {
-  cv::Mat f;
+struct FeatureSet {
+  std::string name;
+  int id;
+  std::vector<float> feature;
 };
 
 }  // namespace types

@@ -51,6 +51,8 @@ class FaceDetectorRetina : public NCNNModel, public ImageModel {
  private:
   void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;
   void Init();
+
+ private:
   int input_width_;
   int input_height_;
   float score_threshold_;

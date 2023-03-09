@@ -17,20 +17,35 @@
 
 #include <opencv2/opencv.hpp>
 #include "daisykit/common/types.h"
-#include "daisykit/models/base_model.h"
+#include "daisykit/models/image_model.h"
+#include "daisykit/models/ncnn_model.h"
 
 namespace daisykit {
 namespace models {
 
-class FaceExtractor
-    : public BaseModel<cv::Mat, std::vector<daisykit::types::Feature>> {
+class FaceExtractor : public NCNNModel, public ImageModel {
  public:
-  FaceExtractor(const std::string& param_file, const std::string& weight_file);
-  virtual std::vector<daisykit::types::Feature> Predict(cv::Mat& image);
+  FaceExtractor(const std::string& param_file, const std::string& weight_file,
+                int input_size = 112, bool use_gpu = false);
+  FaceExtractor(const char* param_buffer, const unsigned char* weight_buffer,
+                int input_size = 112, bool use_gpu = false);
+
+#ifdef __ANDROID__
+  FaceExtractor(AAssetManager* mgr, const std::string& param_file,
+                const std::string& weight_file, int input_size = 112,
+                bool use_gpu = false);
+#endif
+
+  void Predict(std::vector<daisykit::types::FaceDet>& faces);
 
  private:
-  int input_width_;
-  int input_height_;
+  void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;
+  float Norm(std::vector<float> const& u);
+  void L2Norm(std::vector<float>& v);
+
+ private:
+  std::string input_name_ = "input";
+  std::string output_name_ = "output";
 };
 
 }  // namespace models

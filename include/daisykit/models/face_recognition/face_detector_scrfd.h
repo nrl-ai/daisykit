@@ -67,7 +67,6 @@ class FaceDetectorSCRFD : public NCNNModel, public ImageModel {
   bool is_landmark_ = true;
   float score_threshold_;
   float iou_threshold_;
-
   int hpad_ = 0;
   int wpad_ = 0;
   float scale_ = 1.0;

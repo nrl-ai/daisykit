@@ -125,6 +125,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 find_package(OpenCV REQUIRED PATHS ${OpenCV_DIR})
 
+include_directories(third_party/hnswlib)
+
 set(sources
     src/models/ncnn_model.cpp
     src/models/image_model.cpp
@@ -143,8 +145,10 @@ set(sources
     src/models/face_recognition/anchor_cfg.cpp
     src/models/face_recognition/face_alignment.cpp
     src/models/face_recognition/face_detector_retina.cpp
+    src/models/face_recognition/face_extractor.cpp
     src/models/face_recognition/tools.cpp
     src/models/face_recognition/face_detector_scrfd.cpp
+    src/models/face_recognition/face_manager.cpp
 
     src/common/visualizers/base_visualizer.cpp
     src/common/profiler.cpp

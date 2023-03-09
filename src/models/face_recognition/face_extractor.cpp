@@ -23,43 +23,67 @@ namespace daisykit {
 namespace models {
 
 FaceExtractor::FaceExtractor(const std::string& param_file,
-                             const std::string& weight_file) {
-  LoadModel(param_file, weight_file);
+                             const std::string& weight_file, int input_size,
+                             bool use_gpu)
+    : NCNNModel(param_file, weight_file, use_gpu),
+      ImageModel(input_size, input_size) {}
+
+FaceExtractor::FaceExtractor(const char* param_buffer,
+                             const unsigned char* weight_buffer, int input_size,
+                             bool use_gpu)
+    : NCNNModel(param_buffer, weight_buffer, use_gpu),
+      ImageModel(input_size, input_size) {}
+
+#ifdef __ANDROID__
+FaceExtractor::FaceExtractor(AAssetManager* mgr, const std::string& param_path,
+                             const std::string& bin_path, int input_size,
+                             bool use_gpu)
+    : NCNNModel(mgr, param_path, bin_path, use_gpu),
+      ImageModel(input_size, input_size) {}
+#endif
+
+float FaceExtractor::Norm(std::vector<float> const& u) {
+  float accum = 0.;
+  for (int i = 0; i < u.size(); ++i) {
+    accum += u[i] * u[i];
+  }
+  return std::sqrt(accum);
 }
 
-void preprocess(cv::Mat& image, ncnn::Mat& in) {
+void FaceExtractor::L2Norm(std::vector<float>& v) {
+  float k = Norm(v);
+  std::transform(v.begin(), v.end(), v.begin(),
+                 [k](float& c) { return c / k; });
+}
+
+void FaceExtractor::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   int img_w = image.cols;
   int img_h = image.rows;
-  in = ncnn::Mat::from_pixels(image.data, ncnn::Mat::PIXEL_BGR, img_w, img_h);
+  net_input =
+      ncnn::Mat::from_pixels(image.data, ncnn::Mat::PIXEL_BGR, img_w, img_h);
   const float mean_vals[3] = {127.5f, 127.5f, 127.5f};
   const float norm_vals[3] = {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5};
-
-  in.substract_mean_normalize(mean_vals, norm_vals);
+  net_input.substract_mean_normalize(mean_vals, norm_vals);
 }
 
-std::vector<types::Feature> FaceExtractor::Predict(cv::Mat& image) {
-  float fnum[512];
-  float* prob = fnum;
-  std::vector<types::Feature> features;
-  types::Feature feature;
-  ncnn::Mat input;
-  ncnn::Mat out;
-
-  preprocess(image, input);
-
-  ncnn::MutexLockGuard g(lock_);
-  auto ex = model_.create_extractor();
-  ex.input("input", input);
-  ex.extract("output", out);
-
-  for (int j = 0; j < 512; j++) {
-    fnum[j] = out[j];
+void FaceExtractor::Predict(std::vector<daisykit::types::FaceDet>& faces) {
+  for (auto& face : faces) {
+    std::vector<float> feature;
+    feature.resize(512);
+    ncnn::Mat in;
+    ncnn::Mat out;
+    Preprocess(face.aligned_face, in);
+    int res = Infer(in, out, input_name_, output_name_);
+    if (res != 0) {
+      std::cout << "Inference failed" << std::endl;
+      return;
+    }
+    for (int j = 0; j < 512; j++) {
+      feature[j] = out[j];
+    }
+    L2Norm(feature);
+    face.feature = feature;
   }
-
-  cv::Mat out_m(512, 1, CV_32FC1, prob);
-  cv::normalize(out_m, feature.f);
-  features.push_back(feature);
-  return features;
 }
 
 }  // namespace models
