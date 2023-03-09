@@ -29,7 +29,7 @@ struct FaceDet {
   cv::Rect boxes;
   float confidence;
   Landmark landmark;
-  cv::Mat face_aligned;
+  cv::Mat aligned_face;
   float Area() const {
     return (boxes.br().x - boxes.tl().x) * (boxes.br().y - boxes.tl().y);
   }

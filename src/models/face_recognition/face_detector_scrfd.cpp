@@ -56,24 +56,13 @@ FaceDetectorSCRFD::FaceDetectorSCRFD(AAssetManager* mgr,
 
 float FaceDetectorSCRFD::IntersectionArea(const daisykit::types::FaceDet& a,
                                           const daisykit::types::FaceDet& b) {
-  float l1_x = a.boxes.tl().x;
-  float l1_y = a.boxes.tl().y;
-  float r1_x = a.boxes.br().x;
-  float r1_y = a.boxes.br().y;
-  float l2_x = b.boxes.tl().x;
-  float l2_y = b.boxes.tl().y;
-  float r2_x = b.boxes.br().x;
-  float r2_y = b.boxes.br().y;
-
-  float area1 = abs(l1_x - r1_x) * abs(l1_y - r1_y);
-  float area2 = abs(l2_x - r2_x) * abs(l2_y - r2_y);
-  float x_dist = std::min(r1_x, r2_x) - std::max(l1_x, l2_x);
-  float y_dist = (std::min(r1_y, r2_y) - std::max(l1_y, l2_y));
-  float area = 0;
-  if (x_dist > 0 && y_dist > 0) {
-    area = x_dist * y_dist;
-  }
-  return (area1 + area2 - area);
+  float xx1 = std::max(a.boxes.tl().x, b.boxes.tl().x);
+  float yy1 = std::max(a.boxes.tl().y, b.boxes.tl().y);
+  float xx2 = std::min(a.boxes.br().x, b.boxes.br().x);
+  float yy2 = std::min(a.boxes.br().y, b.boxes.br().y);
+  float w = std::max(float(0), xx2 - xx1 + 1);
+  float h = std::max(float(0), yy2 - yy1 + 1);
+  return w * h;
 }
 
 void FaceDetectorSCRFD::QsortDescentInplace(

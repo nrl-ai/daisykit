@@ -16,11 +16,25 @@
 #define FACE_ALIGNMENT_H_
 
 #include <opencv2/opencv.hpp>
+#include "daisykit/common/types.h"
 
 namespace daisykit {
 namespace models {
-int GetAlignedFace(cv::Mat& img, float* landmark, int landmark_number,
-                   int desired_size, cv::Mat& out);
+class FaceAligner {
+ public:
+  FaceAligner();
+  ~FaceAligner();
+  void AlignFace(const cv::Mat& img, daisykit::types::FaceDet& face);
+  void AlignMutipleFaces(const cv::Mat& img,
+                         std::vector<daisykit::types::FaceDet>& faces);
+
+ private:
+  cv::Mat MeanAxis0(const cv::Mat& src);
+  cv::Mat ElementwiseMinus(const cv::Mat& A, const cv::Mat& B);
+  cv::Mat VarAxis0(const cv::Mat& src);
+  int MatrixRank(cv::Mat M);
+  cv::Mat SimilarTransform(const cv::Mat& src, const cv::Mat& dst);
+};
 
 }  // namespace models
 }  // namespace daisykit

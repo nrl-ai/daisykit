@@ -12,15 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License
 
-#include "daisykit/models/face_recognition/face_detector_with_landmark.h"
+#include "daisykit/models/face_recognition/face_detector_retina.h"
 
 namespace daisykit {
 namespace models {
 
-FaceDetectorWithLandmark::FaceDetectorWithLandmark(
-    const char* param_buffer, const unsigned char* weight_buffer,
-    int input_width, int input_height, float score_threshold,
-    float iou_threshold, bool use_gpu)
+FaceDetectorRetina::FaceDetectorRetina(const char* param_buffer,
+                                       const unsigned char* weight_buffer,
+                                       int input_width, int input_height,
+                                       float score_threshold,
+                                       float iou_threshold, bool use_gpu)
     : NCNNModel(param_buffer, weight_buffer, use_gpu),
       ImageModel(input_width, input_height) {
   score_threshold_ = score_threshold;
@@ -28,10 +29,11 @@ FaceDetectorWithLandmark::FaceDetectorWithLandmark(
   Init();
 }
 
-FaceDetectorWithLandmark::FaceDetectorWithLandmark(
-    const std::string& param_file, const std::string& weight_file,
-    int input_width, int input_height, float score_threshold,
-    float iou_threshold, bool use_gpu)
+FaceDetectorRetina::FaceDetectorRetina(const std::string& param_file,
+                                       const std::string& weight_file,
+                                       int input_width, int input_height,
+                                       float score_threshold,
+                                       float iou_threshold, bool use_gpu)
     : NCNNModel(param_file, weight_file, use_gpu),
       ImageModel(input_width, input_height) {
   score_threshold_ = score_threshold;
@@ -39,7 +41,7 @@ FaceDetectorWithLandmark::FaceDetectorWithLandmark(
   Init();
 }
 
-void FaceDetectorWithLandmark::Init() {
+void FaceDetectorRetina::Init() {
   std::vector<int> feat_stride_fpn_ = {32, 16, 8};
   std::map<int, AnchorCfg> anchor_cfg_ = {
       {32, AnchorCfg(std::vector<float>{32, 16}, std::vector<float>{1}, 16)},
@@ -66,10 +68,12 @@ void FaceDetectorWithLandmark::Init() {
 }
 
 #if __ANDROID__
-FaceDetectorWithLandmark::FaceDetectorWithLandmark(
-    AAssetManager* mgr, const std::string& param_file,
-    const std::string& weight_file, int input_width, int input_height,
-    float score_threshold, float iou_threshold, bool use_gpu)
+FaceDetectorRetina::FaceDetectorRetina(AAssetManager* mgr,
+                                       const std::string& param_file,
+                                       const std::string& weight_file,
+                                       int input_width, int input_height,
+                                       float score_threshold,
+                                       float iou_threshold, bool use_gpu)
     : NCNNModel(param_file, weight_file, use_gpu),
       ImageModel(input_width, input_height) {
   score_threshold_ = score_threshold;
@@ -77,8 +81,8 @@ FaceDetectorWithLandmark::FaceDetectorWithLandmark(
 }
 #endif
 
-void FaceDetectorWithLandmark::Preprocess(const cv::Mat& image,
-                                          ncnn::Mat& net_input) {
+void FaceDetectorRetina::Preprocess(const cv::Mat& image,
+                                    ncnn::Mat& net_input) {
   int width = InputWidth();
   int height = InputHeight();
   net_input =
@@ -89,7 +93,7 @@ void FaceDetectorWithLandmark::Preprocess(const cv::Mat& image,
   net_input.substract_mean_normalize(pixel_mean_, pixel_std_);
 }
 
-std::vector<daisykit::types::FaceDet> FaceDetectorWithLandmark::Predict(
+std::vector<daisykit::types::FaceDet> FaceDetectorRetina::Predict(
     cv::Mat& img) {
   std::vector<daisykit::types::FaceDet> dets;
   ncnn::Mat in;
@@ -126,14 +130,12 @@ std::vector<daisykit::types::FaceDet> FaceDetectorWithLandmark::Predict(
       det.landmark.x[j] = (int)result[i].pts_[j].x * ratio_x_;
       det.landmark.y[j] = (int)result[i].pts_[j].y * ratio_y_;
     }
-    int a =
-        GetAlignedFace(img, (float*)&det.landmark, 5, 112, det.face_aligned);
     dets.push_back(det);
   }
   return dets;
 }
 
-void FaceDetectorWithLandmark::DrawFaceDets(
+void FaceDetectorRetina::DrawFaceDets(
     cv::Mat& img, std::vector<daisykit::types::FaceDet>& dets) {
   for (int i = 0; i < dets.size(); i++) {
     cv::rectangle(img, dets[i].boxes, cv::Scalar(0, 255, 0), 2);

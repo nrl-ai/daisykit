@@ -32,10 +32,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # add_executable(demo_object_detector demo_object_detector_yolox.cpp)
 # target_link_libraries(demo_object_detector ${OpenCV_LIBS} daisykitsdk)
-add_executable(demo_face_detector_with_landmark demo_face_detector_with_landmark.cpp)
-target_link_libraries(demo_face_detector_with_landmark ${OpenCV_LIBS} daisykitsdk)
+add_executable(demo_face_detector_retina demo_face_detector_retina.cpp)
+target_link_libraries(demo_face_detector_retina ${OpenCV_LIBS} daisykitsdk)
 add_executable(demo_face_detector_scrfd demo_face_detector_scrfd.cpp)
 target_link_libraries(demo_face_detector_scrfd ${OpenCV_LIBS} daisykitsdk)
+add_executable(demo_face_sequential demo_face_sequential.cpp)
+target_link_libraries(demo_face_sequential ${OpenCV_LIBS} daisykitsdk)
 
 # Copy OpenCV lib to run on Windows
 if(WIN32)

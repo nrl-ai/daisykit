@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykit/common/types.h"
-#include "daisykit/models/face_recognition/face_detector_scrfd.h"
+#include "daisykit/models/face_recognition/face_detector_retina.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>
@@ -28,9 +28,9 @@ using namespace std;
 using json = nlohmann::json;
 using namespace daisykit;
 using namespace daisykit::models;
-FaceDetectorSCRFD* face_detector = new FaceDetectorSCRFD(
-    "models/face_detection_scrfd/scrfd_2.5g_1.param",
-    "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
+FaceDetectorRetina* face_detector = new FaceDetectorRetina(
+    "models/face_detection_retina/retina.param",
+    "models/face_detection_retina/retina.bin", 320, 320, 0.7, 0.5, true);
 
 int main(int, char**) {
   Mat frame;

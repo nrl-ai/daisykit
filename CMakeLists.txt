@@ -142,7 +142,7 @@ set(sources
     src/models/face_recognition/anchor_generator.cpp
     src/models/face_recognition/anchor_cfg.cpp
     src/models/face_recognition/face_alignment.cpp
-    src/models/face_recognition/face_detector_with_landmark.cpp
+    src/models/face_recognition/face_detector_retina.cpp
     src/models/face_recognition/tools.cpp
     src/models/face_recognition/face_detector_scrfd.cpp
 
