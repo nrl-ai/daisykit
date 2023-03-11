@@ -35,7 +35,7 @@ void BaseVisualizer::DrawBox(cv::Mat& img, const types::Box box,
                              int text_thickness, int text_baseline) {
   cv::rectangle(img, cv::Rect(box.x, box.y, box.w, box.h), box_color,
                 box_line_width);
-  if (!text.empty()) {
+  if (text != "") {
     visualizers::BaseVisualizer::PutText(
         img, text, cv::Point(box.x, box.y), cv::FONT_HERSHEY_SIMPLEX,
         text_scale, text_thickness, text_baseline, text_color, box_color);

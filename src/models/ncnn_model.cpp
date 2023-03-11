@@ -38,42 +38,52 @@ NCNNModel::NCNNModel(bool use_gpu) {
     std::cerr << "No GPU. Disabling GPU computation." << std::endl;
     use_gpu = false;
   }
-  use_gpu_ = use_gpu;
 #else
-  use_gpu_ = false;
+  if (use_gpu) {
+    std::cerr << "No GPU support. Disabling GPU computation." << std::endl;
+  }
+  use_gpu = false;
 #endif
+  use_gpu_ = use_gpu;
 }
 
 /// Initialize a NCNN from buffers.
 NCNNModel::NCNNModel(const char* param_buffer,
                      const unsigned char* weight_buffer, bool use_gpu) {
 #ifdef DAISYKIT_WITH_VULKAN
-  use_gpu_ = use_gpu;
   if (ncnn::get_gpu_count() == 0) {
     std::cerr << "No GPU. Disabling GPU computation." << std::endl;
     use_gpu = false;
   }
 #else
-  use_gpu_ = false;
+  if (use_gpu) {
+    std::cerr << "No GPU support. Disabling GPU computation." << std::endl;
+  }
+  use_gpu = false;
 #endif
+  use_gpu_ = use_gpu;
   // TODO (vietanhdev): Handle model loading result
-  LoadModel(param_buffer, weight_buffer, use_gpu);
+  LoadModel(param_buffer, weight_buffer, use_gpu_);
 }
 
 /// Initialize a NCNN model from files.
 NCNNModel::NCNNModel(const std::string& param_file,
                      const std::string& weight_file, bool use_gpu) {
 #ifdef DAISYKIT_WITH_VULKAN
-  use_gpu_ = use_gpu;
   if (ncnn::get_gpu_count() == 0) {
     std::cerr << "No GPU. Disabling GPU computation." << std::endl;
     use_gpu = false;
   }
 #else
-  use_gpu_ = false;
+  std::cout << use_gpu << std::endl;
+  if (use_gpu) {
+    std::cerr << "No GPU support. Disabling GPU computation." << std::endl;
+  }
+  use_gpu = false;
 #endif
+  use_gpu_ = use_gpu;
   // TODO (vietanhdev): Handle model loading result
-  LoadModel(param_file, weight_file, use_gpu);
+  LoadModel(param_file, weight_file, use_gpu_);
 }  // namespace models
 
 int NCNNModel::LoadModel(
@@ -120,16 +130,19 @@ int NCNNModel::LoadModel(
 NCNNModel::NCNNModel(AAssetManager* mgr, const std::string& param_file,
                      const std::string& weight_file, bool use_gpu) {
 #ifdef DAISYKIT_WITH_VULKAN
-  use_gpu_ = use_gpu;
   if (ncnn::get_gpu_count() == 0) {
     std::cerr << "No GPU. Disabling GPU computation." << std::endl;
     use_gpu = false;
   }
 #else
-  use_gpu_ = false;
+  if (use_gpu) {
+    std::cerr << "No GPU support. Disabling GPU computation." << std::endl;
+  }
+  use_gpu = false;
 #endif
+  use_gpu_ = use_gpu;
   // TODO (vietanhdev): Handle model loading result
-  LoadModel(mgr, param_file, weight_file, use_gpu);
+  LoadModel(mgr, param_file, weight_file, use_gpu_);
 }  // namespace models
 
 int NCNNModel::LoadModel(

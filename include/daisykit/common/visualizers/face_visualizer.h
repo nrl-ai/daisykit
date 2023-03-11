@@ -23,18 +23,25 @@
 namespace daisykit {
 namespace visualizers {
 
+template <typename FaceT>
 class FaceVisualizer {
  public:
-  static void DrawFace(cv::Mat& img, const std::vector<types::Face>& faces,
+  static void DrawFace(cv::Mat& img, const std::vector<FaceT>& faces,
                        bool with_landmark = false) {
     for (auto face : faces) {
       cv::Scalar color(0, 255, 0);
-      if (face.wearing_mask_prob < 0.5) {
+      if (face.wearing_mask_prob < 0.5 && face.wearing_mask_prob > 0.0) {
         color = cv::Scalar(255, 0, 0);
       }
-      BaseVisualizer::DrawBox(img, static_cast<types::Box>(face),
-                              face.wearing_mask_prob < 0.5 ? "No Mask" : "Mask",
-                              color);
+      std::string mask;
+      if (face.wearing_mask_prob >= 0.0) {
+        if (face.wearing_mask_prob < 0.5) {
+          mask = "No Mask";
+        } else {
+          mask = "Mask";
+        }
+      }
+      BaseVisualizer::DrawBox(img, static_cast<types::Box>(face), mask, color);
       if (with_landmark) {
         DrawLandmark(img, face.landmark);
       }

@@ -67,7 +67,8 @@ class FaceVisualizerNode : public Node {
 
     // Draw face to image
     if (faces != nullptr) {
-      visualizers::FaceVisualizer::DrawFace(draw, *faces, with_landmark_);
+      visualizers::FaceVisualizer<types::Face>::DrawFace(draw, *faces,
+                                                         with_landmark_);
       double fps = profiler.Tick();
       // visualizers::BaseVisualizer::PutText(
       //     draw, std::string("FPS: ") + std::to_string(fps), cv::Point(100,
