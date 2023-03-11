@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "daisykit/models/face_recognition/face_alignment.h"
+
 namespace daisykit {
 namespace models {
 FaceAligner::FaceAligner(){};

@@ -34,34 +34,52 @@ using namespace daisykit::models;
 
 FaceDetectorSCRFD* face_detector = new FaceDetectorSCRFD(
     "models/face_detection_scrfd/scrfd_2.5g_1.param",
-    "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
+    "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, false);
 FaceAligner* face_aligner = new FaceAligner();
 
 FaceExtractor* face_extractor =
-    new FaceExtractor("models/face_extraction/iresnet50_1.param",
-                      "models/face_extraction/iresnet50_1.bin", 112, true);
+    new FaceExtractor("models/face_extraction/iresnet18_1.param",
+                      "models/face_extraction/iresnet18_1.bin", 112, false);
 
 FaceManager* face_manager = new FaceManager("./data", 1000, 512, 1, 1.01);
 
-int main(int, char**) {
+int main(int argc, char** argv) {
+  // Read faces and name to register
+  if (argc < 3) {
+    std::cout << "Please provide name and an image to register" << std::endl;
+    std::cout << "Example: ./demo_face_sequential data/my_face.jpg "
+                 "JohnDoe"
+              << std::endl;
+    return 1;
+  }
+
+  // Read parameters
+  std::string person_image_path = argv[1];
+  std::string person_name;
+  for (int i = 2; i < argc; i++) {
+    person_name += argv[i];
+    if (i < argc - 1) person_name += " ";
+  }
+
+  // Predict and check faces
+  // Currently only support one face per image
   std::vector<types::FaceDet> faces;
   std::vector<types::FaceInfor> result;
-  // add face
-  cv::Mat regis_img = cv::imread("/home/haobk/Desktop/demo1/hao.jpg");
+  cv::Mat regis_img = cv::imread(person_image_path);
   faces.clear();
   faces = face_detector->Predict(regis_img);
   if (faces.size() != 1) {
-    std::cout << "Have to register only one face";
-    return 0;
-  } else {
-    face_aligner->AlignMutipleFaces(regis_img, faces);
-    face_extractor->Predict(faces);
+    std::cout << "Provide image with only one face to register";
+    return 1;
+  }
 
-    if (faces.size() == 1) {
-      if (face_manager->InsertFeature(faces[0].feature, "Hao",
-                                      1))  // feature, name, id
-        std::cout << "Insert Successfull";
-    }
+  // Align and extract face feature
+  face_aligner->AlignMutipleFaces(regis_img, faces);
+  face_extractor->Predict(faces);
+  if (faces.size() == 1) {
+    if (face_manager->InsertFeature(faces[0].feature, person_name,
+                                    1))  // feature, name, id
+      std::cout << "Inserted successfully";
   }
 
   Mat frame;
@@ -79,7 +97,8 @@ int main(int, char**) {
         for (types::FaceInfor& faceif : result) {
           std::cout << faceif.name << " " << faceif.distance << "\n";
 
-          cv::putText(draw, faceif.name + "_" + std::to_string(faceif.distance),
+          cv::putText(draw,
+                      faceif.name + " : " + std::to_string(faceif.distance),
                       cv::Point(face.boxes.tl().x, face.boxes.tl().y - 10),
                       cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 2);
         }

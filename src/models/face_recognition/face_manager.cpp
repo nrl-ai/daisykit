@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include "daisykit/models/face_recognition/face_manager.h"
+
 namespace daisykit {
 namespace models {
-FaceManager::FaceManager(std::string path_data, int max_size, int dim, int k,
-                         float threshold) {
+FaceManager::FaceManager(const std::string& path_data, int max_size, int dim,
+                         int k, float threshold) {
   path_data_ = path_data;
   max_size_ = max_size;
   dim_ = dim;
@@ -28,13 +29,13 @@ FaceManager::FaceManager(std::string path_data, int max_size, int dim, int k,
 
 FaceManager::~FaceManager() = default;
 
-bool CompareFaceinfor(daisykit::types::FaceInfor f1,
-                      daisykit::types::FaceInfor f2) {
+bool CompareFaceinfor(const daisykit::types::FaceInfor& f1,
+                      const daisykit::types::FaceInfor& f2) {
   return (f1.distance < f2.distance);
 }
 
 // Load and Save new data
-void FaceManager::SaveData(std::string path) {
+void FaceManager::SaveData(const std::string& path) {
   std::ofstream output_file(path, std::ios::binary);
   for (int i = 0; i < length_; ++i) {
     WriteFeatureSet(output_file, data_[i]);
@@ -42,7 +43,7 @@ void FaceManager::SaveData(std::string path) {
   output_file.close();
 }
 
-void FaceManager::LoadData(std::string path) {
+void FaceManager::LoadData(const std::string& path) {
   data_.clear();
   length_ = 0;
   std::ifstream input_file(path, std::ios::binary);
@@ -57,15 +58,15 @@ void FaceManager::LoadData(std::string path) {
   std::cout << "Load " << length_ << " face\n";
 }
 
-void FaceManager::InsertData(std::string path,
-                             const daisykit::types::FeatureSet newf) {
+void FaceManager::InsertData(const std::string& path,
+                             const daisykit::types::FeatureSet& newf) {
   std::ofstream output_file(path, std::ios::app | std::ios::binary);
   WriteFeatureSet(output_file, newf);
   output_file.close();
 }
 
-bool FaceManager::InsertFeature(const std::vector<float> feature,
-                                const std::string name, const int id) {
+bool FaceManager::InsertFeature(const std::vector<float>& feature,
+                                const std::string& name, const int id) {
   daisykit::types::FeatureSet newf;
   newf.feature = feature;
   newf.id = id;
@@ -86,7 +87,7 @@ void FaceManager::ReLoadHNSW() {
   }
 }
 
-void FaceManager::DeleteName(std::string name) {
+void FaceManager::DeleteName(const std::string& name) {
   for (int i = data_.size() - 1; i > 0; i--) {
     if (data_[i].name == name) {
       data_.erase(data_.begin() + i, data_.begin() + i + 1);
@@ -98,7 +99,7 @@ void FaceManager::DeleteName(std::string name) {
 }
 
 bool FaceManager::Search(std::vector<daisykit::types::FaceInfor>& result,
-                         std::vector<float> feature) {
+                         const std::vector<float>& feature) {
   int index;
   result.clear();
   if (length_ == 0)

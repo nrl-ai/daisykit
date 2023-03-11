@@ -1,4 +1,5 @@
 #include "daisykit/models/face_recognition/anchor_generator.h"
+
 namespace daisykit {
 namespace models {
 AnchorGenerator::AnchorGenerator() {}
@@ -138,7 +139,7 @@ void AnchorGenerator::BboxPred(const CRect2f& anchor, const CRect2f& delta,
       pred_ctr_x + 0.5 * (pred_w - 1.0), pred_ctr_y + 0.5 * (pred_h - 1.0));
 }
 
-void AnchorGenerator::LandmarkPred(const CRect2f anchor,
+void AnchorGenerator::LandmarkPred(const CRect2f& anchor,
                                    const std::vector<cv::Point2f>& delta,
                                    std::vector<cv::Point2f>& pts) {
   float w = anchor[2] - anchor[0] + 1;

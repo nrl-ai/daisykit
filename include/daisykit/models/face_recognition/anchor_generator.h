@@ -90,7 +90,8 @@ class AnchorGenerator {
   void BboxPred(const CRect2f& anchor, const CRect2f& delta,
                 cv::Rect_<float>& box);
 
-  void LandmarkPred(const CRect2f anchor, const std::vector<cv::Point2f>& delta,
+  void LandmarkPred(const CRect2f& anchor,
+                    const std::vector<cv::Point2f>& delta,
                     std::vector<cv::Point2f>& pts);
 
   std::vector<std::vector<Anchor>> anchor_planes_;  // corrspont to channels

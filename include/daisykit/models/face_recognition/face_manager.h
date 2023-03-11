@@ -24,24 +24,27 @@ namespace daisykit {
 namespace models {
 class FaceManager {
  public:
-  FaceManager(std::string path_data, int max_size, int dim, int k,
+  FaceManager(const std::string& path_data, int max_size, int dim, int k,
               float threshold);
   ~FaceManager();
-  bool InsertFeature(const std::vector<float> feature, const std::string name,
+  bool InsertFeature(const std::vector<float>& feature, const std::string& name,
                      const int id);
-  void DeleteName(std::string name);
+  void DeleteName(const std::string& name);
   bool Search(std::vector<daisykit::types::FaceInfor>& result,
-              std::vector<float> feature);
+              const std::vector<float>& feature);
 
  private:
   void LoadLabel(std::vector<std::string>& labels, int& length,
-                 std::string path);
-  void SaveLabel(std::vector<std::string>& labels, std::string path);
-  void InsertLabel(const std::string name, std::string path);
-  void SaveData(std::string path);
-  void LoadData(std::string path);
-  void InsertData(std::string path, const daisykit::types::FeatureSet newf);
-  int GetIndexName(std::string name, std::vector<std::string> labels);
+                 const std::string& path);
+  void SaveLabel(const std::vector<std::string>& labels,
+                 const std::string& path);
+  void InsertLabel(const std::string& name, const std::string& path);
+  void SaveData(const std::string& path);
+  void LoadData(const std::string& path);
+  void InsertData(const std::string& path,
+                  const daisykit::types::FeatureSet& newf);
+  int GetIndexName(const std::string& name,
+                   const std::vector<std::string>& labels);
   void ReLoadHNSW();
   void WriteFeatureSet(std::ofstream& stream,
                        const daisykit::types::FeatureSet& feature_set);

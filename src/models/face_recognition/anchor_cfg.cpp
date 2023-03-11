@@ -17,7 +17,7 @@
 namespace daisykit {
 namespace models {
 AnchorCfg ::AnchorCfg() {}
-AnchorCfg::AnchorCfg(const std::vector<float> s, const std::vector<float> r,
+AnchorCfg::AnchorCfg(const std::vector<float>& s, const std::vector<float>& r,
                      int size) {
   scales_ = s;
   ratios_ = r;

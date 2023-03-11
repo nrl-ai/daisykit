@@ -251,7 +251,7 @@ std::vector<daisykit::types::FaceDet> FaceDetectorSCRFD::Predict(cv::Mat& img) {
   Preprocess(img, in);
   int res = Infer(in, out, input_name_, output_names_);
   if (res != 0) {
-    std::cout << "Inference failed" << std::endl;
+    std::cerr << "Inference failed" << std::endl;
     return faceobjects;
   }
 

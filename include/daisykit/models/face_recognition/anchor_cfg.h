@@ -28,7 +28,7 @@ class AnchorCfg {
   int base_size_;
 
   AnchorCfg();
-  AnchorCfg(const std::vector<float> s, const std::vector<float> r, int size);
+  AnchorCfg(const std::vector<float>& s, const std::vector<float>& r, int size);
 };
 extern std::vector<int> feat_stride_fpn_;
 extern std::map<int, AnchorCfg> anchor_cfg_;

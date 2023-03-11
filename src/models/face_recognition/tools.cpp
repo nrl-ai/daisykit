@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "daisykit/models/face_recognition/tools.h"
+
 namespace daisykit {
 namespace models {
 
