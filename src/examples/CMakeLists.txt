@@ -32,10 +32,10 @@ target_link_libraries(demo_hand_pose_detector ${OpenCV_LIBS} daisykitsdk)
 
 add_executable(demo_object_detector demo_object_detector_yolox.cpp)
 target_link_libraries(demo_object_detector ${OpenCV_LIBS} daisykitsdk)
-add_executable(demo_face_detector_retina demo_face_detector_retina.cpp)
-target_link_libraries(demo_face_detector_retina ${OpenCV_LIBS} daisykitsdk)
+
 add_executable(demo_face_detector_scrfd demo_face_detector_scrfd.cpp)
 target_link_libraries(demo_face_detector_scrfd ${OpenCV_LIBS} daisykitsdk)
+
 add_executable(demo_face_sequential demo_face_sequential.cpp)
 target_link_libraries(demo_face_sequential ${OpenCV_LIBS} daisykitsdk)
 

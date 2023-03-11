@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "daisykit/common/types.h"
+#include "daisykit/common/visualizers/face_visualizer.h"
 #include "daisykit/models/face_recognition/face_detector_scrfd.h"
 #include "third_party/json.hpp"
 
@@ -28,19 +29,22 @@ using namespace std;
 using json = nlohmann::json;
 using namespace daisykit;
 using namespace daisykit::models;
-FaceDetectorSCRFD* face_detector = new FaceDetectorSCRFD(
-    "models/face_detection_scrfd/scrfd_2.5g_1.param",
-    "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
+
+FaceDetectorSCRFD<types::Face>* face_detector =
+    new FaceDetectorSCRFD<types::Face>(
+        "models/face_detection_scrfd/scrfd_2.5g_1.param",
+        "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
 
 int main(int, char**) {
   Mat frame;
   VideoCapture cap(0);
 
+  std::vector<types::Face> faces;
   while (1) {
     cap >> frame;
-    std::vector<types::FaceDet> faces = face_detector->Predict(frame);
+    face_detector->Predict(frame, faces);
     cv::Mat draw = frame.clone();
-    face_detector->DrawFaceDets(draw, faces);
+    visualizers::FaceVisualizer<types::Face>::DrawFace(draw, faces, true);
     imshow("Image", draw);
     waitKey(1);
   }

@@ -36,7 +36,7 @@ class FaceExtractor : public NCNNModel, public ImageModel {
                 bool use_gpu = false);
 #endif
 
-  void Predict(std::vector<daisykit::types::FaceDet>& faces);
+  void Predict(std::vector<daisykit::types::FaceExtended>& faces);
 
  private:
   void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;

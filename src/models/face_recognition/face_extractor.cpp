@@ -66,7 +66,7 @@ void FaceExtractor::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   net_input.substract_mean_normalize(mean_vals, norm_vals);
 }
 
-void FaceExtractor::Predict(std::vector<daisykit::types::FaceDet>& faces) {
+void FaceExtractor::Predict(std::vector<daisykit::types::FaceExtended>& faces) {
   for (auto& face : faces) {
     std::vector<float> feature;
     feature.resize(512);

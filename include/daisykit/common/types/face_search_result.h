@@ -12,17 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_FEATURESET_H_
-#define DAISYKIT_COMMON_TYPES_FEATURESET_H_
+#ifndef DAISYKIT_COMMON_TYPES_FACE_SEARCH_RESULT_H_
+#define DAISYKIT_COMMON_TYPES_FACE_SEARCH_RESULT_H_
+
 #include <string>
 #include <vector>
+
 namespace daisykit {
 namespace types {
 
-struct FeatureSet {
-  std::string name;
-  int id;
-  std::vector<float> feature;
+/// Face comparison result struct
+/// Contains the ID of the face and the min distance of the face to all faces in
+/// the database
+class FaceSearchResult {
+ public:
+  int id;              /// ID of the face
+  std::string name;    /// Name of the face
+  float min_distance;  /// Min distance of the face to all faces in the database
 };
 
 }  // namespace types

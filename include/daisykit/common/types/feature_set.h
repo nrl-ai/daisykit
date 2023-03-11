@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_LANDMARK_H_
-#define DAISYKIT_COMMON_TYPES_LANDMARK_H_
-
+#ifndef DAISYKIT_COMMON_TYPES_FEATURE_SET_H_
+#define DAISYKIT_COMMON_TYPES_FEATURE_SET_H_
+#include <string>
 #include <vector>
-
 namespace daisykit {
 namespace types {
 
-/// Human face data type.
-/// Also includes other information such as wearing mask or not, facial landmark
-struct Landmark {
-  float x[5];
-  float y[5];
+/// FeatureSet is a struct that contains a feature vector and its id and name
+/// Used in face recognition
+struct FeatureSet {
+  int id;                      /// ID of the feature
+  std::string name;            /// Name of the feature
+  std::vector<float> feature;  /// Feature vector
 };
 
 }  // namespace types

@@ -20,12 +20,12 @@ FaceAligner::FaceAligner(){};
 FaceAligner::~FaceAligner(){};
 
 void FaceAligner::AlignFace(const cv::Mat& img,
-                            daisykit::types::FaceDet& face) {
-  float points_src[5][2] = {face.landmark.x[0], face.landmark.y[0],
-                            face.landmark.x[1], face.landmark.y[1],
-                            face.landmark.x[2], face.landmark.y[2],
-                            face.landmark.x[3], face.landmark.y[3],
-                            face.landmark.x[4], face.landmark.y[4]};
+                            daisykit::types::FaceExtended& face) {
+  float points_src[5][2] = {face.landmark[0].x, face.landmark[0].y,
+                            face.landmark[1].x, face.landmark[1].y,
+                            face.landmark[2].x, face.landmark[2].y,
+                            face.landmark[3].x, face.landmark[3].y,
+                            face.landmark[4].x, face.landmark[4].y};
   cv::Mat src_mat(5, 2, CV_32FC1, points_src);
   float points_dst[5][2] = {{30.2946f + 8.0f, 51.6963f},
                             {65.5318f + 8.0f, 51.5014f},
@@ -41,7 +41,7 @@ void FaceAligner::AlignFace(const cv::Mat& img,
                  cv::Size(112, 112), 1, 0, 0);
 }
 void FaceAligner::AlignMutipleFaces(
-    const cv::Mat& img, std::vector<daisykit::types::FaceDet>& faces) {
+    const cv::Mat& img, std::vector<daisykit::types::FaceExtended>& faces) {
   if (faces.size() == 0) return;
   for (int i = 0; i < faces.size(); i++) {
     AlignFace(img, faces[i]);

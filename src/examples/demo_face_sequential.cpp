@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "daisykit/common/types.h"
+#include "daisykit/common/visualizers/face_visualizer.h"
 #include "daisykit/models/face_recognition/face_alignment.h"
 #include "daisykit/models/face_recognition/face_detector_scrfd.h"
 #include "daisykit/models/face_recognition/face_extractor.h"
@@ -32,14 +33,15 @@ using json = nlohmann::json;
 using namespace daisykit;
 using namespace daisykit::models;
 
-FaceDetectorSCRFD* face_detector = new FaceDetectorSCRFD(
-    "models/face_detection_scrfd/scrfd_2.5g_1.param",
-    "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, false);
+FaceDetectorSCRFD<types::FaceExtended>* face_detector =
+    new FaceDetectorSCRFD<types::FaceExtended>(
+        "models/face_detection_scrfd/scrfd_2.5g_1.param",
+        "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
 FaceAligner* face_aligner = new FaceAligner();
 
 FaceExtractor* face_extractor =
     new FaceExtractor("models/face_extraction/iresnet18_1.param",
-                      "models/face_extraction/iresnet18_1.bin", 112, false);
+                      "models/face_extraction/iresnet18_1.bin", 112, true);
 
 FaceManager* face_manager = new FaceManager("./data", 1000, 512, 1, 1.01);
 
@@ -63,11 +65,11 @@ int main(int argc, char** argv) {
 
   // Predict and check faces
   // Currently only support one face per image
-  std::vector<types::FaceDet> faces;
-  std::vector<types::FaceInfor> result;
+  std::vector<types::FaceExtended> faces;
+  std::vector<types::FaceSearchResult> result;
   cv::Mat regis_img = cv::imread(person_image_path);
   faces.clear();
-  faces = face_detector->Predict(regis_img);
+  face_detector->Predict(regis_img, faces);
   if (faces.size() != 1) {
     std::cout << "Provide image with only one face to register";
     return 1;
@@ -83,24 +85,23 @@ int main(int argc, char** argv) {
   }
 
   Mat frame;
-  VideoCapture cap(0);
+  VideoCapture cap(1);
 
   while (1) {
     cap >> frame;
-    faces = face_detector->Predict(frame);
+    face_detector->Predict(frame, faces);
     face_aligner->AlignMutipleFaces(frame, faces);
     face_extractor->Predict(faces);
     cv::Mat draw = frame.clone();
-    face_detector->DrawFaceDets(draw, faces);
+    visualizers::FaceVisualizer<types::FaceExtended>::DrawFace(draw, faces,
+                                                               true);
     for (auto face : faces) {
       if (face_manager->Search(result, face.feature))
-        for (types::FaceInfor& faceif : result) {
-          std::cout << faceif.name << " " << faceif.distance << "\n";
-
+        for (types::FaceSearchResult& faceif : result) {
           cv::putText(draw,
-                      faceif.name + " : " + std::to_string(faceif.distance),
-                      cv::Point(face.boxes.tl().x, face.boxes.tl().y - 10),
-                      cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 2);
+                      faceif.name + " : " + std::to_string(faceif.min_distance),
+                      cv::Point(face.x, face.y - 10), cv::FONT_HERSHEY_SIMPLEX,
+                      0.5, cv::Scalar(0, 0, 255), 2);
         }
     }
     imshow("Image", draw);

@@ -17,10 +17,12 @@
 namespace daisykit {
 namespace models {
 
-FaceDetectorSCRFD::FaceDetectorSCRFD(const char* param_buffer,
-                                     const unsigned char* weight_buffer,
-                                     int input_size, float score_threshold,
-                                     float iou_threshold, bool use_gpu)
+template <class FaceT>
+FaceDetectorSCRFD<FaceT>::FaceDetectorSCRFD(const char* param_buffer,
+                                            const unsigned char* weight_buffer,
+                                            int input_size,
+                                            float score_threshold,
+                                            float iou_threshold, bool use_gpu)
     : NCNNModel(param_buffer, weight_buffer, use_gpu),
       ImageModel(input_size, input_size) {
   score_threshold_ = score_threshold;
@@ -28,10 +30,12 @@ FaceDetectorSCRFD::FaceDetectorSCRFD(const char* param_buffer,
   input_size_ = input_size;
 }
 
-FaceDetectorSCRFD::FaceDetectorSCRFD(const std::string& param_file,
-                                     const std::string& weight_file,
-                                     int input_size, float score_threshold,
-                                     float iou_threshold, bool use_gpu)
+template <class FaceT>
+FaceDetectorSCRFD<FaceT>::FaceDetectorSCRFD(const std::string& param_file,
+                                            const std::string& weight_file,
+                                            int input_size,
+                                            float score_threshold,
+                                            float iou_threshold, bool use_gpu)
     : NCNNModel(param_file, weight_file, use_gpu),
       ImageModel(input_size, input_size) {
   score_threshold_ = score_threshold;
@@ -40,11 +44,13 @@ FaceDetectorSCRFD::FaceDetectorSCRFD(const std::string& param_file,
 }
 
 #if __ANDROID__
-FaceDetectorSCRFD::FaceDetectorSCRFD(AAssetManager* mgr,
-                                     const std::string& param_file,
-                                     const std::string& weight_file,
-                                     int input_size, float score_threshold,
-                                     float iou_threshold, bool use_gpu)
+template <class FaceT>
+FaceDetectorSCRFD<FaceT>::FaceDetectorSCRFD(AAssetManager* mgr,
+                                            const std::string& param_file,
+                                            const std::string& weight_file,
+                                            int input_size,
+                                            float score_threshold,
+                                            float iou_threshold, bool use_gpu)
     : NCNNModel(param_file, weight_file, use_gpu),
       ImageModel(input_width, input_height) {
   score_threshold_ = score_threshold;
@@ -53,57 +59,59 @@ FaceDetectorSCRFD::FaceDetectorSCRFD(AAssetManager* mgr,
 }
 
 #endif
-
-float FaceDetectorSCRFD::IntersectionArea(const daisykit::types::FaceDet& a,
-                                          const daisykit::types::FaceDet& b) {
-  float xx1 = std::max(a.boxes.tl().x, b.boxes.tl().x);
-  float yy1 = std::max(a.boxes.tl().y, b.boxes.tl().y);
-  float xx2 = std::min(a.boxes.br().x, b.boxes.br().x);
-  float yy2 = std::min(a.boxes.br().y, b.boxes.br().y);
+template <class FaceT>
+float FaceDetectorSCRFD<FaceT>::IntersectionArea(const FaceT& a,
+                                                 const FaceT& b) {
+  float xx1 = std::max(a.x, b.x);
+  float yy1 = std::max(a.y, b.y);
+  float xx2 = std::min(a.x + a.w, b.x + b.w);
+  float yy2 = std::min(a.y + a.h, b.y + b.h);
   float w = std::max(float(0), xx2 - xx1 + 1);
   float h = std::max(float(0), yy2 - yy1 + 1);
   return w * h;
 }
 
-void FaceDetectorSCRFD::QsortDescentInplace(
-    std::vector<daisykit::types::FaceDet>& faceobjects, int left, int right) {
+template <class FaceT>
+void FaceDetectorSCRFD<FaceT>::QsortDescentInplace(std::vector<FaceT>& faces,
+                                                   int left, int right) {
   int i = left;
   int j = right;
-  float p = faceobjects[(left + right) / 2].confidence;
+  float p = faces[(left + right) / 2].confidence;
   while (i <= j) {
-    while (faceobjects[i].confidence > p) i++;
-    while (faceobjects[j].confidence < p) j--;
+    while (faces[i].confidence > p) i++;
+    while (faces[j].confidence < p) j--;
 
     if (i <= j) {
-      std::swap(faceobjects[i], faceobjects[j]);
+      std::swap(faces[i], faces[j]);
       i++;
       j--;
     }
   }
-  if (left < j) QsortDescentInplace(faceobjects, left, j);
-  if (i < right) QsortDescentInplace(faceobjects, i, right);
+  if (left < j) QsortDescentInplace(faces, left, j);
+  if (i < right) QsortDescentInplace(faces, i, right);
 }
 
-void FaceDetectorSCRFD::QsortDescentInplace(
-    std::vector<daisykit::types::FaceDet>& faceobjects) {
-  if (faceobjects.empty()) return;
-  QsortDescentInplace(faceobjects, 0, faceobjects.size() - 1);
+template <class FaceT>
+void FaceDetectorSCRFD<FaceT>::QsortDescentInplace(std::vector<FaceT>& faces) {
+  if (faces.empty()) return;
+  QsortDescentInplace(faces, 0, faces.size() - 1);
 }
 
-void FaceDetectorSCRFD::NmsSortedBboxes(
-    std::vector<daisykit::types::FaceDet>& faceobjects,
-    std::vector<int>& picked, float nms_threshold) {
+template <class FaceT>
+void FaceDetectorSCRFD<FaceT>::NmsSortedBboxes(std::vector<FaceT>& faces,
+                                               std::vector<int>& picked,
+                                               float nms_threshold) {
   picked.clear();
-  const int n = faceobjects.size();
+  const int n = faces.size();
   std::vector<float> areas(n);
   for (int i = 0; i < n; i++) {
-    areas[i] = faceobjects[i].Area();
+    areas[i] = faces[i].Area();
   }
   for (int i = 0; i < n; i++) {
-    const daisykit::types::FaceDet& a = faceobjects[i];
+    const FaceT& a = faces[i];
     int keep = 1;
     for (int j = 0; j < (int)picked.size(); j++) {
-      const daisykit::types::FaceDet& b = faceobjects[picked[j]];
+      const FaceT& b = faces[picked[j]];
       float inter_area = IntersectionArea(a, b);
       float union_area = areas[i] + areas[picked[j]] - inter_area;
       if (inter_area / union_area > nms_threshold) keep = 0;
@@ -112,9 +120,10 @@ void FaceDetectorSCRFD::NmsSortedBboxes(
   }
 }
 
-ncnn::Mat FaceDetectorSCRFD::GenerateAnchors(int base_size,
-                                             const ncnn::Mat& ratios,
-                                             const ncnn::Mat& scales) {
+template <class FaceT>
+ncnn::Mat FaceDetectorSCRFD<FaceT>::GenerateAnchors(int base_size,
+                                                    const ncnn::Mat& ratios,
+                                                    const ncnn::Mat& scales) {
   int num_ratio = ratios.w;
   int num_scale = scales.w;
 
@@ -147,10 +156,11 @@ ncnn::Mat FaceDetectorSCRFD::GenerateAnchors(int base_size,
   return anchors;
 }
 
-void FaceDetectorSCRFD::GenerateProposals(
+template <class FaceT>
+void FaceDetectorSCRFD<FaceT>::GenerateProposals(
     const ncnn::Mat& anchors, int feat_stride, const ncnn::Mat& score_blob,
     const ncnn::Mat& bbox_blob, const ncnn::Mat& kps_blob, float prob_threshold,
-    std::vector<daisykit::types::FaceDet>& faceobjects) {
+    std::vector<FaceT>& faces) {
   int w = score_blob.w;
   int h = score_blob.h;
 
@@ -183,26 +193,34 @@ void FaceDetectorSCRFD::GenerateProposals(
           float x1 = cx + dw;
           float y1 = cy + dh;
 
-          daisykit::types::FaceDet obj;
-          obj.boxes = cv::Rect(int(x0), int(y0), int(x1 - x0), int(y1 - y0));
-
+          FaceT obj;
+          obj.x = int(x0);
+          obj.y = int(y0);
+          obj.w = int(x1 - x0);
+          obj.h = int(y1 - y0);
           obj.confidence = prob;
 
           if (!kps_blob.empty()) {
+            obj.landmark.resize(5);
             const ncnn::Mat kps = kps_blob.channel_range(q * 10, 10);
-            obj.landmark.x[0] = cx + kps.channel(0)[index] * feat_stride;
-            obj.landmark.y[0] = cy + kps.channel(1)[index] * feat_stride;
-            obj.landmark.x[1] = cx + kps.channel(2)[index] * feat_stride;
-            obj.landmark.y[1] = cy + kps.channel(3)[index] * feat_stride;
-            obj.landmark.x[2] = cx + kps.channel(4)[index] * feat_stride;
-            obj.landmark.y[2] = cy + kps.channel(5)[index] * feat_stride;
-            obj.landmark.x[3] = cx + kps.channel(6)[index] * feat_stride;
-            obj.landmark.y[3] = cy + kps.channel(7)[index] * feat_stride;
-            obj.landmark.x[4] = cx + kps.channel(8)[index] * feat_stride;
-            obj.landmark.y[4] = cy + kps.channel(9)[index] * feat_stride;
+            obj.landmark[0].x = cx + kps.channel(0)[index] * feat_stride;
+            obj.landmark[0].y = cy + kps.channel(1)[index] * feat_stride;
+            obj.landmark[1].x = cx + kps.channel(2)[index] * feat_stride;
+            obj.landmark[1].y = cy + kps.channel(3)[index] * feat_stride;
+            obj.landmark[2].x = cx + kps.channel(4)[index] * feat_stride;
+            obj.landmark[2].y = cy + kps.channel(5)[index] * feat_stride;
+            obj.landmark[3].x = cx + kps.channel(6)[index] * feat_stride;
+            obj.landmark[3].y = cy + kps.channel(7)[index] * feat_stride;
+            obj.landmark[4].x = cx + kps.channel(8)[index] * feat_stride;
+            obj.landmark[4].y = cy + kps.channel(9)[index] * feat_stride;
+            obj.landmark[0].confidence = 1.0;
+            obj.landmark[1].confidence = 1.0;
+            obj.landmark[2].confidence = 1.0;
+            obj.landmark[3].confidence = 1.0;
+            obj.landmark[4].confidence = 1.0;
           }
 
-          faceobjects.push_back(obj);
+          faces.push_back(obj);
         }
         anchor_x += feat_stride;
       }
@@ -211,7 +229,9 @@ void FaceDetectorSCRFD::GenerateProposals(
   }
 }
 
-void FaceDetectorSCRFD::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
+template <class FaceT>
+void FaceDetectorSCRFD<FaceT>::Preprocess(const cv::Mat& image,
+                                          ncnn::Mat& net_input) {
   cv::Mat rgb;
   cv::cvtColor(image, rgb, cv::COLOR_BGR2RGB);
   int width = rgb.cols;
@@ -240,19 +260,20 @@ void FaceDetectorSCRFD::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   net_input.substract_mean_normalize(mean_vals, norm_vals);
 }
 
-std::vector<daisykit::types::FaceDet> FaceDetectorSCRFD::Predict(cv::Mat& img) {
-  std::vector<daisykit::types::FaceDet> faceobjects;
-  std::vector<daisykit::types::FaceDet> faceproposals;
+template <class FaceT>
+int FaceDetectorSCRFD<FaceT>::Predict(const cv::Mat& image,
+                                      std::vector<FaceT>& faces) {
+  std::vector<FaceT> proposals;
   ncnn::Mat in;
   std::map<std::string, ncnn::Mat> out;
-  int width = img.cols;
-  int height = img.rows;
+  int width = image.cols;
+  int height = image.rows;
 
-  Preprocess(img, in);
+  Preprocess(image, in);
   int res = Infer(in, out, input_name_, output_names_);
   if (res != 0) {
     std::cerr << "Inference failed" << std::endl;
-    return faceobjects;
+    return -1;
   }
 
   for (int i = 0; i < 3; i++) {
@@ -269,78 +290,64 @@ std::vector<daisykit::types::FaceDet> FaceDetectorSCRFD::Predict(cv::Mat& img) {
     scales[0] = 1.f;
     scales[1] = 2.f;
     ncnn::Mat anchors = GenerateAnchors(base_size, ratios, scales);
-    std::vector<daisykit::types::FaceDet> objects;
+    std::vector<FaceT> objects;
     GenerateProposals(anchors, feat_stride, score_blob, bbox_blob, kps_blob,
                       score_threshold_, objects);
-    faceproposals.insert(faceproposals.end(), objects.begin(), objects.end());
+    proposals.insert(proposals.end(), objects.begin(), objects.end());
   }
 
-  QsortDescentInplace(faceproposals);
+  QsortDescentInplace(proposals);
   std::vector<int> picked;
-  NmsSortedBboxes(faceproposals, picked, iou_threshold_);
+  NmsSortedBboxes(proposals, picked, iou_threshold_);
   int face_count = picked.size();
-  faceobjects.resize(face_count);
+  faces.resize(face_count);
   for (int i = 0; i < face_count; i++) {
-    faceobjects[i] = faceproposals[picked[i]];
-    float x0 = (faceobjects[i].boxes.tl().x - (wpad_ / 2)) / scale_;
-    float y0 = (faceobjects[i].boxes.tl().y - (hpad_ / 2)) / scale_;
-    float x1 = (faceobjects[i].boxes.br().x - (wpad_ / 2)) / scale_;
-    float y1 = (faceobjects[i].boxes.br().y - (hpad_ / 2)) / scale_;
+    faces[i] = proposals[picked[i]];
+    float x0 = (faces[i].x - (wpad_ / 2)) / scale_;
+    float y0 = (faces[i].y - (hpad_ / 2)) / scale_;
+    float x1 = (faces[i].x + faces[i].w - (wpad_ / 2)) / scale_;
+    float y1 = (faces[i].y + faces[i].h - (hpad_ / 2)) / scale_;
 
     x0 = std::max(std::min(x0, (float)width - 1), 0.f);
     y0 = std::max(std::min(y0, (float)height - 1), 0.f);
     x1 = std::max(std::min(x1, (float)width - 1), 0.f);
     y1 = std::max(std::min(y1, (float)height - 1), 0.f);
 
-    faceobjects[i].boxes =
-        cv::Rect(int(x0), int(y0), int(x1 - x0), int(y1 - y0));
+    faces[i].x = int(x0);
+    faces[i].y = int(y0);
+    faces[i].w = int(x1 - x0);
+    faces[i].h = int(y1 - y0);
 
     if (is_landmark_) {
-      float x0 = (faceobjects[i].landmark.x[0] - (wpad_ / 2)) / scale_;
-      float y0 = (faceobjects[i].landmark.y[0] - (hpad_ / 2)) / scale_;
-      float x1 = (faceobjects[i].landmark.x[1] - (wpad_ / 2)) / scale_;
-      float y1 = (faceobjects[i].landmark.y[1] - (hpad_ / 2)) / scale_;
-      float x2 = (faceobjects[i].landmark.x[2] - (wpad_ / 2)) / scale_;
-      float y2 = (faceobjects[i].landmark.y[2] - (hpad_ / 2)) / scale_;
-      float x3 = (faceobjects[i].landmark.x[3] - (wpad_ / 2)) / scale_;
-      float y3 = (faceobjects[i].landmark.y[3] - (hpad_ / 2)) / scale_;
-      float x4 = (faceobjects[i].landmark.x[4] - (wpad_ / 2)) / scale_;
-      float y4 = (faceobjects[i].landmark.y[4] - (hpad_ / 2)) / scale_;
+      float x0 = (faces[i].landmark[0].x - (wpad_ / 2)) / scale_;
+      float y0 = (faces[i].landmark[0].y - (hpad_ / 2)) / scale_;
+      float x1 = (faces[i].landmark[1].x - (wpad_ / 2)) / scale_;
+      float y1 = (faces[i].landmark[1].y - (hpad_ / 2)) / scale_;
+      float x2 = (faces[i].landmark[2].x - (wpad_ / 2)) / scale_;
+      float y2 = (faces[i].landmark[2].y - (hpad_ / 2)) / scale_;
+      float x3 = (faces[i].landmark[3].x - (wpad_ / 2)) / scale_;
+      float y3 = (faces[i].landmark[3].y - (hpad_ / 2)) / scale_;
+      float x4 = (faces[i].landmark[4].x - (wpad_ / 2)) / scale_;
+      float y4 = (faces[i].landmark[4].y - (hpad_ / 2)) / scale_;
 
-      faceobjects[i].landmark.x[0] =
-          std::max(std::min(x0, (float)width - 1), 0.f);
-      faceobjects[i].landmark.y[0] =
-          std::max(std::min(y0, (float)height - 1), 0.f);
-      faceobjects[i].landmark.x[1] =
-          std::max(std::min(x1, (float)width - 1), 0.f);
-      faceobjects[i].landmark.y[1] =
-          std::max(std::min(y1, (float)height - 1), 0.f);
-      faceobjects[i].landmark.x[2] =
-          std::max(std::min(x2, (float)width - 1), 0.f);
-      faceobjects[i].landmark.y[2] =
-          std::max(std::min(y2, (float)height - 1), 0.f);
-      faceobjects[i].landmark.x[3] =
-          std::max(std::min(x3, (float)width - 1), 0.f);
-      faceobjects[i].landmark.y[3] =
-          std::max(std::min(y3, (float)height - 1), 0.f);
-      faceobjects[i].landmark.x[4] =
-          std::max(std::min(x4, (float)width - 1), 0.f);
-      faceobjects[i].landmark.y[4] =
-          std::max(std::min(y4, (float)height - 1), 0.f);
+      faces[i].landmark[0].x = std::max(std::min(x0, (float)width - 1), 0.f);
+      faces[i].landmark[0].y = std::max(std::min(y0, (float)height - 1), 0.f);
+      faces[i].landmark[1].x = std::max(std::min(x1, (float)width - 1), 0.f);
+      faces[i].landmark[1].y = std::max(std::min(y1, (float)height - 1), 0.f);
+      faces[i].landmark[2].x = std::max(std::min(x2, (float)width - 1), 0.f);
+      faces[i].landmark[2].y = std::max(std::min(y2, (float)height - 1), 0.f);
+      faces[i].landmark[3].x = std::max(std::min(x3, (float)width - 1), 0.f);
+      faces[i].landmark[3].y = std::max(std::min(y3, (float)height - 1), 0.f);
+      faces[i].landmark[4].x = std::max(std::min(x4, (float)width - 1), 0.f);
+      faces[i].landmark[4].y = std::max(std::min(y4, (float)height - 1), 0.f);
     }
   }
 
-  return faceobjects;
+  return 0;
 }
-void FaceDetectorSCRFD::DrawFaceDets(
-    cv::Mat& img, std::vector<daisykit::types::FaceDet>& dets) {
-  for (int i = 0; i < dets.size(); i++) {
-    cv::rectangle(img, dets[i].boxes, cv::Scalar(0, 255, 0), 2);
-    for (int j = 0; j < 5; j++) {
-      cv::circle(img, cv::Point(dets[i].landmark.x[j], dets[i].landmark.y[j]),
-                 2, cv::Scalar(0, 0, 255), 2);
-    }
-  }
-}
+
+template class FaceDetectorSCRFD<types::Face>;
+template class FaceDetectorSCRFD<types::FaceExtended>;
+
 }  // namespace models
 }  // namespace daisykit

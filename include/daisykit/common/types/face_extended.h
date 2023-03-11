@@ -12,17 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_FACEINFOR_H_
-#define DAISYKIT_COMMON_TYPES_FACEINFOR_H_
+#ifndef DAISYKIT_COMMON_TYPES_FACE_EXTENDED_H_
+#define DAISYKIT_COMMON_TYPES_FACE_EXTENDED_H_
+#include "daisykit/common/types/face.h"
+
+#include <opencv2/opencv.hpp>
 
 #include <vector>
+
 namespace daisykit {
 namespace types {
 
-struct FaceInfor {
-  std::string name;
-  int id;
-  float distance;
+/// Extended face object with aligned face and feature vector.
+/// This is used for face recognition.
+class FaceExtended : public Face {
+ public:
+  cv::Mat aligned_face;  /// Aligned face. For increasing recognition accuracy,
+                         /// the face should be aligned before recognition.
+  std::vector<float> feature;  /// Feature vector for face recognition
 };
 
 }  // namespace types

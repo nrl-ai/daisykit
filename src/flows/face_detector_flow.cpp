@@ -94,7 +94,7 @@ std::vector<types::Face> FaceDetectorFlow::Process(const cv::Mat& rgb) {
 void FaceDetectorFlow::DrawResult(cv::Mat& rgb,
                                   std::vector<types::Face>& faces) {
   // Draw face bounding boxes and keypoints
-  visualizers::FaceVisualizer::DrawFace(rgb, faces, true);
+  visualizers::FaceVisualizer<types::Face>::DrawFace(rgb, faces, true);
   if (show_fps_)
     visualizers::BaseVisualizer::PutText(
         rgb, std::string("FPS: ") + std::to_string(profiler.CurrentFPS()),

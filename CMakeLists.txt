@@ -124,6 +124,9 @@ endif()
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 find_package(OpenCV REQUIRED PATHS ${OpenCV_DIR})
+message(STATUS "OpenCV version: ${OpenCV_VERSION}")
+message(STATUS "OpenCV libraries: ${OpenCV_LIBS}")
+message(STATUS "OpenCV include path: ${OpenCV_INCLUDE_DIRS}")
 
 include_directories(third_party/hnswlib)
 
@@ -144,7 +147,6 @@ set(sources
     src/models/face_recognition/anchor_generator.cpp
     src/models/face_recognition/anchor_cfg.cpp
     src/models/face_recognition/face_alignment.cpp
-    src/models/face_recognition/face_detector_retina.cpp
     src/models/face_recognition/face_extractor.cpp
     src/models/face_recognition/tools.cpp
     src/models/face_recognition/face_detector_scrfd.cpp

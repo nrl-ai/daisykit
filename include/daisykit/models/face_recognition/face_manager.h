@@ -29,8 +29,8 @@ class FaceManager {
   ~FaceManager();
   bool InsertFeature(const std::vector<float>& feature, const std::string& name,
                      const int id);
-  void DeleteName(const std::string& name);
-  bool Search(std::vector<daisykit::types::FaceInfor>& result,
+  void DeleteByName(const std::string& name);
+  bool Search(std::vector<daisykit::types::FaceSearchResult>& result,
               const std::vector<float>& feature);
 
  private:
@@ -43,8 +43,8 @@ class FaceManager {
   void LoadData(const std::string& path);
   void InsertData(const std::string& path,
                   const daisykit::types::FeatureSet& newf);
-  int GetIndexName(const std::string& name,
-                   const std::vector<std::string>& labels);
+  int GetIndexByName(const std::string& name,
+                     const std::vector<std::string>& labels);
   void ReLoadHNSW();
   void WriteFeatureSet(std::ofstream& stream,
                        const daisykit::types::FeatureSet& feature_set);

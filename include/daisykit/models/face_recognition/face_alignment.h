@@ -24,9 +24,9 @@ class FaceAligner {
  public:
   FaceAligner();
   ~FaceAligner();
-  void AlignFace(const cv::Mat& img, daisykit::types::FaceDet& face);
+  void AlignFace(const cv::Mat& img, daisykit::types::FaceExtended& face);
   void AlignMutipleFaces(const cv::Mat& img,
-                         std::vector<daisykit::types::FaceDet>& faces);
+                         std::vector<daisykit::types::FaceExtended>& faces);
 
  private:
   cv::Mat MeanAxis0(const cv::Mat& src);

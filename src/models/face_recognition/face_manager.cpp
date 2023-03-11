@@ -29,9 +29,9 @@ FaceManager::FaceManager(const std::string& path_data, int max_size, int dim,
 
 FaceManager::~FaceManager() = default;
 
-bool CompareFaceinfor(const daisykit::types::FaceInfor& f1,
-                      const daisykit::types::FaceInfor& f2) {
-  return (f1.distance < f2.distance);
+bool CompareFaceinfor(const daisykit::types::FaceSearchResult& f1,
+                      const daisykit::types::FaceSearchResult& f2) {
+  return (f1.min_distance < f2.min_distance);
 }
 
 // Load and Save new data
@@ -87,7 +87,7 @@ void FaceManager::ReLoadHNSW() {
   }
 }
 
-void FaceManager::DeleteName(const std::string& name) {
+void FaceManager::DeleteByName(const std::string& name) {
   for (int i = data_.size() - 1; i > 0; i--) {
     if (data_[i].name == name) {
       data_.erase(data_.begin() + i, data_.begin() + i + 1);
@@ -98,7 +98,7 @@ void FaceManager::DeleteName(const std::string& name) {
   ReLoadHNSW();
 }
 
-bool FaceManager::Search(std::vector<daisykit::types::FaceInfor>& result,
+bool FaceManager::Search(std::vector<daisykit::types::FaceSearchResult>& result,
                          const std::vector<float>& feature) {
   int index;
   result.clear();
@@ -109,11 +109,11 @@ bool FaceManager::Search(std::vector<daisykit::types::FaceInfor>& result,
     auto gd = alg_hnsw_->searchKnn(p, k_);
     while (!gd.empty()) {
       if (gd.top().first <= threshold_) {
-        daisykit::types::FaceInfor faceif;
+        daisykit::types::FaceSearchResult faceif;
         index = gd.top().second;
-        faceif.distance = gd.top().first;
-        faceif.name = data_[index].name;
+        faceif.min_distance = gd.top().first;
         faceif.id = data_[index].id;
+        faceif.name = data_[index].name;
         result.emplace_back(faceif);
       }
       gd.pop();

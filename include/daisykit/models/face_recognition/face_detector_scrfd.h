@@ -23,6 +23,7 @@
 namespace daisykit {
 namespace models {
 
+template <typename FaceT>
 class FaceDetectorSCRFD : public NCNNModel, public ImageModel {
  public:
   FaceDetectorSCRFD(const std::string& param_file,
@@ -41,26 +42,24 @@ class FaceDetectorSCRFD : public NCNNModel, public ImageModel {
                     bool use_gpu = false);
 #endif
 
-  std::vector<daisykit::types::FaceDet> Predict(cv::Mat& img);
-
-  void DrawFaceDets(cv::Mat& img, std::vector<daisykit::types::FaceDet>& dets);
+  /// Detect faces in an image.
+  /// Return 0 on success, otherwise return error code.
+  int Predict(const cv::Mat& image, std::vector<FaceT>& faces);
 
  private:
   void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;
-  float IntersectionArea(const daisykit::types::FaceDet& a,
-                         const daisykit::types::FaceDet& b);
-  void QsortDescentInplace(std::vector<daisykit::types::FaceDet>& faceobjects,
-                           int left, int right);
-  void QsortDescentInplace(std::vector<daisykit::types::FaceDet>& faceobjects);
-  void NmsSortedBboxes(std::vector<daisykit::types::FaceDet>& faceobjects,
+  float IntersectionArea(const FaceT& a, const FaceT& b);
+  void QsortDescentInplace(std::vector<FaceT>& faceobjects, int left,
+                           int right);
+  void QsortDescentInplace(std::vector<FaceT>& faceobjects);
+  void NmsSortedBboxes(std::vector<FaceT>& faceobjects,
                        std::vector<int>& picked, float nms_threshold);
   ncnn::Mat GenerateAnchors(int base_size, const ncnn::Mat& ratios,
                             const ncnn::Mat& scales);
   void GenerateProposals(const ncnn::Mat& anchors, int feat_stride,
                          const ncnn::Mat& score_blob,
                          const ncnn::Mat& bbox_blob, const ncnn::Mat& kps_blob,
-                         float prob_threshold,
-                         std::vector<daisykit::types::FaceDet>& faceobjects);
+                         float prob_threshold, std::vector<FaceT>& faces);
 
  private:
   int input_size_;

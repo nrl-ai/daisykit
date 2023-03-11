@@ -25,10 +25,13 @@ namespace types {
 
 /// Human face data type.
 /// Also includes other information such as wearing mask or not, facial landmark
-struct Face : Box {
-  float confidence;                       /// Confidence of face
-  float wearing_mask_prob;                /// Probability of wearing a mask
+class Face : public Box {
+ public:
+  float confidence = 1.0;                 /// Confidence of face
+  float wearing_mask_prob = -1;           /// Probability of wearing a mask
   std::vector<types::Keypoint> landmark;  /// Keypoints
+
+  float Area() const { return w * h; }
 };
 
 }  // namespace types
