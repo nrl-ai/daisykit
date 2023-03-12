@@ -95,6 +95,12 @@ int NCNNModel::LoadModel(
     before_model_load_hook(model_);
   }
   model_.opt.use_vulkan_compute = use_gpu;
+
+  // Fix crashing when using CPU only
+  model_.opt.use_winograd_convolution = use_gpu;
+  model_.opt.use_fp16_packed = use_gpu;
+  model_.opt.use_fp16_storage = use_gpu;
+
   if (model_.load_param_mem(param_buffer) != 0) {
     std::cerr << "Failed to load model params from buffer." << std::endl;
     return -1;
@@ -114,6 +120,12 @@ int NCNNModel::LoadModel(
     before_model_load_hook(model_);
   }
   model_.opt.use_vulkan_compute = use_gpu;
+
+  // Fix crashing when using CPU only
+  model_.opt.use_winograd_convolution = use_gpu;
+  model_.opt.use_fp16_packed = use_gpu;
+  model_.opt.use_fp16_storage = use_gpu;
+
   if (model_.load_param(param_file.c_str()) != 0) {
     std::cerr << "Failed to load model params from buffer." << std::endl;
     return -1;
@@ -154,6 +166,12 @@ int NCNNModel::LoadModel(
     before_model_load_hook(model_);
   }
   model_.opt.use_vulkan_compute = use_gpu;
+
+  // Fix crashing when using CPU only
+  model_.opt.use_winograd_convolution = use_gpu;
+  model_.opt.use_fp16_packed = use_gpu;
+  model_.opt.use_fp16_storage = use_gpu;
+
   if (model_.load_param(mgr, param_file.c_str()) != 0) {
     std::cerr << "Failed to load model params from buffer." << std::endl;
     return -1;
