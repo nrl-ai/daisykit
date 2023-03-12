@@ -29,10 +29,6 @@ class FaceVisualizer {
   static void DrawFace(cv::Mat& img, const std::vector<FaceT>& faces,
                        bool with_landmark = false) {
     for (auto face : faces) {
-      cv::Scalar color(0, 255, 0);
-      if (face.wearing_mask_prob < 0.5 && face.wearing_mask_prob > 0.0) {
-        color = cv::Scalar(255, 0, 0);
-      }
       std::string mask;
       if (face.wearing_mask_prob >= 0.0) {
         if (face.wearing_mask_prob < 0.5) {
@@ -41,7 +37,7 @@ class FaceVisualizer {
           mask = "Mask";
         }
       }
-      BaseVisualizer::DrawBox(img, static_cast<types::Box>(face), mask, color);
+      BaseVisualizer::DrawRoundedBox(img, static_cast<types::Box>(face), mask);
       if (with_landmark) {
         DrawLandmark(img, face.landmark);
       }
@@ -55,8 +51,8 @@ class FaceVisualizer {
     for (size_t i = 0; i < keypoints.size(); i++) {
       const types::Keypoint& keypoint = keypoints[i];
       if (keypoint.confidence < threshold) continue;
-      cv::circle(img, cv::Point(keypoint.x, keypoint.y), 2,
-                 cv::Scalar(0, 255, 0), -1);
+      cv::circle(img, cv::Point(keypoint.x, keypoint.y), 4,
+                 cv::Scalar(0, 255, 255), -1);
     }
   }
 };
