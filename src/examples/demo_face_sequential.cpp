@@ -36,12 +36,12 @@ using namespace daisykit::models;
 FaceDetectorSCRFD<types::FaceExtended>* face_detector =
     new FaceDetectorSCRFD<types::FaceExtended>(
         "models/face_detection_scrfd/scrfd_2.5g_1.param",
-        "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
+        "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, false);
 FaceAligner* face_aligner = new FaceAligner();
 
 FaceExtractor* face_extractor =
     new FaceExtractor("models/face_extraction/iresnet18_1.param",
-                      "models/face_extraction/iresnet18_1.bin", 112, true);
+                      "models/face_extraction/iresnet18_1.bin", 112, false);
 
 FaceManager* face_manager = new FaceManager("./data", 1000, 512, 1, 1.01);
 
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
   }
 
   Mat frame;
-  VideoCapture cap(1);
+  VideoCapture cap(0);
   bool draw_landmarks = false;
 
   while (1) {
