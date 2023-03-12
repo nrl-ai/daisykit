@@ -55,7 +55,7 @@ void FaceManager::LoadData(const std::string& path) {
   for (size_t i = 0; i < length_; ++i) {
     alg_hnsw_->addPoint(data_[i].feature.data(), i);
   }
-  std::cout << "Load " << length_ << " face\n";
+  std::cout << "Loaded face database with " << length_ << " faces.\n";
 }
 
 void FaceManager::InsertData(const std::string& path,

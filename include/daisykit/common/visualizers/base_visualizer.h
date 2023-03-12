@@ -27,29 +27,46 @@ class BaseVisualizer {
  public:
   /// Draw text with background.
   static void PutText(
-      cv::Mat& img,                                       /// Image to draw on
-      const std::string label,                            /// Draw content
-      const cv::Point& origin,                            /// Position
-      int fontface = cv::FONT_HERSHEY_SIMPLEX,            /// Text font face
-      double scale = 0.8,                                 /// Text scale
-      int thickness = 1,                                  /// Text thickness
-      int baseline = 0,                                   /// Y axis shift
-      cv::Scalar text_color = cv::Scalar(255, 255, 255),  /// Text color
-      cv::Scalar bg_color = cv::Scalar(255, 0, 0)         /// Background color
+      cv::Mat& image,                           /// Image to draw on
+      const std::string label,                  /// Draw content
+      const cv::Point& origin,                  /// Position
+      int fontface = cv::FONT_HERSHEY_SIMPLEX,  /// Text font face
+      double scale = -1,                        /// Text scale
+      int thickness = 1,                        /// Text thickness
+      int baseline = 0,                         /// Y axis shift
+      const cv::Scalar text_color = cv::Scalar(20, 20, 20),  /// Text color
+      const cv::Scalar bg_color = cv::Scalar(0, 255, 0)  /// Background color
   );
 
   /// Draw a box with label.
   static void DrawBox(
-      cv::Mat& img,                                  /// Image to draw on
-      const types::Box box,                          /// Box to draw
-      const std::string& text = "",                  /// Label text of the box
-      cv::Scalar box_color = cv::Scalar(255, 0, 0),  /// Background color
-      cv::Scalar text_color = cv::Scalar(255, 255, 255),  /// Text color
-      int box_line_width = 2,                             /// Box line width
-      int text_fontface = cv::FONT_HERSHEY_SIMPLEX,       /// Text font face
-      double text_scale = 0.8,                            /// Text scale
-      int text_thickness = 2,                             /// Text thickness
-      int text_baseline = 0                               /// Y axis shift
+      cv::Mat& image,                /// Image to draw on
+      const types::Box box,          /// Box to draw
+      const std::string& text = "",  /// Label text of the box
+      const cv::Scalar line_color = cv::Scalar(0, 255, 0),   /// Line color for
+                                                             /// drawing box
+      const cv::Scalar text_color = cv::Scalar(20, 20, 20),  /// Text color
+      float box_line_width = -1,                             /// Box line width
+      int text_fontface = cv::FONT_HERSHEY_SIMPLEX,          /// Text font face
+      double text_scale = -1,                                /// Text scale
+      int text_thickness = 2,                                /// Text thickness
+      int text_baseline = 0                                  /// Y axis shift
+  );
+
+  /// Draw a rounded box with label.
+  static void DrawRoundedBox(
+      cv::Mat& image,                /// Image to draw on
+      const types::Box box,          /// Box to draw
+      const std::string& text = "",  /// Label text of the box
+      const cv::Scalar line_color = cv::Scalar(0, 255, 0),   /// Line color for
+                                                             /// drawing box
+      const cv::Scalar text_color = cv::Scalar(20, 20, 20),  /// Text color
+      float box_line_width = -1,                             /// Box line width
+      int text_fontface = cv::FONT_HERSHEY_SIMPLEX,          /// Text font face
+      double text_scale = -1,                                /// Text scale
+      int text_thickness = 2,                                /// Text thickness
+      int text_baseline = 0,                                 /// Y axis shift
+      float border_radius = 0.1                              /// Border radius %
   );
 
   /// Draw a line graph.
