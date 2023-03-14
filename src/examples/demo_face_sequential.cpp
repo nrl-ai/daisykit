@@ -94,6 +94,7 @@ int main(int argc, char** argv) {
 
   Mat frame;
   VideoCapture cap(0);
+  bool draw_landmarks = false;
 
   while (1) {
     cap >> frame;
@@ -102,17 +103,20 @@ int main(int argc, char** argv) {
     face_extractor->Predict(faces);
     cv::Mat draw = frame.clone();
     visualizers::FaceVisualizer<types::FaceExtended>::DrawFace(draw, faces,
-                                                               true);
+                                                               draw_landmarks);
     for (auto face : faces) {
-      if (face_manager->Search(face.feature, result))
-
+      if (face_manager->Search(face.feature, result)) {
         for (types::FaceSearchResult& faceif : result) {
-          cv::putText(draw,
-                      std::to_string(faceif.id) + " : " +
-                          std::to_string(faceif.min_distance),
-                      cv::Point(face.x, face.y - 10), cv::FONT_HERSHEY_SIMPLEX,
-                      0.5, cv::Scalar(0, 0, 255), 2);
+          // Format distance to 2 decimal places
+          std::stringstream stream;
+          stream << std::fixed << std::setprecision(2)
+                 << faceif.min_distance * 100;
+          std::string formated_distance = stream.str();
+          visualizers::BaseVisualizer::PutText(
+              draw, std::to_string(faceif.id) + ": " + formated_distance,
+              cv::Point(face.x, face.y - 10), cv::FONT_HERSHEY_SIMPLEX, -1);
         }
+      }
     }
     imshow("Image", draw);
     waitKey(1);

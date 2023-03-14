@@ -37,7 +37,7 @@ class FaceManager {
   bool Search(const std::vector<float>& feature,
               std::vector<daisykit::types::FaceSearchResult>& result);
 
-  bool SearchMutilple(
+  bool InsertMultiple(
       const std::vector<std::vector<float>>& features,
       std::vector<std::vector<daisykit::types::FaceSearchResult>>& results);
   bool DeleteByIds(const std::vector<int>& ids);

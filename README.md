@@ -17,8 +17,9 @@
 - **Python Package:** <https://pypi.org/project/daisykit/>
 - **Documentation:** <https://daisykit.org/>
 
-
-https://user-images.githubusercontent.com/18329471/143721185-d4d095dd-48b8-481c-81c7-904c1536a6b8.mp4
+<a href="https://www.youtube.com/watch?v=zKP8sgGoFMc">
+<img src="https://user-images.githubusercontent.com/18329471/224732779-3d2ce7b0-de53-4b9d-b9a8-890557eead16.png"/>
+</a>
 
 **Demo Video:** <https://www.youtube.com/watch?v=zKP8sgGoFMc>.
 

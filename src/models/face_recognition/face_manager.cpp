@@ -120,7 +120,7 @@ bool FaceManager::Search(
   return true;
 }
 
-bool FaceManager::SearchMutilple(
+bool FaceManager::InsertMultiple(
     const std::vector<std::vector<float>>& features,
     std::vector<std::vector<daisykit::types::FaceSearchResult>>& results) {
   int num_data = GetNumDatas();
