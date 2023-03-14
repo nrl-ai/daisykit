@@ -84,12 +84,12 @@ int main(int argc, char** argv) {
   if (faces.size() == 1) {
     int id;
     if (face_manager->Insert(faces[0].feature, id))  // feature, name, id
-      std::cout << "Inserted successfully id " << id << std::endl;
+      std::cout << "Inserted successfully with id : " << id << std::endl;
     else
-      std::cout << "Insertion failed" << std::endl;
+      std::cout << "Insertion failed." << std::endl;
   }
 
-  std::cout << "Number of loaded faces:" << face_manager->GetNumDatas()
+  std::cout << "Number of loaded faces: " << face_manager->GetNumDatas()
             << std::endl;
 
   Mat frame;
