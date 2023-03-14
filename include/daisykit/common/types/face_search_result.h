@@ -27,7 +27,6 @@ namespace types {
 class FaceSearchResult {
  public:
   int id;              /// ID of the face
-  std::string name;    /// Name of the face
   float min_distance;  /// Min distance of the face to all faces in the database
 };
 

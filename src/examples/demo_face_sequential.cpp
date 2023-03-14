@@ -36,24 +36,26 @@ using namespace daisykit::models;
 FaceDetectorSCRFD<types::FaceExtended>* face_detector =
     new FaceDetectorSCRFD<types::FaceExtended>(
         "models/face_detection_scrfd/scrfd_2.5g_1.param",
-        "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, false);
+        "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
 FaceAligner* face_aligner = new FaceAligner();
 
 FaceExtractor* face_extractor =
     new FaceExtractor("models/face_extraction/iresnet18_1.param",
-                      "models/face_extraction/iresnet18_1.bin", 112, false);
+                      "models/face_extraction/iresnet18_1.bin", 112, true);
 
-FaceManager* face_manager = new FaceManager("./data", 1000, 512, 1, 1.01);
+FaceManager* face_manager = new FaceManager("data.hnsw", 1000, 1, 512, 1.01);
 
 int main(int argc, char** argv) {
   // Read faces and name to register
-  if (argc < 3) {
-    std::cout << "Please provide name and an image to register" << std::endl;
-    std::cout << "Example: ./demo_face_sequential data/my_face.jpg "
-                 "JohnDoe"
+  if (argc < 2) {
+    std::cout << "Please an image to register" << std::endl;
+    std::cout << "Example: ./demo_face_sequential data/my_face.jpg"
               << std::endl;
     return 1;
   }
+
+  if (!face_manager->LoadData())
+    std::cout << "File was not found or not supported." << std::endl;
 
   // Read parameters
   std::string person_image_path = argv[1];
@@ -70,6 +72,7 @@ int main(int argc, char** argv) {
   cv::Mat regis_img = cv::imread(person_image_path);
   faces.clear();
   face_detector->Predict(regis_img, faces);
+  std::cout << faces.size() << std::endl;
   if (faces.size() != 1) {
     std::cout << "Provide image with only one face to register";
     return 1;
@@ -79,10 +82,15 @@ int main(int argc, char** argv) {
   face_aligner->AlignMutipleFaces(regis_img, faces);
   face_extractor->Predict(faces);
   if (faces.size() == 1) {
-    if (face_manager->InsertFeature(faces[0].feature, person_name,
-                                    1))  // feature, name, id
-      std::cout << "Inserted successfully";
+    int id;
+    if (face_manager->Insert(faces[0].feature, id))  // feature, name, id
+      std::cout << "Inserted successfully with id : " << id << std::endl;
+    else
+      std::cout << "Insertion failed." << std::endl;
   }
+
+  std::cout << "Number of loaded faces: " << face_manager->GetNumDatas()
+            << std::endl;
 
   Mat frame;
   VideoCapture cap(0);
@@ -97,7 +105,7 @@ int main(int argc, char** argv) {
     visualizers::FaceVisualizer<types::FaceExtended>::DrawFace(draw, faces,
                                                                draw_landmarks);
     for (auto face : faces) {
-      if (face_manager->Search(result, face.feature)) {
+      if (face_manager->Search(face.feature, result)) {
         for (types::FaceSearchResult& faceif : result) {
           // Format distance to 2 decimal places
           std::stringstream stream;
@@ -105,7 +113,7 @@ int main(int argc, char** argv) {
                  << faceif.min_distance * 100;
           std::string formated_distance = stream.str();
           visualizers::BaseVisualizer::PutText(
-              draw, faceif.name + ": " + formated_distance,
+              draw, std::to_string(faceif.id) + ": " + formated_distance,
               cv::Point(face.x, face.y - 10), cv::FONT_HERSHEY_SIMPLEX, -1);
         }
       }

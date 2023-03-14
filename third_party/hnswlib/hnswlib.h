@@ -84,6 +84,8 @@ class AlgorithmInterface {
       const void* query_data, size_t k) const;
 
   virtual void saveIndex(const std::string& location) = 0;
+  virtual void loadIndex(const std::string& location, SpaceInterface<dist_t>* s,
+                         size_t max_elements_i = 0) = 0;
   virtual ~AlgorithmInterface() {}
 };
 
