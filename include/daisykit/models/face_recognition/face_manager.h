@@ -32,7 +32,7 @@ class FaceManager {
 
   int GetNumDatas();
   bool Insert(const std::vector<float>& feature, int& inserted_id);
-  bool InsertMutilple(const std::vector<std::vector<float>>& features,
+  bool InsertMultiple(const std::vector<std::vector<float>>& features,
                       std::vector<int>& inserted_ids);
   bool Search(const std::vector<float>& feature,
               std::vector<daisykit::types::FaceSearchResult>& result);

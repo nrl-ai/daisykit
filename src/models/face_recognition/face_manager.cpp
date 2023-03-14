@@ -63,7 +63,7 @@ bool FaceManager::Insert(const std::vector<float>& feature, int& inserted_id) {
   return true;
 }
 
-bool FaceManager::InsertMutilple(
+bool FaceManager::InsertMultiple(
     const std::vector<std::vector<float>>& features,
     std::vector<int>& inserted_ids) {
   int num_data = GetNumDatas();

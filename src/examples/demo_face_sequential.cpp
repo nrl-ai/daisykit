@@ -48,14 +48,14 @@ FaceManager* face_manager = new FaceManager("data.hnsw", 1000, 1, 512, 1.01);
 int main(int argc, char** argv) {
   // Read faces and name to register
   if (argc < 2) {
-    std::cout << "Please provide name and an image to register" << std::endl;
-    std::cout << "Example: ./demo_face_sequential data/my_face.jpg "
+    std::cout << "Please an image to register" << std::endl;
+    std::cout << "Example: ./demo_face_sequential data/my_face.jpg"
               << std::endl;
     return 1;
   }
 
   if (!face_manager->LoadData())
-    std::cout << "File not found or not support" << std::endl;
+    std::cout << "File was not found or not supported." << std::endl;
 
   // Read parameters
   std::string person_image_path = argv[1];
@@ -86,10 +86,10 @@ int main(int argc, char** argv) {
     if (face_manager->Insert(faces[0].feature, id))  // feature, name, id
       std::cout << "Inserted successfully id " << id << std::endl;
     else
-      std::cout << "Insert failed" << std::endl;
+      std::cout << "Insertion failed" << std::endl;
   }
 
-  std::cout << "number face loading" << face_manager->GetNumDatas()
+  std::cout << "Number of loaded faces:" << face_manager->GetNumDatas()
             << std::endl;
 
   Mat frame;
