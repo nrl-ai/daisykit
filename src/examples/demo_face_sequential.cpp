@@ -43,17 +43,19 @@ FaceExtractor* face_extractor =
     new FaceExtractor("models/face_extraction/iresnet18_1.param",
                       "models/face_extraction/iresnet18_1.bin", 112, true);
 
-FaceManager* face_manager = new FaceManager("./data", 1000, 512, 1, 1.01);
+FaceManager* face_manager = new FaceManager("data.hnsw", 1000, 1, 512, 1.01);
 
 int main(int argc, char** argv) {
   // Read faces and name to register
-  if (argc < 3) {
+  if (argc < 2) {
     std::cout << "Please provide name and an image to register" << std::endl;
     std::cout << "Example: ./demo_face_sequential data/my_face.jpg "
-                 "JohnDoe"
               << std::endl;
     return 1;
   }
+
+  if (!face_manager->LoadData())
+    std::cout << "File not found or not support" << std::endl;
 
   // Read parameters
   std::string person_image_path = argv[1];
@@ -70,6 +72,7 @@ int main(int argc, char** argv) {
   cv::Mat regis_img = cv::imread(person_image_path);
   faces.clear();
   face_detector->Predict(regis_img, faces);
+  std::cout << faces.size() << std::endl;
   if (faces.size() != 1) {
     std::cout << "Provide image with only one face to register";
     return 1;
@@ -79,13 +82,18 @@ int main(int argc, char** argv) {
   face_aligner->AlignMutipleFaces(regis_img, faces);
   face_extractor->Predict(faces);
   if (faces.size() == 1) {
-    if (face_manager->InsertFeature(faces[0].feature, person_name,
-                                    1))  // feature, name, id
-      std::cout << "Inserted successfully";
+    int id;
+    if (face_manager->Insert(faces[0].feature, id))  // feature, name, id
+      std::cout << "Inserted successfully id " << id << std::endl;
+    else
+      std::cout << "Insert failed" << std::endl;
   }
 
+  std::cout << "number face loading" << face_manager->GetNumDatas()
+            << std::endl;
+
   Mat frame;
-  VideoCapture cap(1);
+  VideoCapture cap(0);
 
   while (1) {
     cap >> frame;
@@ -96,10 +104,12 @@ int main(int argc, char** argv) {
     visualizers::FaceVisualizer<types::FaceExtended>::DrawFace(draw, faces,
                                                                true);
     for (auto face : faces) {
-      if (face_manager->Search(result, face.feature))
+      if (face_manager->Search(face.feature, result))
+
         for (types::FaceSearchResult& faceif : result) {
           cv::putText(draw,
-                      faceif.name + " : " + std::to_string(faceif.min_distance),
+                      std::to_string(faceif.id) + " : " +
+                          std::to_string(faceif.min_distance),
                       cv::Point(face.x, face.y - 10), cv::FONT_HERSHEY_SIMPLEX,
                       0.5, cv::Scalar(0, 0, 255), 2);
         }

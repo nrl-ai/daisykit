@@ -15,16 +15,18 @@
 
 namespace daisykit {
 namespace models {
-FaceManager::FaceManager(const std::string& path_data, int max_size, int dim,
-                         int k, float threshold) {
-  path_data_ = path_data;
+FaceManager::FaceManager(const std::string& save_path, int max_size, int topk,
+                         int dim, float threshold) {
+  save_path_ = save_path;
   max_size_ = max_size;
+  topk_ = topk;
   dim_ = dim;
-  k_ = k;
   threshold_ = threshold;
   space_ = std::make_shared<hnswlib::L2Space>(dim_);
   alg_hnsw_ = new hnswlib::HierarchicalNSW<float>(&*space_, max_size_);
-  LoadData(path_data);
+}
+FaceManager::FaceManager(const std::string& config_path) {
+  // TODO
 }
 
 FaceManager::~FaceManager() = default;
@@ -34,122 +36,106 @@ bool CompareFaceinfor(const daisykit::types::FaceSearchResult& f1,
   return (f1.min_distance < f2.min_distance);
 }
 
+bool CheckExistsFile(const std::string& name) {
+  std::ifstream f(name.c_str());
+  return f.good();
+}
+
 // Load and Save new data
-void FaceManager::SaveData(const std::string& path) {
-  std::ofstream output_file(path, std::ios::binary);
-  for (int i = 0; i < length_; ++i) {
-    WriteFeatureSet(output_file, data_[i]);
-  }
-  output_file.close();
-}
-
-void FaceManager::LoadData(const std::string& path) {
-  data_.clear();
-  length_ = 0;
-  std::ifstream input_file(path, std::ios::binary);
-  while (input_file.peek() != EOF) {
-    daisykit::types::FeatureSet f = ReadFeatureSet(input_file);
-    data_.emplace_back(f);
-    length_ += 1;
-  }
-  for (size_t i = 0; i < length_; ++i) {
-    alg_hnsw_->addPoint(data_[i].feature.data(), i);
-  }
-  std::cout << "Load " << length_ << " face\n";
-}
-
-void FaceManager::InsertData(const std::string& path,
-                             const daisykit::types::FeatureSet& newf) {
-  std::ofstream output_file(path, std::ios::app | std::ios::binary);
-  WriteFeatureSet(output_file, newf);
-  output_file.close();
-}
-
-bool FaceManager::InsertFeature(const std::vector<float>& feature,
-                                const std::string& name, const int id) {
-  daisykit::types::FeatureSet newf;
-  newf.feature = feature;
-  newf.id = id;
-  newf.name = name;
-
-  alg_hnsw_->addPoint(feature.data(), length_);
-  data_.emplace_back(newf);
-  InsertData(path_data_, newf);
-
-  length_ += 1;
+bool FaceManager::SaveData() {
+  alg_hnsw_->saveIndex(save_path_);
   return true;
 }
-void FaceManager::ReLoadHNSW() {
-  delete alg_hnsw_;
-  alg_hnsw_ = new hnswlib::HierarchicalNSW<float>(&*space_, max_size_);
-  for (size_t i = 0; i < length_; ++i) {
-    alg_hnsw_->addPoint(data_[i].feature.data(), i);
-  }
+
+bool FaceManager::LoadData() {
+  if (!CheckExistsFile(save_path_)) return false;
+  alg_hnsw_->loadIndex(save_path_, &*space_, max_size_);
+  return true;
 }
 
-void FaceManager::DeleteByName(const std::string& name) {
-  for (int i = data_.size() - 1; i > 0; i--) {
-    if (data_[i].name == name) {
-      data_.erase(data_.begin() + i, data_.begin() + i + 1);
-      length_ -= 1;
-    }
-  }
-  SaveData(path_data_);
-  ReLoadHNSW();
+int FaceManager::GetNumDatas() { return alg_hnsw_->cur_element_count; }
+
+bool FaceManager::Insert(const std::vector<float>& feature, int& inserted_id) {
+  int num_data = GetNumDatas();
+  alg_hnsw_->addPoint(feature.data(), num_data);
+  inserted_id = num_data;
+  SaveData();
+  return true;
 }
 
-bool FaceManager::Search(std::vector<daisykit::types::FaceSearchResult>& result,
-                         const std::vector<float>& feature) {
+bool FaceManager::InsertMutilple(
+    const std::vector<std::vector<float>>& features,
+    std::vector<int>& inserted_ids) {
+  int num_data = GetNumDatas();
+  inserted_ids.clear();
+  inserted_ids.resize(features.size());
+  for (int i = 0; i < features.size(); i++) {
+    alg_hnsw_->addPoint(features[i].data(), num_data + i);
+    inserted_ids[i] = num_data + i;
+  }
+  SaveData();
+  return true;
+}
+
+bool FaceManager::DeleteById(const int id) {
+  alg_hnsw_->markDelete(id);
+  return true;
+}
+
+bool FaceManager::DeleteByIds(const std::vector<int>& ids) {
+  for (int i = 0; i < ids.size(); i++) {
+    DeleteById(ids[i]);
+  }
+  return true;
+}
+
+bool FaceManager::Search(
+    const std::vector<float>& feature,
+    std::vector<daisykit::types::FaceSearchResult>& result) {
   int index;
+  int num_data = GetNumDatas();
   result.clear();
-  if (length_ == 0)
+  if (num_data == 0)
     return false;
   else {
     const void* p = feature.data();
-    auto gd = alg_hnsw_->searchKnn(p, k_);
+    int topk;
+    if (topk_ >= num_data)
+      topk = num_data;
+    else
+      topk = topk_;
+    auto gd = alg_hnsw_->searchKnn(p, topk);
     while (!gd.empty()) {
       if (gd.top().first <= threshold_) {
         daisykit::types::FaceSearchResult faceif;
         index = gd.top().second;
         faceif.min_distance = gd.top().first;
-        faceif.id = data_[index].id;
-        faceif.name = data_[index].name;
+        faceif.id = index;
         result.emplace_back(faceif);
       }
       gd.pop();
     }
-    std::sort(result.begin(), result.end(), CompareFaceinfor);
+    if (topk_ > 1) std::sort(result.begin(), result.end(), CompareFaceinfor);
+  }
+  return true;
+}
+
+bool FaceManager::SearchMutilple(
+    const std::vector<std::vector<float>>& features,
+    std::vector<std::vector<daisykit::types::FaceSearchResult>>& results) {
+  int num_data = GetNumDatas();
+  results.clear();
+  if (num_data == 0)
+    return false;
+  else {
+    for (int i = 0; i < features.size(); i++) {
+      std::vector<daisykit::types::FaceSearchResult> result;
+      Search(features[i], result);
+      results.emplace_back(result);
+    }
     return true;
   }
 }
 
-void FaceManager::WriteFeatureSet(
-    std::ofstream& stream, const daisykit::types::FeatureSet& feature_set) {
-  char name[512];
-  float feature[dim_];
-  int id;
-  strncpy(name, feature_set.name.c_str(), feature_set.name.size());
-  id = feature_set.id;
-  std::copy(feature_set.feature.begin(), feature_set.feature.end(), feature);
-  name[feature_set.name.size()] = '\0';
-  stream.write((char*)&name, sizeof(name));
-  stream.write((char*)&id, sizeof(id));
-  stream.write((char*)&feature, sizeof(feature));
-}
-
-daisykit::types::FeatureSet FaceManager::ReadFeatureSet(std::ifstream& stream) {
-  char name[512];
-  float feature[dim_];
-  int id;
-  stream.read((char*)&name, sizeof(name));
-  stream.read((char*)&id, sizeof(id));
-  stream.read((char*)&feature, sizeof(feature));
-  daisykit::types::FeatureSet f;
-  f.name = name;
-  f.id = id;
-  f.feature = std::vector<float>(
-      feature, feature + sizeof(feature) / sizeof(feature[0]));
-  return f;
-}
 }  // namespace models
 }  // namespace daisykit

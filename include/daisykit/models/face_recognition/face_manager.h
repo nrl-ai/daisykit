@@ -14,6 +14,7 @@
 #ifndef MODELS_FACE_MANAGER_H_
 #define MODELS_FACE_MANAGER_H_
 #include <assert.h>
+#include <fstream>
 #include <iostream>
 #include <vector>
 #include "daisykit/common/types.h"
@@ -24,41 +25,36 @@ namespace daisykit {
 namespace models {
 class FaceManager {
  public:
-  FaceManager(const std::string& path_data, int max_size, int dim, int k,
+  FaceManager(const std::string& save_path, int max_size, int topk, int dim,
               float threshold);
+  FaceManager(const std::string& config_path);
   ~FaceManager();
-  bool InsertFeature(const std::vector<float>& feature, const std::string& name,
-                     const int id);
-  void DeleteByName(const std::string& name);
-  bool Search(std::vector<daisykit::types::FaceSearchResult>& result,
-              const std::vector<float>& feature);
+
+  int GetNumDatas();
+  bool Insert(const std::vector<float>& feature, int& inserted_id);
+  bool InsertMutilple(const std::vector<std::vector<float>>& features,
+                      std::vector<int>& inserted_ids);
+  bool Search(const std::vector<float>& feature,
+              std::vector<daisykit::types::FaceSearchResult>& result);
+
+  bool SearchMutilple(
+      const std::vector<std::vector<float>>& features,
+      std::vector<std::vector<daisykit::types::FaceSearchResult>>& results);
+  bool DeleteByIds(const std::vector<int>& ids);
+  bool DeleteById(const int id);
+  float threshold_;
+  bool LoadData();
 
  private:
-  void LoadLabel(std::vector<std::string>& labels, int& length,
-                 const std::string& path);
-  void SaveLabel(const std::vector<std::string>& labels,
-                 const std::string& path);
-  void InsertLabel(const std::string& name, const std::string& path);
-  void SaveData(const std::string& path);
-  void LoadData(const std::string& path);
-  void InsertData(const std::string& path,
-                  const daisykit::types::FeatureSet& newf);
-  int GetIndexByName(const std::string& name,
-                     const std::vector<std::string>& labels);
-  void ReLoadHNSW();
-  void WriteFeatureSet(std::ofstream& stream,
-                       const daisykit::types::FeatureSet& feature_set);
-  daisykit::types::FeatureSet ReadFeatureSet(std::ifstream& stream);
+  bool SaveData();
 
+ private:
   int max_size_;
   int dim_;
-  int k_;
-  float threshold_;
-  std::vector<daisykit::types::FeatureSet> data_;
-  std::string path_data_;
-  int length_ = 0;
+  int topk_;
+  std::string save_path_;
   std::shared_ptr<hnswlib::L2Space> space_;
-  hnswlib::AlgorithmInterface<float>* alg_hnsw_;
+  hnswlib::HierarchicalNSW<float>* alg_hnsw_;
 };
 }  // namespace models
 }  // namespace daisykit
