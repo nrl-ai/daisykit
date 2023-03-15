@@ -23,7 +23,6 @@
 #include <opencv2/opencv.hpp>
 
 #include <string>
-#include <vector>
 
 
 #ifdef __ANDROID__
@@ -45,9 +44,9 @@ namespace models {
         #endif
             int Detect(const cv::Mat&image, std::vector<daisykit::types::FaceBox> &boxes);
         private:
-            void Preprocess(const cv::Mat&image, ncnn::Mat&net_input);
+            void SetMinFaceSize(int size);
+            void Preprocess(const cv::Mat&image, ncnn::Mat&net_input) override;
             float threshold_;
-            int thread_num_;
             int min_face_size_;
 };
 }
