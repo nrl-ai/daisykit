@@ -43,9 +43,9 @@ namespace models {
             FakeRealClassifiers(AAssetManager* mgr, const std::string& param_file, const std::string& weight_file,
                                 int input_width = 480, int input_height = 640, bool use_gpu = false);
         #endif
-            int Detect(const cv::Mat&image, std::vector<types::FaceBox> &boxes);
+            int Detect(const cv::Mat&image, std::vector<daisykit::types::FaceBox> &boxes);
         private:
-            void Preprocess(const cv::Mat&image, ncnn::Mat&net_input, int input_size_);
+            void Preprocess(const cv::Mat&image, ncnn::Mat&net_input);
             float threshold_;
             int thread_num_;
             int min_face_size_;
