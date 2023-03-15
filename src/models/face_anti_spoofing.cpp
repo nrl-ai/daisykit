@@ -50,7 +50,8 @@ FakeRealClassifiers::FakeRealClassifiers(AAssetManager* mgr,
 #endif
 
 
-void Preprocess(const cv::Mat&image, ncnn::Mat& net_input, int input_size_=192) {
+void Preprocess(const cv::Mat&image, ncnn::Mat& net_input) {
+    int input_size_ = 192;
     int w = image.cols;
     int h = image.rows;
     float aspect_ratio = w / (float)h;
@@ -67,7 +68,7 @@ int FakeRealClassifiers::Detect(const cv::Mat&image, std::vector<types::FaceBox>
     int h = image.rows;
     // Preprocess 
     ncnn::Mat in;
-    Preprocess(image, in, 192);
+    Preprocess(image, in);
 
     const float mean_val_[3] = {104.f, 117.f, 123.f};
     in.substract_mean_normalize(mean_val_, nullptr);
@@ -85,27 +86,27 @@ int FakeRealClassifiers::Detect(const cv::Mat&image, std::vector<types::FaceBox>
         if(confidence < threshold_) continue;
 
         types::FaceBox box;
-        box.confidence = confidence;
-        box.x1 = values[2] * w;
-        box.y1 = values[3] * h;
-        box.x2 = values[4] * w;
-        box.y2 = values[5] * h;
+        box.real_fake_score = confidence;
+        box.x = values[2] * w;
+        box.y = values[3] * h;
+        box.w = values[4] * w;
+        box.h = values[5] * h;
 
         // square
-        float box_width = box.x2 - box.x1 + 1;
-        float box_height = box.y2 - box.y1 + 1;
+        float box_width = box.w - box.x + 1;
+        float box_height = box.h - box.y + 1;
 
         float size = (box_width + box_height) * 0.5f;
 
         if(size < min_face_size_) continue;
 
-        float cx = box.x1 + box_width * 0.5f;
-        float cy = box.y1 + box_height * 0.5f;
+        float cx = box.x + box_width * 0.5f;
+        float cy = box.y + box_height * 0.5f;
 
-        box.x1 = cx - size * 0.5f;
-        box.y1 = cy - size * 0.5f;
-        box.x2 = cx + size * 0.5f - 1;
-        box.y2 = cy + size * 0.5f - 1;
+        box.x = cx - size * 0.5f;
+        box.y = cy - size * 0.5f;
+        box.w = cx + size * 0.5f - 1;
+        box.h = cy + size * 0.5f - 1;
 
         boxes.emplace_back(box);
     }
