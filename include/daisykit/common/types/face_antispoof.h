@@ -21,9 +21,13 @@
 namespace daisykit {
 namespace types {
 
-struct FaceBox : Box {
-  float real_fake_score;
-};
+  struct FaceBox {
+    float confidence;
+    float x1;
+    float y1;
+    float x2;
+    float y2;
+  };
 
 }
 }
