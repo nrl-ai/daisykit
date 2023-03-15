@@ -15,16 +15,14 @@
 #ifndef DAISYKIT_COMMON_TYPES_FACE_ANTISPOOFING_H_
 #define DAISYKIT_COMMON_TYPES_FACE_ANTISPOOFING_H_
 
+#include "daisykit/common/types/box.h"
+
 /// Fake or Real face
 namespace daisykit {
 namespace types {
 
-struct FaceBox {
-    float confidence;
-    float x1;
-    float y1;
-    float x2;
-    float y2;
+struct FaceBox : Box {
+  float real_fake_score;
 };
 
 }
