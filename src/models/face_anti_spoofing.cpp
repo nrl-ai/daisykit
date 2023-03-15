@@ -50,7 +50,7 @@ FakeRealClassifiers::FakeRealClassifiers(AAssetManager* mgr,
 #endif
 
 
-void Preprocess(const cv::Mat&image, ncnn::Mat& net_input) {
+void FakeRealClassifiders::Preprocess(const cv::Mat&image, ncnn::Mat& net_input) {
     int input_size_ = 192;
     int w = image.cols;
     int h = image.rows;
