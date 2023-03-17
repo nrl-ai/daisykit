@@ -12,24 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAISYKIT_COMMON_TYPES_FACE_ANTISPOOFING_H_
-#define DAISYKIT_COMMON_TYPES_FACE_ANTISPOOFING_H_
+#ifndef DAISYKIT_COMMON_TYPES_FACE_ANTI_SPOOFING_H_
+#define DAISYKIT_COMMON_TYPES_FACE_ANTI_SPOOFING_H_
 
 #include "daisykit/common/types/box.h"
 
-/// Fake or Real face
+#include <vector>
+
 namespace daisykit {
 namespace types {
 
-  struct FaceBox {
-    float confidence;
-    float x1;
-    float y1;
-    float x2;
-    float y2;
-  };
+class FaceBox : public Box {
+ public:
+  float confidence = 1.0;                 /// Confidence of face
 
-}
-}
+};
+
+}  // namespace types
+}  // namespace daisykit
 
 #endif
