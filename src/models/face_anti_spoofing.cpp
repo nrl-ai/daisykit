@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykit/models/face_anti_spoofing.h"
+#include "daisykit/models/face_extended.h"
 #include "daisykit/processors/image_processors/img_utils.h"
 
 #include <algorithm>
@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 
-static bool AreaComp(FaceBox& l, FaceBox& r) {
+static bool AreaComp(Face& l, Face& r) {
     return ((l.w - l.x + 1) * (l.h - l.y + 1)) > ((r.w - r.x + 1) * (r.h - r.y + 1));
 }
 
@@ -33,7 +33,10 @@ FakeRealClassifiers(const char* param_buffer,
                                         int input_width, int input_height,
                                         bool use_gpu)
     : NCNNModel(param_buffer, weight_buffer, use_gpu),
-    ImageModel(input_width, input_height) {}
+    ImageModel(input_width, input_height) {
+        threshold_ = 0.6f;
+        min_face_size_ = 2;
+    }
 
 FakeRealClassifiers::FakeRealClassifiers(const std::string& param_file, 
                                         const std::string& weight_file,
@@ -72,7 +75,7 @@ void FakeRealClassifiers::Preprocess(const cv::Mat&image, ncnn::Mat& net_input) 
 }
 
 int FakeRealClassifiers::Detect(const cv::Mat&image, 
-                                std::vector<daisykit::types::FaceBox> &boxes) {
+                                std::vector<daisykit::types::FaceExtended> &boxes) {
     int w = image.cols;
     int h = image.rows;
     // Preprocess 
@@ -87,6 +90,7 @@ int FakeRealClassifiers::Detect(const cv::Mat&image,
     int result = Infer(in, out, "data", "detection_out");
     if (result != 0) return result;
 
+    FaceExtended box;
     //Postprocess
     for (int i = 0; i < out.h; ++i) {
         const float* values = out.row(i);
@@ -94,7 +98,6 @@ int FakeRealClassifiers::Detect(const cv::Mat&image,
 
         if(confidence < threshold_) continue;
 
-        FaceBox box;
         box.confidence = confidence;
         box.x = values[2] * w;
         box.y = values[3] * h;
