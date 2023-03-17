@@ -22,12 +22,13 @@
 #include <vector>
 
 static bool AreaComp(FaceBox& l, FaceBox& r) {
-    return ((l.x2 - l.x1 + 1) * (l.y2 - l.y1 + 1)) > ((r.x2 - r.x1 + 1) * (r.y2 - r.y1 + 1));
+    return ((l.w - l.x + 1) * (l.h - l.y + 1)) > ((r.w - r.x + 1) * (r.h - r.y + 1));
 }
 
 namespace daisykit {
 namespace models {
-FakeRealClassifiers::FakeRealClassifiers(const char* param_buffer, 
+
+FakeRealClassifiers(const char* param_buffer, 
                                         const unsigned char* weight_buffer,
                                         int input_width, int input_height,
                                         bool use_gpu)
@@ -70,7 +71,8 @@ void FakeRealClassifiers::Preprocess(const cv::Mat&image, ncnn::Mat& net_input) 
                                                  input_width, input_height);
 }
 
-int FakeRealClassifiers::Detect(const cv::Mat&image, std::vector<daisykit::types::FaceBox> &boxes) {
+int FakeRealClassifiers::Detect(const cv::Mat&image, 
+                                std::vector<daisykit::types::FaceBox> &boxes) {
     int w = image.cols;
     int h = image.rows;
     // Preprocess 
@@ -92,28 +94,28 @@ int FakeRealClassifiers::Detect(const cv::Mat&image, std::vector<daisykit::types
 
         if(confidence < threshold_) continue;
 
-        daisykit::types::FaceBox box;
+        FaceBox box;
         box.confidence = confidence;
-        box.x1 = values[2] * w;
-        box.y1 = values[3] * h;
-        box.x2 = values[4] * w;
-        box.y2 = values[5] * h;
+        box.x = values[2] * w;
+        box.y = values[3] * h;
+        box.w = values[4] * w;
+        box.h = values[5] * h;
 
         // square
-        float box_width = box.x2 - box.x1 + 1;
-        float box_height = box.y2 - box.y1 + 1;
+        float box_width = box.w - box.x + 1;
+        float box_height = box.h - box.y + 1;
 
         float size = (box_width + box_height) * 0.5f;
 
         if(size < min_face_size_) continue;
 
-        float cx = box.x1 + box_width * 0.5f;
-        float cy = box.y1 + box_height * 0.5f;
+        float cx = box.x + box_width * 0.5f;
+        float cy = box.y + box_height * 0.5f;
 
-        box.x1 = cx - size * 0.5f;
-        box.y1 = cy - size * 0.5f;
-        box.x2 = cx + size * 0.5f - 1;
-        box.y2 = cy + size * 0.5f - 1;
+        box.x = cx - size * 0.5f;
+        box.y = cy - size * 0.5f;
+        box.w = cx + size * 0.5f - 1;
+        box.h = cy + size * 0.5f - 1;
 
         boxes.emplace_back(box);
     }
