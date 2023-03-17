@@ -40,9 +40,8 @@ int main(int, char**) {
   cv::Mat rgb;
   cv::cvtColor(img, rgb, cv::COLOR_BGR2RGB);
 
-  vector<types::FaceBox> face_anti_spoof;
-  cout << "Hello" << endl;
-  model.Detect(rgb, face_anti_spoof);
+  vector<types::FaceExtended> face_anti_spoof;
+  int i = model.Detect(rgb, face_anti_spoof);
 
   cv::Mat draw;
   cv::cvtColor(rgb, draw, cv::COLOR_RGB2BGR);
@@ -51,7 +50,7 @@ int main(int, char**) {
     cv::rectangle(draw,
                   cv::Rect(face_anti_spoof[i].x, face_anti_spoof[i].y, face_anti_spoof[i].w, face_anti_spoof[i].h),
                   cv::Scalar(0, 255, 0), 2);
-    string result = face_anti_spoof[i].confidence >= 0.5 ? "Real" : "Spoof";
+    string result = face_anti_spoof[i].liveness_score >= 0.5 ? "Real" : "Spoof";
     cout << result << endl;
   }
   imshow("Image", draw);
