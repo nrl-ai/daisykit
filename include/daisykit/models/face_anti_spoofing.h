@@ -42,7 +42,7 @@ namespace models {
             FakeRealClassifiers(AAssetManager* mgr, const std::string& param_file, const std::string& weight_file,
                                 int input_width = 480, int input_height = 640, bool use_gpu = false);
         #endif
-            int Detect(const cv::Mat&image, std::vector<daisykit::types::FaceBox> &boxes);
+            int Detect(const cv::Mat&image, std::vector<daisykit::types::FaceExtended> &boxes);
         private:
             void SetMinFaceSize(int size);
             void Preprocess(const cv::Mat&image, ncnn::Mat&net_input) override;
