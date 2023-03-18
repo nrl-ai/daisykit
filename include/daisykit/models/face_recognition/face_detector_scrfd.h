@@ -27,7 +27,7 @@ template <typename FaceT>
 class FaceDetectorSCRFD : public NCNNModel, public ImageModel {
  public:
   FaceDetectorSCRFD(const std::string& param_file,
-                    const std::string& bin_path_file, int input_size = 640,
+                    const std::string& weight_file, int input_size = 640,
                     float score_threshold = 0.7, float iou_threshold = 0.5,
                     bool use_gpu = false);
 
