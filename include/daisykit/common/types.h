@@ -26,4 +26,5 @@
 #include "daisykit/common/types/object.h"
 #include "daisykit/common/types/object_with_keypoints.h"
 #include "daisykit/common/types/object_with_keypoints_xyz.h"
+
 #endif

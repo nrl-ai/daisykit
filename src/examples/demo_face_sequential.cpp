@@ -18,6 +18,7 @@
 #include "daisykit/models/face_recognition/face_detector_scrfd.h"
 #include "daisykit/models/face_recognition/face_extractor.h"
 #include "daisykit/models/face_recognition/face_manager.h"
+#include "daisykit/models/liveness_detection.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>
@@ -39,11 +40,17 @@ FaceDetectorSCRFD<types::FaceExtended>* face_detector =
         "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
 FaceAligner* face_aligner = new FaceAligner();
 
+
+
 FaceExtractor* face_extractor =
     new FaceExtractor("models/face_extraction/iresnet18_1.param",
                       "models/face_extraction/iresnet18_1.bin", 112, true);
 
 FaceManager* face_manager = new FaceManager("data.hnsw", 1000, 1, 512, 1.01);
+
+LivenessDetector* liveness_detector = 
+    new LivenessDetector("models/face_antispoofin/model_1.param",
+                        "models/face_antispoofing/model_1.bin", 80, 80, true);
 
 int main(int argc, char** argv) {
   // Read faces and name to register
@@ -71,7 +78,8 @@ int main(int argc, char** argv) {
   std::vector<types::FaceSearchResult> result;
   cv::Mat regis_img = cv::imread(person_image_path);
   faces.clear();
-  face_detector->Predict(regis_img, faces);
+  std::vector<int> face_box_image;
+  face_detector->Predict(regis_img, faces, face_box_image);
   std::cout << faces.size() << std::endl;
   if (faces.size() != 1) {
     std::cout << "Provide image with only one face to register";
@@ -98,9 +106,12 @@ int main(int argc, char** argv) {
 
   while (1) {
     cap >> frame;
-    face_detector->Predict(frame, faces);
+    std::vector<int> face_box;
+    face_detector->Predict(frame, faces, face_box);
+    liveness_detector->Predict(frame, faces);
     face_aligner->AlignMutipleFaces(frame, faces);
     face_extractor->Predict(faces);
+
     cv::Mat draw = frame.clone();
     visualizers::FaceVisualizer<types::FaceExtended>::DrawFace(draw, faces,
                                                                draw_landmarks);

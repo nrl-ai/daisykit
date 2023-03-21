@@ -1,0 +1,19 @@
+{
+  "face_detection_model": {
+    "model": "models/face_detection/yolo_fastest_with_mask/yolo-fastest-opt.param",
+    "weights": "models/face_detection/yolo_fastest_with_mask/yolo-fastest-opt.bin",
+    "input_width": 320,
+    "input_height": 320,
+    "score_threshold": 0.7,
+    "iou_threshold": 0.5,
+    "use_gpu": false
+  },
+  "with_landmark": true,
+  "facial_landmark_model": {
+    "model": "models/facial_landmark/pfld-sim.param",
+    "weights": "models/facial_landmark/pfld-sim.bin",
+    "input_width": 112,
+    "input_height": 112,
+    "use_gpu": true
+  }
+}

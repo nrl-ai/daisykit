@@ -1,0 +1,23 @@
+{
+  "person_detection_model": {
+    "model": "models/human_detection/ssd_mobilenetv2.param",
+    "weights": "models/human_detection/ssd_mobilenetv2.bin",
+    "input_width": 320,
+    "input_height": 320,
+    "use_gpu": false
+  },
+  "human_pose_model": {
+    "model": "models/human_pose_detection/ultralight_nano/Ultralight-Nano-SimplePose.param",
+    "weights": "models/human_pose_detection/ultralight_nano/Ultralight-Nano-SimplePose.bin",
+    "input_width": 256,
+    "input_height": 256,
+    "use_gpu": false
+  },
+  "action_recognition_model": {
+    "model": "models/action_classification/is_pushup.param",
+    "weights": "models/action_classification/is_pushup.bin",
+    "input_width": 224,
+    "input_height": 224,
+    "use_gpu": false
+  }
+}

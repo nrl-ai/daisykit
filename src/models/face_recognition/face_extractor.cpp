@@ -80,6 +80,7 @@ void FaceExtractor::Predict(std::vector<daisykit::types::FaceExtended>& faces) {
     }
     for (int j = 0; j < 512; j++) {
       feature[j] = out[j];
+      
     }
     L2Norm(feature);
     face.feature = feature;

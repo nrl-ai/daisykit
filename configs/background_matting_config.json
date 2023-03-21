@@ -1,0 +1,9 @@
+{
+  "background_matting_model": {
+    "model": "models/background_matting/erd/erdnet.param",
+    "weights": "models/background_matting/erd/erdnet.bin",
+    "input_width": 256,
+    "input_height": 256,
+    "use_gpu": false
+  }
+}

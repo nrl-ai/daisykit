@@ -1,0 +1,16 @@
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_pushup_classifier.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_pushup_full.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_barcode_scanner.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_face_detector.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_background_matting.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_graph_api.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_face_detector_graph.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_movenet.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_hand_detector_yolox.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_hand_pose_detector.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_object_detector.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_face_detector_scrfd.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_face_sequential.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/demo_face_antispoofing.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/edit_cache.dir
+/Users/haiduong/daisykit/src/examples/CMakeFiles/rebuild_cache.dir

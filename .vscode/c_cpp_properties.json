@@ -3,13 +3,41 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "/usr/local/Cellar/opencv/4.7.0_2/include/opencv4",
+                "${workspaceFolder}/include",
+                "/usr/local/Cellar/opencv/4.7.0_2/include/opencv4",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include",
+                "/usr/local/Cellar/opencv/4.7.0_2/include/opencv4",
+                "${workspaceFolder}/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c17",
-            "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64"
+            "cppStandard": "c++11",
+            "intelliSenseMode": "macos-clang-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        },
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "macFrameworkPath": [
+                "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "intelliSenseMode": "macos-clang-x64"
         }
     ],
     "version": 4

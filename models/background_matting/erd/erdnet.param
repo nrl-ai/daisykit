@@ -1,0 +1,196 @@
+7767517
+194 249
+Input                    input1                   0 1 input_blob1 -23330=4,3,256,256,3 0=256 1=256 2=3
+Split                    splitncnn_0              1 6 input_blob1 input_blob1_splitncnn_0 input_blob1_splitncnn_1 input_blob1_splitncnn_2 input_blob1_splitncnn_3 input_blob1_splitncnn_4 input_blob1_splitncnn_5 -23330=24,3,256,256,3,3,256,256,3,3,256,256,3,3,256,256,3,3,256,256,3,3,256,256,3
+Pooling                  ave_pool1                1 1 input_blob1_splitncnn_5 ave_pool_blob1 -23330=4,3,128,128,3 0=1 1=3 2=2 3=1 5=1
+Split                    splitncnn_1              1 2 ave_pool_blob1 ave_pool_blob1_splitncnn_0 ave_pool_blob1_splitncnn_1 -23330=8,3,128,128,3,3,128,128,3
+Pooling                  ave_pool2                1 1 ave_pool_blob1_splitncnn_1 ave_pool_blob2 -23330=4,3,64,64,3 0=1 1=3 2=2 3=1 5=1
+Split                    splitncnn_2              1 2 ave_pool_blob2 ave_pool_blob2_splitncnn_0 ave_pool_blob2_splitncnn_1 -23330=8,3,64,64,3,3,64,64,3
+Pooling                  ave_pool3                1 1 ave_pool_blob2_splitncnn_1 ave_pool_blob3 -23330=4,3,32,32,3 0=1 1=3 2=2 3=1 5=1
+Split                    splitncnn_3              1 2 ave_pool_blob3 ave_pool_blob3_splitncnn_0 ave_pool_blob3_splitncnn_1 -23330=8,3,32,32,3,3,32,32,3
+Pooling                  ave_pool4                1 1 ave_pool_blob3_splitncnn_1 ave_pool_blob4 -23330=4,3,16,16,3 0=1 1=3 2=2 3=1 5=1
+Convolution              conv1                    1 1 input_blob1_splitncnn_4 conv_blob1 -23330=4,3,128,128,12 0=12 1=3 3=2 4=1 5=1 6=324
+PReLU                    prelu1                   1 1 conv_blob1 prelu_blob1 -23330=4,3,128,128,12 0=12
+Split                    splitncnn_4              1 2 prelu_blob1 prelu_blob1_splitncnn_0 prelu_blob1_splitncnn_1 -23330=8,3,128,128,12,3,128,128,12
+Convolution              conv2                    1 1 prelu_blob1_splitncnn_1 conv_blob2 -23330=4,3,128,128,4 0=4 1=1 6=48
+Split                    splitncnn_5              1 2 conv_blob2 conv_blob2_splitncnn_0 conv_blob2_splitncnn_1 -23330=8,3,128,128,4,3,128,128,4
+Convolution              conv3                    1 1 conv_blob2_splitncnn_1 relu_blob1 -23330=4,3,128,128,4 0=4 1=3 4=1 5=1 6=144 9=1
+Concat                   cat1                     2 1 conv_blob2_splitncnn_0 relu_blob1 cat_blob1 -23330=4,3,128,128,8
+Split                    splitncnn_6              1 2 cat_blob1 cat_blob1_splitncnn_0 cat_blob1_splitncnn_1 -23330=8,3,128,128,8,3,128,128,8
+Convolution              conv4                    1 1 cat_blob1_splitncnn_1 relu_blob2 -23330=4,3,128,128,4 0=4 1=3 4=1 5=1 6=288 9=1
+Concat                   cat2                     2 1 cat_blob1_splitncnn_0 relu_blob2 cat_blob2 -23330=4,3,128,128,12
+Eltwise                  add1                     2 1 prelu_blob1_splitncnn_0 cat_blob2 add_blob1 -23330=4,3,128,128,12 0=1
+BatchNorm                batch_norm1              1 1 add_blob1 batch_norm_blob1_bn_scale1 -23330=4,3,128,128,12 0=12
+PReLU                    prelu2                   1 1 batch_norm_blob1_bn_scale1 prelu_blob2 -23330=4,3,128,128,12 0=12
+Split                    splitncnn_7              1 2 prelu_blob2 prelu_blob2_splitncnn_0 prelu_blob2_splitncnn_1 -23330=8,3,128,128,12,3,128,128,12
+Concat                   cat3                     2 1 ave_pool_blob1_splitncnn_0 prelu_blob2_splitncnn_1 cat_blob3 -23330=4,3,128,128,15
+BatchNorm                batch_norm2              1 1 cat_blob3 batch_norm_blob2_bn_scale2 -23330=4,3,128,128,15 0=15
+PReLU                    prelu3                   1 1 batch_norm_blob2_bn_scale2 prelu_blob3 -23330=4,3,128,128,15 0=15
+Convolution              conv5                    1 1 prelu_blob3 conv_blob5 -23330=4,3,64,64,24 0=24 1=3 3=2 4=1 5=1 6=3240
+PReLU                    prelu4                   1 1 conv_blob5 prelu_blob4 -23330=4,3,64,64,24 0=24
+Split                    splitncnn_8              1 3 prelu_blob4 prelu_blob4_splitncnn_0 prelu_blob4_splitncnn_1 prelu_blob4_splitncnn_2 -23330=12,3,64,64,24,3,64,64,24,3,64,64,24
+Convolution              conv6                    1 1 prelu_blob4_splitncnn_2 conv_blob6 -23330=4,3,64,64,8 0=8 1=1 6=192
+Split                    splitncnn_9              1 2 conv_blob6 conv_blob6_splitncnn_0 conv_blob6_splitncnn_1 -23330=8,3,64,64,8,3,64,64,8
+Convolution              conv7                    1 1 conv_blob6_splitncnn_1 relu_blob3 -23330=4,3,64,64,8 0=8 1=3 4=1 5=1 6=576 9=1
+Concat                   cat4                     2 1 conv_blob6_splitncnn_0 relu_blob3 cat_blob4 -23330=4,3,64,64,16
+Split                    splitncnn_10             1 2 cat_blob4 cat_blob4_splitncnn_0 cat_blob4_splitncnn_1 -23330=8,3,64,64,16,3,64,64,16
+Convolution              conv8                    1 1 cat_blob4_splitncnn_1 relu_blob4 -23330=4,3,64,64,8 0=8 1=3 4=1 5=1 6=1152 9=1
+Concat                   cat5                     2 1 cat_blob4_splitncnn_0 relu_blob4 cat_blob5 -23330=4,3,64,64,24
+Eltwise                  add2                     2 1 prelu_blob4_splitncnn_1 cat_blob5 add_blob2 -23330=4,3,64,64,24 0=1
+BatchNorm                batch_norm3              1 1 add_blob2 batch_norm_blob3_bn_scale3 -23330=4,3,64,64,24 0=24
+PReLU                    prelu5                   1 1 batch_norm_blob3_bn_scale3 prelu_blob5 -23330=4,3,64,64,24 0=24
+Split                    splitncnn_11             1 2 prelu_blob5 prelu_blob5_splitncnn_0 prelu_blob5_splitncnn_1 -23330=8,3,64,64,24,3,64,64,24
+Concat                   cat6                     3 1 ave_pool_blob2_splitncnn_0 prelu_blob4_splitncnn_0 prelu_blob5_splitncnn_1 cat_blob6 -23330=4,3,64,64,51
+BatchNorm                batch_norm4              1 1 cat_blob6 batch_norm_blob4_bn_scale4 -23330=4,3,64,64,51 0=51
+PReLU                    prelu6                   1 1 batch_norm_blob4_bn_scale4 prelu_blob6 -23330=4,3,64,64,51 0=51
+Convolution              conv9                    1 1 prelu_blob6 conv_blob9 -23330=4,3,32,32,48 0=48 1=3 3=2 4=1 5=1 6=22032
+PReLU                    prelu7                   1 1 conv_blob9 prelu_blob7 -23330=4,3,32,32,48 0=48
+Split                    splitncnn_12             1 3 prelu_blob7 prelu_blob7_splitncnn_0 prelu_blob7_splitncnn_1 prelu_blob7_splitncnn_2 -23330=12,3,32,32,48,3,32,32,48,3,32,32,48
+Convolution              conv10                   1 1 prelu_blob7_splitncnn_2 conv_blob10 -23330=4,3,32,32,16 0=16 1=1 6=768
+Split                    splitncnn_13             1 2 conv_blob10 conv_blob10_splitncnn_0 conv_blob10_splitncnn_1 -23330=8,3,32,32,16,3,32,32,16
+Convolution              conv11                   1 1 conv_blob10_splitncnn_1 relu_blob5 -23330=4,3,32,32,16 0=16 1=3 4=1 5=1 6=2304 9=1
+Concat                   cat7                     2 1 conv_blob10_splitncnn_0 relu_blob5 cat_blob7 -23330=4,3,32,32,32
+Split                    splitncnn_14             1 2 cat_blob7 cat_blob7_splitncnn_0 cat_blob7_splitncnn_1 -23330=8,3,32,32,32,3,32,32,32
+Convolution              conv12                   1 1 cat_blob7_splitncnn_1 relu_blob6 -23330=4,3,32,32,16 0=16 1=3 4=1 5=1 6=4608 9=1
+Concat                   cat8                     2 1 cat_blob7_splitncnn_0 relu_blob6 cat_blob8 -23330=4,3,32,32,48
+Eltwise                  add3                     2 1 prelu_blob7_splitncnn_1 cat_blob8 add_blob3 -23330=4,3,32,32,48 0=1
+BatchNorm                batch_norm5              1 1 add_blob3 batch_norm_blob5_bn_scale5 -23330=4,3,32,32,48 0=48
+PReLU                    prelu8                   1 1 batch_norm_blob5_bn_scale5 prelu_blob8 -23330=4,3,32,32,48 0=48
+Split                    splitncnn_15             1 2 prelu_blob8 prelu_blob8_splitncnn_0 prelu_blob8_splitncnn_1 -23330=8,3,32,32,48,3,32,32,48
+Concat                   cat9                     3 1 ave_pool_blob3_splitncnn_0 prelu_blob7_splitncnn_0 prelu_blob8_splitncnn_1 cat_blob9 -23330=4,3,32,32,99
+BatchNorm                batch_norm6              1 1 cat_blob9 batch_norm_blob6_bn_scale6 -23330=4,3,32,32,99 0=99
+PReLU                    prelu9                   1 1 batch_norm_blob6_bn_scale6 prelu_blob9 -23330=4,3,32,32,99 0=99
+Convolution              conv13                   1 1 prelu_blob9 conv_blob13 -23330=4,3,16,16,96 0=96 1=3 3=2 4=1 5=1 6=85536
+PReLU                    prelu10                  1 1 conv_blob13 prelu_blob10 -23330=4,3,16,16,96 0=96
+Split                    splitncnn_16             1 3 prelu_blob10 prelu_blob10_splitncnn_0 prelu_blob10_splitncnn_1 prelu_blob10_splitncnn_2 -23330=12,3,16,16,96,3,16,16,96,3,16,16,96
+Convolution              conv14                   1 1 prelu_blob10_splitncnn_2 conv_blob14 -23330=4,3,16,16,16 0=16 1=1 6=1536
+Split                    splitncnn_17             1 2 conv_blob14 conv_blob14_splitncnn_0 conv_blob14_splitncnn_1 -23330=8,3,16,16,16,3,16,16,16
+Convolution              conv15                   1 1 conv_blob14_splitncnn_1 relu_blob7 -23330=4,3,16,16,16 0=16 1=3 4=1 5=1 6=2304 9=1
+Concat                   cat10                    2 1 conv_blob14_splitncnn_0 relu_blob7 cat_blob10 -23330=4,3,16,16,32
+Split                    splitncnn_18             1 2 cat_blob10 cat_blob10_splitncnn_0 cat_blob10_splitncnn_1 -23330=8,3,16,16,32,3,16,16,32
+Convolution              conv16                   1 1 cat_blob10_splitncnn_1 relu_blob8 -23330=4,3,16,16,16 0=16 1=3 4=1 5=1 6=4608 9=1
+Concat                   cat11                    2 1 cat_blob10_splitncnn_0 relu_blob8 cat_blob11 -23330=4,3,16,16,48
+Split                    splitncnn_19             1 2 cat_blob11 cat_blob11_splitncnn_0 cat_blob11_splitncnn_1 -23330=8,3,16,16,48,3,16,16,48
+Convolution              conv17                   1 1 cat_blob11_splitncnn_1 relu_blob9 -23330=4,3,16,16,16 0=16 1=3 4=1 5=1 6=6912 9=1
+Concat                   cat12                    2 1 cat_blob11_splitncnn_0 relu_blob9 cat_blob12 -23330=4,3,16,16,64
+Split                    splitncnn_20             1 2 cat_blob12 cat_blob12_splitncnn_0 cat_blob12_splitncnn_1 -23330=8,3,16,16,64,3,16,16,64
+Convolution              conv18                   1 1 cat_blob12_splitncnn_1 relu_blob10 -23330=4,3,16,16,16 0=16 1=3 4=1 5=1 6=9216 9=1
+Concat                   cat13                    2 1 cat_blob12_splitncnn_0 relu_blob10 cat_blob13 -23330=4,3,16,16,80
+Split                    splitncnn_21             1 2 cat_blob13 cat_blob13_splitncnn_0 cat_blob13_splitncnn_1 -23330=8,3,16,16,80,3,16,16,80
+Convolution              conv19                   1 1 cat_blob13_splitncnn_1 relu_blob11 -23330=4,3,16,16,16 0=16 1=3 4=1 5=1 6=11520 9=1
+Concat                   cat14                    2 1 cat_blob13_splitncnn_0 relu_blob11 cat_blob14 -23330=4,3,16,16,96
+Eltwise                  add4                     2 1 prelu_blob10_splitncnn_1 cat_blob14 add_blob4 -23330=4,3,16,16,96 0=1
+BatchNorm                batch_norm7              1 1 add_blob4 batch_norm_blob7_bn_scale7 -23330=4,3,16,16,96 0=96
+PReLU                    prelu11                  1 1 batch_norm_blob7_bn_scale7 prelu_blob11 -23330=4,3,16,16,96 0=96
+Split                    splitncnn_22             1 2 prelu_blob11 prelu_blob11_splitncnn_0 prelu_blob11_splitncnn_1 -23330=8,3,16,16,96,3,16,16,96
+Convolution              conv20                   1 1 prelu_blob11_splitncnn_1 conv_blob20 -23330=4,3,16,16,16 0=16 1=1 6=1536
+Split                    splitncnn_23             1 2 conv_blob20 conv_blob20_splitncnn_0 conv_blob20_splitncnn_1 -23330=8,3,16,16,16,3,16,16,16
+Convolution              conv21                   1 1 conv_blob20_splitncnn_1 relu_blob12 -23330=4,3,16,16,16 0=16 1=3 4=1 5=1 6=2304 9=1
+Concat                   cat15                    2 1 conv_blob20_splitncnn_0 relu_blob12 cat_blob15 -23330=4,3,16,16,32
+Split                    splitncnn_24             1 2 cat_blob15 cat_blob15_splitncnn_0 cat_blob15_splitncnn_1 -23330=8,3,16,16,32,3,16,16,32
+Convolution              conv22                   1 1 cat_blob15_splitncnn_1 relu_blob13 -23330=4,3,16,16,16 0=16 1=3 4=1 5=1 6=4608 9=1
+Concat                   cat16                    2 1 cat_blob15_splitncnn_0 relu_blob13 cat_blob16 -23330=4,3,16,16,48
+Split                    splitncnn_25             1 2 cat_blob16 cat_blob16_splitncnn_0 cat_blob16_splitncnn_1 -23330=8,3,16,16,48,3,16,16,48
+Convolution              conv23                   1 1 cat_blob16_splitncnn_1 relu_blob14 -23330=4,3,16,16,16 0=16 1=3 4=1 5=1 6=6912 9=1
+Concat                   cat17                    2 1 cat_blob16_splitncnn_0 relu_blob14 cat_blob17 -23330=4,3,16,16,64
+Split                    splitncnn_26             1 2 cat_blob17 cat_blob17_splitncnn_0 cat_blob17_splitncnn_1 -23330=8,3,16,16,64,3,16,16,64
+Convolution              conv24                   1 1 cat_blob17_splitncnn_1 relu_blob15 -23330=4,3,16,16,16 0=16 1=3 4=1 5=1 6=9216 9=1
+Concat                   cat18                    2 1 cat_blob17_splitncnn_0 relu_blob15 cat_blob18 -23330=4,3,16,16,80
+Split                    splitncnn_27             1 2 cat_blob18 cat_blob18_splitncnn_0 cat_blob18_splitncnn_1 -23330=8,3,16,16,80,3,16,16,80
+Convolution              conv25                   1 1 cat_blob18_splitncnn_1 relu_blob16 -23330=4,3,16,16,16 0=16 1=3 4=1 5=1 6=11520 9=1
+Concat                   cat19                    2 1 cat_blob18_splitncnn_0 relu_blob16 cat_blob19 -23330=4,3,16,16,96
+Eltwise                  add5                     2 1 prelu_blob11_splitncnn_0 cat_blob19 add_blob5 -23330=4,3,16,16,96 0=1
+BatchNorm                batch_norm8              1 1 add_blob5 batch_norm_blob8_bn_scale8 -23330=4,3,16,16,96 0=96
+PReLU                    prelu12                  1 1 batch_norm_blob8_bn_scale8 prelu_blob12 -23330=4,3,16,16,96 0=96
+Split                    splitncnn_28             1 2 prelu_blob12 prelu_blob12_splitncnn_0 prelu_blob12_splitncnn_1 -23330=8,3,16,16,96,3,16,16,96
+Concat                   cat20                    3 1 ave_pool_blob4 prelu_blob10_splitncnn_0 prelu_blob12_splitncnn_1 cat_blob20 -23330=4,3,16,16,195
+BatchNorm                batch_norm9              1 1 cat_blob20 batch_norm_blob9_bn_scale9 -23330=4,3,16,16,195 0=195
+PReLU                    prelu13                  1 1 batch_norm_blob9_bn_scale9 prelu_blob13 -23330=4,3,16,16,195 0=195
+Convolution              conv26                   1 1 prelu_blob13 conv_blob26 -23330=4,3,8,8,192 0=192 1=3 3=2 4=1 5=1 6=336960
+PReLU                    prelu14                  1 1 conv_blob26 prelu_blob14 -23330=4,3,8,8,192 0=192
+Split                    splitncnn_29             1 2 prelu_blob14 prelu_blob14_splitncnn_0 prelu_blob14_splitncnn_1 -23330=8,3,8,8,192,3,8,8,192
+Convolution              conv27                   1 1 prelu_blob14_splitncnn_1 conv_blob27 -23330=4,3,8,8,32 0=32 1=1 6=6144
+Split                    splitncnn_30             1 2 conv_blob27 conv_blob27_splitncnn_0 conv_blob27_splitncnn_1 -23330=8,3,8,8,32,3,8,8,32
+Convolution              conv28                   1 1 conv_blob27_splitncnn_1 relu_blob17 -23330=4,3,8,8,32 0=32 1=3 4=1 5=1 6=9216 9=1
+Concat                   cat21                    2 1 conv_blob27_splitncnn_0 relu_blob17 cat_blob21 -23330=4,3,8,8,64
+Split                    splitncnn_31             1 2 cat_blob21 cat_blob21_splitncnn_0 cat_blob21_splitncnn_1 -23330=8,3,8,8,64,3,8,8,64
+Convolution              conv29                   1 1 cat_blob21_splitncnn_1 relu_blob18 -23330=4,3,8,8,32 0=32 1=3 4=1 5=1 6=18432 9=1
+Concat                   cat22                    2 1 cat_blob21_splitncnn_0 relu_blob18 cat_blob22 -23330=4,3,8,8,96
+Split                    splitncnn_32             1 2 cat_blob22 cat_blob22_splitncnn_0 cat_blob22_splitncnn_1 -23330=8,3,8,8,96,3,8,8,96
+Convolution              conv30                   1 1 cat_blob22_splitncnn_1 relu_blob19 -23330=4,3,8,8,32 0=32 1=3 4=1 5=1 6=27648 9=1
+Concat                   cat23                    2 1 cat_blob22_splitncnn_0 relu_blob19 cat_blob23 -23330=4,3,8,8,128
+Split                    splitncnn_33             1 2 cat_blob23 cat_blob23_splitncnn_0 cat_blob23_splitncnn_1 -23330=8,3,8,8,128,3,8,8,128
+Convolution              conv31                   1 1 cat_blob23_splitncnn_1 relu_blob20 -23330=4,3,8,8,32 0=32 1=3 4=1 5=1 6=36864 9=1
+Concat                   cat24                    2 1 cat_blob23_splitncnn_0 relu_blob20 cat_blob24 -23330=4,3,8,8,160
+Split                    splitncnn_34             1 2 cat_blob24 cat_blob24_splitncnn_0 cat_blob24_splitncnn_1 -23330=8,3,8,8,160,3,8,8,160
+Convolution              conv32                   1 1 cat_blob24_splitncnn_1 relu_blob21 -23330=4,3,8,8,32 0=32 1=3 4=1 5=1 6=46080 9=1
+Concat                   cat25                    2 1 cat_blob24_splitncnn_0 relu_blob21 cat_blob25 -23330=4,3,8,8,192
+Eltwise                  add6                     2 1 prelu_blob14_splitncnn_0 cat_blob25 add_blob6 -23330=4,3,8,8,192 0=1
+BatchNorm                batch_norm10             1 1 add_blob6 batch_norm_blob10_bn_scale10 -23330=4,3,8,8,192 0=192
+PReLU                    prelu15                  1 1 batch_norm_blob10_bn_scale10 prelu_blob15 -23330=4,3,8,8,192 0=192
+Split                    splitncnn_35             1 2 prelu_blob15 prelu_blob15_splitncnn_0 prelu_blob15_splitncnn_1 -23330=8,3,8,8,192,3,8,8,192
+Convolution              conv33                   1 1 prelu_blob15_splitncnn_1 conv_blob33 -23330=4,3,8,8,32 0=32 1=1 6=6144
+Split                    splitncnn_36             1 2 conv_blob33 conv_blob33_splitncnn_0 conv_blob33_splitncnn_1 -23330=8,3,8,8,32,3,8,8,32
+Convolution              conv34                   1 1 conv_blob33_splitncnn_1 relu_blob22 -23330=4,3,8,8,32 0=32 1=3 4=1 5=1 6=9216 9=1
+Concat                   cat26                    2 1 conv_blob33_splitncnn_0 relu_blob22 cat_blob26 -23330=4,3,8,8,64
+Split                    splitncnn_37             1 2 cat_blob26 cat_blob26_splitncnn_0 cat_blob26_splitncnn_1 -23330=8,3,8,8,64,3,8,8,64
+Convolution              conv35                   1 1 cat_blob26_splitncnn_1 relu_blob23 -23330=4,3,8,8,32 0=32 1=3 4=1 5=1 6=18432 9=1
+Concat                   cat27                    2 1 cat_blob26_splitncnn_0 relu_blob23 cat_blob27 -23330=4,3,8,8,96
+Split                    splitncnn_38             1 2 cat_blob27 cat_blob27_splitncnn_0 cat_blob27_splitncnn_1 -23330=8,3,8,8,96,3,8,8,96
+Convolution              conv36                   1 1 cat_blob27_splitncnn_1 relu_blob24 -23330=4,3,8,8,32 0=32 1=3 4=1 5=1 6=27648 9=1
+Concat                   cat28                    2 1 cat_blob27_splitncnn_0 relu_blob24 cat_blob28 -23330=4,3,8,8,128
+Split                    splitncnn_39             1 2 cat_blob28 cat_blob28_splitncnn_0 cat_blob28_splitncnn_1 -23330=8,3,8,8,128,3,8,8,128
+Convolution              conv37                   1 1 cat_blob28_splitncnn_1 relu_blob25 -23330=4,3,8,8,32 0=32 1=3 4=1 5=1 6=36864 9=1
+Concat                   cat29                    2 1 cat_blob28_splitncnn_0 relu_blob25 cat_blob29 -23330=4,3,8,8,160
+Split                    splitncnn_40             1 2 cat_blob29 cat_blob29_splitncnn_0 cat_blob29_splitncnn_1 -23330=8,3,8,8,160,3,8,8,160
+Convolution              conv38                   1 1 cat_blob29_splitncnn_1 relu_blob26 -23330=4,3,8,8,32 0=32 1=3 4=1 5=1 6=46080 9=1
+Concat                   cat30                    2 1 cat_blob29_splitncnn_0 relu_blob26 cat_blob30 -23330=4,3,8,8,192
+Eltwise                  add7                     2 1 prelu_blob15_splitncnn_0 cat_blob30 add_blob7 -23330=4,3,8,8,192 0=1
+BatchNorm                batch_norm11             1 1 add_blob7 batch_norm_blob11_bn_scale11 -23330=4,3,8,8,192 0=192
+PReLU                    prelu16                  1 1 batch_norm_blob11_bn_scale11 prelu_blob16 -23330=4,3,8,8,192 0=192
+Convolution              conv39                   1 1 prelu_blob16 conv_blob39 -23330=4,3,8,8,2 0=2 1=1 6=384
+Interp                   interp1                  1 1 conv_blob39 interp_blob1 -23330=4,3,16,16,2 0=2 1=2.000000e+00 2=2.000000e+00
+Convolution              conv40                   1 1 prelu_blob12_splitncnn_0 conv_blob40 -23330=4,3,16,16,2 0=2 1=3 4=1 5=1 6=1728
+PReLU                    prelu17                  1 1 conv_blob40 prelu_blob17 -23330=4,3,16,16,2 0=2
+BatchNorm                batch_norm12             1 1 prelu_blob17 batch_norm_blob12_bn_scale12 -23330=4,3,16,16,2 0=2
+PReLU                    prelu18                  1 1 batch_norm_blob12_bn_scale12 prelu_blob18 -23330=4,3,16,16,2 0=2
+Eltwise                  add8                     2 1 interp_blob1 prelu_blob18 add_blob8 -23330=4,3,16,16,2 0=1
+Convolution              conv41                   1 1 add_blob8 conv_blob41 -23330=4,3,16,16,2 0=2 1=3 4=1 6=36
+Interp                   interp2                  1 1 conv_blob41 interp_blob2 -23330=4,3,32,32,2 0=2 1=2.000000e+00 2=2.000000e+00
+Convolution              conv42                   1 1 prelu_blob8_splitncnn_0 conv_blob42 -23330=4,3,32,32,2 0=2 1=3 4=1 5=1 6=864
+PReLU                    prelu19                  1 1 conv_blob42 prelu_blob19 -23330=4,3,32,32,2 0=2
+BatchNorm                batch_norm13             1 1 prelu_blob19 batch_norm_blob13_bn_scale13 -23330=4,3,32,32,2 0=2
+PReLU                    prelu20                  1 1 batch_norm_blob13_bn_scale13 prelu_blob20 -23330=4,3,32,32,2 0=2
+Eltwise                  add9                     2 1 interp_blob2 prelu_blob20 add_blob9 -23330=4,3,32,32,2 0=1
+Convolution              conv43                   1 1 add_blob9 conv_blob43 -23330=4,3,32,32,2 0=2 1=3 4=1 6=36
+Interp                   interp3                  1 1 conv_blob43 interp_blob3 -23330=4,3,64,64,2 0=2 1=2.000000e+00 2=2.000000e+00
+Convolution              conv44                   1 1 prelu_blob5_splitncnn_0 conv_blob44 -23330=4,3,64,64,2 0=2 1=3 4=1 5=1 6=432
+PReLU                    prelu21                  1 1 conv_blob44 prelu_blob21 -23330=4,3,64,64,2 0=2
+BatchNorm                batch_norm14             1 1 prelu_blob21 batch_norm_blob14_bn_scale14 -23330=4,3,64,64,2 0=2
+PReLU                    prelu22                  1 1 batch_norm_blob14_bn_scale14 prelu_blob22 -23330=4,3,64,64,2 0=2
+Eltwise                  add10                    2 1 interp_blob3 prelu_blob22 add_blob10 -23330=4,3,64,64,2 0=1
+Convolution              conv45                   1 1 add_blob10 conv_blob45 -23330=4,3,64,64,2 0=2 1=3 4=1 6=36
+Interp                   interp4                  1 1 conv_blob45 interp_blob4 -23330=4,3,128,128,2 0=2 1=2.000000e+00 2=2.000000e+00
+Convolution              conv46                   1 1 prelu_blob2_splitncnn_0 conv_blob46 -23330=4,3,128,128,2 0=2 1=3 4=1 5=1 6=216
+PReLU                    prelu23                  1 1 conv_blob46 prelu_blob23 -23330=4,3,128,128,2 0=2
+BatchNorm                batch_norm15             1 1 prelu_blob23 batch_norm_blob15_bn_scale15 -23330=4,3,128,128,2 0=2
+PReLU                    prelu24                  1 1 batch_norm_blob15_bn_scale15 prelu_blob24 -23330=4,3,128,128,2 0=2
+Eltwise                  add11                    2 1 interp_blob4 prelu_blob24 add_blob11 -23330=4,3,128,128,2 0=1
+Convolution              conv47                   1 1 add_blob11 conv_blob47 -23330=4,3,128,128,2 0=2 1=3 4=1 6=36
+Interp                   interp5                  1 1 conv_blob47 interp_blob5 -23330=4,3,256,256,2 0=2 1=2.000000e+00 2=2.000000e+00
+Softmax                  softmax1                 1 1 interp_blob5 softmax_blob1 -23330=4,3,256,256,2
+Split                    splitncnn_41             1 2 softmax_blob1 softmax_blob1_splitncnn_0 softmax_blob1_splitncnn_1 -23330=8,3,256,256,2,3,256,256,2
+Slice                    slice1                   1 2 softmax_blob1_splitncnn_1 slice_blob1 slice_blob2 -23330=8,3,256,256,1,3,256,256,1 -23300=2,1,-233
+Split                    splitncnn_42             1 4 slice_blob2 slice_blob2_splitncnn_0 slice_blob2_splitncnn_1 slice_blob2_splitncnn_2 slice_blob2_splitncnn_3 -23330=16,3,256,256,1,3,256,256,1,3,256,256,1,3,256,256,1
+Eltwise                  mul1                     2 1 input_blob1_splitncnn_3 input_blob1_splitncnn_2 mul_blob1 -23330=4,3,256,256,3
+Concat                   cat31                    3 1 slice_blob2_splitncnn_3 slice_blob2_splitncnn_2 slice_blob2_splitncnn_1 cat_blob31 -23330=4,3,256,256,3
+Eltwise                  mul2                     2 1 input_blob1_splitncnn_1 cat_blob31 mul_blob2 -23330=4,3,256,256,3
+Concat                   cat32                    4 1 input_blob1_splitncnn_0 softmax_blob1_splitncnn_0 mul_blob1 mul_blob2 cat_blob32 -23330=4,3,256,256,11
+Convolution              conv48                   1 1 cat_blob32 relu_blob27 -23330=4,3,256,256,8 0=8 1=3 4=1 5=1 6=792 9=1
+Convolution              conv49                   1 1 relu_blob27 conv_blob49 -23330=4,3,256,256,3 0=3 1=3 4=1 5=1 6=216
+Slice                    slice2                   1 3 conv_blob49 slice_blob3 slice_blob4 slice_blob5 -23330=12,3,256,256,1,3,256,256,1,3,256,256,1 -23300=3,1,1,1
+Eltwise                  mul3                     2 1 slice_blob3 slice_blob2_splitncnn_0 mul_blob3 -23330=4,3,256,256,1
+Eltwise                  mul4                     2 1 slice_blob4 slice_blob1 mul_blob4 -23330=4,3,256,256,1
+Eltwise                  add12                    2 1 mul_blob3 mul_blob4 add_blob12 -23330=4,3,256,256,1 0=1
+Eltwise                  add13                    2 1 add_blob12 slice_blob5 add_blob13 -23330=4,3,256,256,1 0=1
+Sigmoid                  sigmoid1                 1 1 add_blob13 sigmoid_blob1 -23330=4,3,256,256,1

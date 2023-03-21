@@ -1,0 +1,16 @@
+{
+  "person_detection_model": {
+    "model": "models/human_detection/ssd_mobilenetv2.param",
+    "weights": "models/human_detection/ssd_mobilenetv2.bin",
+    "input_width": 320,
+    "input_height": 320,
+    "use_gpu": false
+  },
+  "human_pose_model": {
+    "model": "models/human_pose_detection/movenet/lightning.param",
+    "weights": "models/human_pose_detection/movenet/lightning.bin",
+    "input_width": 192,
+    "input_height": 192,
+    "use_gpu": false
+  }
+}
