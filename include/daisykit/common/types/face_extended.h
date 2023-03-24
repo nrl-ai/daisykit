@@ -29,7 +29,6 @@ class FaceExtended : public Face {
  public:
   float liveness_score;
 
-  
   cv::Mat aligned_face;  /// Aligned face. For increasing recognition accuracy,
                          /// the face should be aligned before recognition.
   std::vector<float> feature;  /// Feature vector for face recognition

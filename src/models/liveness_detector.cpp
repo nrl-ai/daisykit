@@ -24,10 +24,11 @@
 #include <vector>
 
 
-daisykit::models::FaceDetectorSCRFD<daisykit::types::FaceExtended>* face_detector =
+daisykit::models::FaceDetectorSCRFD<daisykit::types::FaceExtended>* face_detector_ =
     new daisykit::models::FaceDetectorSCRFD<daisykit::types::FaceExtended>(
         "models/face_detection_scrfd/scrfd_2.5g_1.param",
         "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
+
 
 namespace daisykit {
 namespace models {
@@ -49,15 +50,60 @@ namespace models {
         ImageModel(input_width, input_height) {}
     #endif
 
+    cv::Rect LivenessDetector::CalculateBox(std::vector<int> &face_box, int w, int h) {
+        float scale_ = 4.0;
+        float scale = std::min(
+            scale_,
+            std::min((w - 1) / (float) face_box[2], (h - 1) / (float) face_box[3])
+        );
+        int box_center_x = face_box[2] / 2 + face_box[0];
+        int box_center_y = face_box[3] / 2 + face_box[1];
+
+        int new_width = static_cast<int>(face_box[2]* scale);
+        int new_height = static_cast<int>(face_box[3]* scale);
+
+        int left_top_x = box_center_x - new_width / 2;
+        int left_top_y = box_center_y - new_height / 2;
+        int right_bottom_x = box_center_x + new_width / 2;
+        int right_bottom_y = box_center_y + new_height / 2;
+
+        if (left_top_x < 0) {
+        right_bottom_x -= left_top_x;
+        left_top_x = 0;
+        }
+
+        if (left_top_y < 0) {
+            right_bottom_y -= left_top_y;
+            left_top_y = 0;
+        }
+
+        if (right_bottom_x >= w) {
+            int s = right_bottom_x - w + 1;
+            left_top_x -= s;
+            right_bottom_x -= s;
+        }
+
+        if (right_bottom_y >= h) {
+            int s = right_bottom_y - h + 1;
+            left_top_y -= s;
+            right_bottom_y -= s;
+        }
+
+        return cv::Rect(left_top_x, left_top_y, new_width, new_height);
+    }
+
     void LivenessDetector::Preprocess(const cv::Mat&image, ncnn::Mat &net_input) {
         std::vector<int> face_box; 
-        std::vector<daisykit::types::FaceExtended> face;
-        face_detector->Predict(image, face, face_box);
-        cv::Mat roi;
-        cv::Rect rect = cv::Rect(face_box[0], face_box[1], face_box[0]+face_box[2], face_box[1]+face_box[3]);
-        cv::resize(image(rect), roi, cv::Size(80, 80));
-
-        ncnn::Mat in = ncnn::Mat::from_pixels(roi.data, ncnn::Mat::PIXEL_BGR, roi.cols, roi.rows);
+        std::vector<daisykit::types::FaceExtended> face_;
+        face_detector_->Predict(image, face_, face_box);
+        if (!face_.empty()) {
+            std::cout << "face_box not empty" << std::endl;
+            cv::Mat roi;
+            cv::Rect rect = CalculateBox(face_box, image.cols, image.rows);
+            cv::resize(image(rect), roi, cv::Size(80, 80));
+            net_input = ncnn::Mat::from_pixels(roi.data, ncnn::Mat::PIXEL_BGR, roi.cols, roi.rows);
+        }
+        std::cout << "face_box is empty" << std::endl;
     }
 
     int LivenessDetector::Predict(const cv::Mat&image, std::vector<types::FaceExtended> &faces) {
@@ -66,7 +112,6 @@ namespace models {
         ncnn::Mat in;
         Preprocess(image, in);
 
-        // Model Inference
         ncnn::Mat out;
         int result = Infer(in, out, "data", "softmax");
         if (result != 0) return 0;
@@ -74,6 +119,7 @@ namespace models {
         // Post process
         liveness_score += out.row(0)[1];
         faces[0].liveness_score = liveness_score;
+        // Model Inference
 
         return 0;
     }

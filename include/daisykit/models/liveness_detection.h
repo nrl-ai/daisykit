@@ -48,6 +48,7 @@ namespace models {
             int Predict(const cv::Mat&image, std::vector<daisykit::types::FaceExtended> &face);
         private:
             void Preprocess(const cv::Mat&image, ncnn::Mat &net_input);
+            cv::Rect CalculateBox(std::vector<int> &face_box, int w, int h);
 };
 }
 }
