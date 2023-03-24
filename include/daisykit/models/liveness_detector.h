@@ -19,11 +19,10 @@
 #include "daisykit/models/image_model.h"
 #include "daisykit/models/ncnn_model.h"
 
-#include <vector>
 #include <opencv2/opencv.hpp>
+#include <vector>
 
 #include <string>
-
 
 #ifdef __ANDROID__
 #include <android/asset_manager_jni.h>
@@ -32,24 +31,27 @@
 namespace daisykit {
 namespace models {
 
-    class LivenessDetector : public NCNNModel, public ImageModel {
-        public: 
-            LivenessDetector(const char*param_buffer, const unsigned char*weight_buffer, 
-                            int input_width = 80, int input_height = 80, bool use_gpu = false);
-            LivenessDetector(const std::string& param_file, const std::string& weight_file,
-                            int input_width = 80, int input_height = 80, bool use_gpu = false);
+class LivenessDetector : public NCNNModel, public ImageModel {
+ public:
+  LivenessDetector(const char* param_buffer, const unsigned char* weight_buffer,
+                   int input_width = 80, int input_height = 80,
+                   bool use_gpu = false);
+  LivenessDetector(const std::string& param_file,
+                   const std::string& weight_file, int input_width = 80,
+                   int input_height = 80, bool use_gpu = false);
 
-        #ifdef __ANDROID__
-            LivenessDetector(
-                            AAssetManager* mgr,
-                            const std::string& param_file, const std::string& weight_file);
-        #endif
+#ifdef __ANDROID__
+  LivenessDetector(AAssetManager* mgr, const std::string& param_file,
+                   const std::string& weight_file);
+#endif
 
-            int Predict(const cv::Mat&image, std::vector<daisykit::types::FaceExtended> &face);
-        private:
-            void Preprocess(const cv::Mat&image, ncnn::Mat &net_input);
-            cv::Rect CalculateBox(std::vector<int> &face_box, int w, int h);
+  int Predict(const cv::Mat& image,
+              std::vector<daisykit::types::FaceExtended>& face);
+
+ private:
+  void Preprocess(const cv::Mat& image, ncnn::Mat& net_input);
+  cv::Rect CalculateBox(std::vector<int>& face_box, int w, int h);
 };
-}
-}
+}  // namespace models
+}  // namespace daisykit
 #endif
