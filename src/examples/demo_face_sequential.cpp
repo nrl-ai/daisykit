@@ -46,9 +46,9 @@ FaceExtractor* face_extractor =
 
 FaceManager* face_manager = new FaceManager("data.hnsw", 1000, 1, 512, 1.01);
 
-LivenessDetector* liveness_detector = 
+LivenessDetector* liveness_detector =
     new LivenessDetector("models/face_antispoofing/model_2.param",
-                        "models/face_antispoofing/model_2.bin", 80, 80, true);
+                         "models/face_antispoofing/model_2.bin", 80, 80, true);
 
 int main(int argc, char** argv) {
   // Read faces and name to register
