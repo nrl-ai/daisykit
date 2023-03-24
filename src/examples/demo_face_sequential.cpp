@@ -18,6 +18,7 @@
 #include "daisykit/models/face_recognition/face_detector_scrfd.h"
 #include "daisykit/models/face_recognition/face_extractor.h"
 #include "daisykit/models/face_recognition/face_manager.h"
+#include "daisykit/models/liveness_detector.h"
 #include "third_party/json.hpp"
 
 #include <stdio.h>
@@ -45,49 +46,54 @@ FaceExtractor* face_extractor =
 
 FaceManager* face_manager = new FaceManager("data.hnsw", 1000, 1, 512, 1.01);
 
+LivenessDetector* liveness_detector = 
+    new LivenessDetector("models/face_antispoofing/model_2.param",
+                        "models/face_antispoofing/model_2.bin", 80, 80, true);
+
 int main(int argc, char** argv) {
   // Read faces and name to register
-  if (argc < 2) {
-    std::cout << "Please an image to register" << std::endl;
-    std::cout << "Example: ./demo_face_sequential data/my_face.jpg"
-              << std::endl;
-    return 1;
-  }
+  // if (argc < 2) {
+  //   std::cout << "Please an image to register" << std::endl;
+  //   std::cout << "Example: ./demo_face_sequential data/my_face.jpg"
+  //             << std::endl;
+  //   return 1;
+  // }
 
-  if (!face_manager->LoadData())
-    std::cout << "File was not found or not supported." << std::endl;
+  // if (!face_manager->LoadData())
+  //   std::cout << "File was not found or not supported." << std::endl;
 
   // Read parameters
-  std::string person_image_path = argv[1];
-  std::string person_name;
-  for (int i = 2; i < argc; i++) {
-    person_name += argv[i];
-    if (i < argc - 1) person_name += " ";
-  }
+  // std::string person_image_path = argv[1];
+  // std::string person_name;
+  // for (int i = 2; i < argc; i++) {
+  //   person_name += argv[i];
+  //   if (i < argc - 1) person_name += " ";
+  // }
 
   // Predict and check faces
   // Currently only support one face per image
   std::vector<types::FaceExtended> faces;
   std::vector<types::FaceSearchResult> result;
-  cv::Mat regis_img = cv::imread(person_image_path);
+  // cv::Mat regis_img = cv::imread(person_image_path);
   faces.clear();
-  face_detector->Predict(regis_img, faces);
-  std::cout << faces.size() << std::endl;
-  if (faces.size() != 1) {
-    std::cout << "Provide image with only one face to register";
-    return 1;
-  }
+  std::vector<int> face_box_image;
+  // face_detector->Predict(regis_img, faces, face_box_image);
+  // std::cout << faces.size() << std::endl;
+  // if (faces.size() != 1) {
+  //   std::cout << "Provide image with only one face to register";
+  //   return 1;
+  // }
 
   // Align and extract face feature
-  face_aligner->AlignMutipleFaces(regis_img, faces);
-  face_extractor->Predict(faces);
-  if (faces.size() == 1) {
-    int id;
-    if (face_manager->Insert(faces[0].feature, id))  // feature, name, id
-      std::cout << "Inserted successfully with id : " << id << std::endl;
-    else
-      std::cout << "Insertion failed." << std::endl;
-  }
+  // face_aligner->AlignMutipleFaces(regis_img, faces);
+  // face_extractor->Predict(faces);
+  // if (faces.size() == 1) {
+  //   int id;
+  //   if (face_manager->Insert(faces[0].feature, id))  // feature, name, id
+  //     std::cout << "Inserted successfully with id : " << id << std::endl;
+  //   else
+  //     std::cout << "Insertion failed." << std::endl;
+  // }
 
   std::cout << "Number of loaded faces: " << face_manager->GetNumDatas()
             << std::endl;
@@ -98,9 +104,19 @@ int main(int argc, char** argv) {
 
   while (1) {
     cap >> frame;
-    face_detector->Predict(frame, faces);
+    Mat live_frame = frame;
+    std::vector<int> face_box;
+    face_detector->Predict(frame, faces, face_box);
+    liveness_detector->Predict(live_frame, faces);
+    cout << "Liveness_Score: " << faces[0].liveness_score << endl;
+    if (faces[0].liveness_score < 0.95) {
+      imshow("Image", frame);
+      waitKey(1);
+      continue;
+    }
     face_aligner->AlignMutipleFaces(frame, faces);
     face_extractor->Predict(faces);
+
     cv::Mat draw = frame.clone();
     visualizers::FaceVisualizer<types::FaceExtended>::DrawFace(draw, faces,
                                                                draw_landmarks);
