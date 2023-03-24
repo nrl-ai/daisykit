@@ -44,7 +44,7 @@ class FaceDetectorSCRFD : public NCNNModel, public ImageModel {
 
   /// Detect faces in an image.
   /// Return 0 on success, otherwise return error code.
-  int Predict(const cv::Mat& image, std::vector<FaceT>& faces);
+  int Predict(const cv::Mat& image, std::vector<FaceT>& faces, std::vector<int> &face_box);
 
  private:
   void Preprocess(const cv::Mat& image, ncnn::Mat& net_input) override;
