@@ -262,7 +262,8 @@ void FaceDetectorSCRFD<FaceT>::Preprocess(const cv::Mat& image,
 
 template <class FaceT>
 int FaceDetectorSCRFD<FaceT>::Predict(const cv::Mat& image,
-                                      std::vector<FaceT>& faces) {
+                                      std::vector<FaceT>& faces,
+                                      std::vector<int>& face_box) {
   std::vector<FaceT> proposals;
   ncnn::Mat in;
   std::map<std::string, ncnn::Mat> out;
