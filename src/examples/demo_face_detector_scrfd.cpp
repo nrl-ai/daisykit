@@ -39,10 +39,11 @@ int main(int, char**) {
   Mat frame;
   VideoCapture cap(0);
 
+  std::vector<int> face_box;
   std::vector<types::Face> faces;
   while (1) {
     cap >> frame;
-    face_detector->Predict(frame, faces);
+    face_detector->Predict(frame, faces, face_box);
     cv::Mat draw = frame.clone();
     visualizers::FaceVisualizer<types::Face>::DrawFace(draw, faces, true);
     imshow("Image", draw);
