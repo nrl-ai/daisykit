@@ -262,8 +262,7 @@ void FaceDetectorSCRFD<FaceT>::Preprocess(const cv::Mat& image,
 
 template <class FaceT>
 int FaceDetectorSCRFD<FaceT>::Predict(const cv::Mat& image,
-                                      std::vector<FaceT>& faces,
-                                      std::vector<int>& face_box) {
+                                      std::vector<FaceT>& faces) {
   std::vector<FaceT> proposals;
   ncnn::Mat in;
   std::map<std::string, ncnn::Mat> out;
@@ -318,11 +317,7 @@ int FaceDetectorSCRFD<FaceT>::Predict(const cv::Mat& image,
     faces[i].y = int(y0);
     faces[i].w = int(x1 - x0);
     faces[i].h = int(y1 - y0);
-    face_box.emplace_back(faces[i].x);
-    face_box.emplace_back(faces[i].y);
-    face_box.emplace_back(faces[i].w);
-    face_box.emplace_back(faces[i].h);
-    
+
     if (is_landmark_) {
       float x0 = (faces[i].landmark[0].x - (wpad_ / 2)) / scale_;
       float y0 = (faces[i].landmark[0].y - (hpad_ / 2)) / scale_;
