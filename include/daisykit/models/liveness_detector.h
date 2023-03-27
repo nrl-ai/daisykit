@@ -45,12 +45,11 @@ class LivenessDetector : public NCNNModel, public ImageModel {
                    const std::string& weight_file);
 #endif
 
-  int Predict(const cv::Mat& image,
-              std::vector<daisykit::types::FaceExtended>& face);
+  int Predict(const cv::Mat& image, types::FaceExtended& faces);
 
  private:
   void Preprocess(const cv::Mat& image, ncnn::Mat& net_input);
-  cv::Rect CalculateBox(std::vector<int>& face_box, int w, int h);
+  cv::Rect CalculateBox(daisykit::types::FaceExtended& face_box, int w, int h);
 };
 }  // namespace models
 }  // namespace daisykit
