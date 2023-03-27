@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykit/models/liveness_detector.h"
-#include "daisykit/models/face_recognition/face_detector_scrfd.h"
 #include "daisykit/common/types.h"
 #include "daisykit/common/visualizers/face_visualizer.h"
+#include "daisykit/models/face_recognition/face_detector_scrfd.h"
+#include "daisykit/models/liveness_detector.h"
 
 #include <stdio.h>
 #include <fstream>
@@ -48,40 +48,36 @@ int main(int, char**) {
     face_detector->Predict(frame, faces);
     int face_count = 0;
     for (auto face : faces) {
-        face.liveness_score = 0;
-        liveness_detector->Predict(frame, face);
-        if (face.liveness_score < 0.97) {
-            Point p1(face.x, face.y);
-    
-            // Bottom Right Corner
-            Point p2(face.x+face.w, face.y+face.h);
-        
-            int thickness = 2;
-        
-            // Drawing the Rectangle
-            rectangle(frame, p1, p2,
-                    Scalar(0, 0, 255),
-                    thickness, LINE_8);
-            
-            imshow("Image", frame);
-            waitKey(1);
-            continue;
-        }
-        // cv::Mat draw = frame.clone();
-        // Top Left Corner
+      face.liveness_score = 0;
+      liveness_detector->Predict(frame, face);
+      if (face.liveness_score < 0.97) {
         Point p1(face.x, face.y);
-    
+
         // Bottom Right Corner
-        Point p2(face.x+face.w, face.y+face.h);
-    
+        Point p2(face.x + face.w, face.y + face.h);
+
         int thickness = 2;
-    
+
         // Drawing the Rectangle
-        rectangle(frame, p1, p2,
-                Scalar(0, 255, 0),
-                thickness, LINE_8);
+        rectangle(frame, p1, p2, Scalar(0, 0, 255), thickness, LINE_8);
+
         imshow("Image", frame);
         waitKey(1);
+        continue;
+      }
+      // cv::Mat draw = frame.clone();
+      // Top Left Corner
+      Point p1(face.x, face.y);
+
+      // Bottom Right Corner
+      Point p2(face.x + face.w, face.y + face.h);
+
+      int thickness = 2;
+
+      // Drawing the Rectangle
+      rectangle(frame, p1, p2, Scalar(0, 255, 0), thickness, LINE_8);
+      imshow("Image", frame);
+      waitKey(1);
     }
   }
 
