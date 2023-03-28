@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "daisykit/models/liveness_detector.h"
+#include "daisykit/models/face_recognition/face_detector_scrfd.h"
 #include "daisykit/common/types.h"
 #include "daisykit/common/visualizers/face_visualizer.h"
-#include "daisykit/models/face_recognition/face_detector_scrfd.h"
-#include "daisykit/models/liveness_detector.h"
 
 #include <stdio.h>
 #include <fstream>
@@ -29,8 +29,8 @@ using namespace std;
 using namespace daisykit;
 using namespace daisykit::models;
 
-LivenessDetector* liveness_detector =
-    new LivenessDetector("models/face_antispoofing/model_2.param",
+FaceLivenessDetector* face_liveness_detector =
+    new FaceLivenessDetector("models/face_antispoofing/model_2.param",
                          "models/face_antispoofing/model_2.bin", 80, 80, true);
 
 FaceDetectorSCRFD<types::FaceExtended>* face_detector =
@@ -44,40 +44,34 @@ int main(int, char**) {
 
   std::vector<types::FaceExtended> faces;
   while (1) {
+    int thickness = 2;
     cap >> frame;
     face_detector->Predict(frame, faces);
     int face_count = 0;
     for (auto face : faces) {
-      face.liveness_score = 0;
-      liveness_detector->Predict(frame, face);
-      if (face.liveness_score < 0.97) {
+        face.liveness_score = 0;
+        face_liveness_detector->Predict(frame, face);
+        if (face.liveness_score < 0.97) {
+            Point p1(face.x, face.y);
+            Point p2(face.x+face.w, face.y+face.h);
+        
+            rectangle(frame, p1, p2,
+                    Scalar(0, 0, 255),
+                    thickness, LINE_8);
+            
+            imshow("Image", frame);
+            waitKey(1);
+            continue;
+        }
+
         Point p1(face.x, face.y);
-
-        // Bottom Right Corner
-        Point p2(face.x + face.w, face.y + face.h);
-
-        int thickness = 2;
-
-        // Drawing the Rectangle
-        rectangle(frame, p1, p2, Scalar(0, 0, 255), thickness, LINE_8);
-
+        Point p2(face.x+face.w, face.y+face.h);
+    
+        rectangle(frame, p1, p2,
+                Scalar(0, 255, 0),
+                thickness, LINE_8);
         imshow("Image", frame);
         waitKey(1);
-        continue;
-      }
-      // cv::Mat draw = frame.clone();
-      // Top Left Corner
-      Point p1(face.x, face.y);
-
-      // Bottom Right Corner
-      Point p2(face.x + face.w, face.y + face.h);
-
-      int thickness = 2;
-
-      // Drawing the Rectangle
-      rectangle(frame, p1, p2, Scalar(0, 255, 0), thickness, LINE_8);
-      imshow("Image", frame);
-      waitKey(1);
     }
   }
 
