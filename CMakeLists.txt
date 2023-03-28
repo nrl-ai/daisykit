@@ -148,7 +148,7 @@ set(sources
     src/models/face_recognition/face_extractor.cpp
     src/models/face_recognition/face_detector_scrfd.cpp
     src/models/face_recognition/face_manager.cpp
-    src/models/liveness_detector.cpp
+    src/models/face_liveness_detector.cpp
 
     src/common/visualizers/base_visualizer.cpp
     src/common/profiler.cpp
