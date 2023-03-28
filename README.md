@@ -6,6 +6,8 @@
 [![open issues](https://isitmaintained.com/badge/open/nrl-ai/daisykit.svg)](https://github.com/nrl-ai/daisykit/issues)
 [![Pypi Downloads](https://pepy.tech/badge/daisykit/month)](https://pypi.org/project/daisykit/)
 
+<a href="https://www.producthunt.com/posts/daisykit?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-daisykit" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=385715&theme=light" alt="Daisykit - A&#0032;library&#0032;for&#0032;building&#0032;AI&#0032;applications&#0032;without&#0032;AI&#0032;knowledge | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 [Daisykit](https://daisykit.org/>) is an easy AI toolkit with face mask detection, pose detection, background matting, barcode detection and more. This open source project includes:
 
 - **Daisykit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
