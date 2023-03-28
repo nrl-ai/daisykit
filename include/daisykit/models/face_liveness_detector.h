@@ -33,16 +33,16 @@ namespace models {
 
 class FaceLivenessDetector : public NCNNModel, public ImageModel {
  public:
-  FaceLivenessDetector(const char* param_buffer, const unsigned char* weight_buffer,
-                   int input_width = 80, int input_height = 80,
-                   bool use_gpu = false);
+  FaceLivenessDetector(const char* param_buffer,
+                       const unsigned char* weight_buffer, int input_width = 80,
+                       int input_height = 80, bool use_gpu = false);
   FaceLivenessDetector(const std::string& param_file,
-                   const std::string& weight_file, int input_width = 80,
-                   int input_height = 80, bool use_gpu = false);
+                       const std::string& weight_file, int input_width = 80,
+                       int input_height = 80, bool use_gpu = false);
 
 #ifdef __ANDROID__
   FaceLivenessDetector(AAssetManager* mgr, const std::string& param_file,
-                   const std::string& weight_file);
+                       const std::string& weight_file);
 #endif
 
   int Predict(const cv::Mat& image, types::FaceExtended& faces);

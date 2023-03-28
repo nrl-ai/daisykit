@@ -25,16 +25,16 @@
 namespace daisykit {
 namespace models {
 FaceLivenessDetector::FaceLivenessDetector(const char* param_buffer,
-                                   const unsigned char* weight_buffer,
-                                   int input_width, int input_height,
-                                   bool use_gpu)
+                                           const unsigned char* weight_buffer,
+                                           int input_width, int input_height,
+                                           bool use_gpu)
     : NCNNModel(param_buffer, weight_buffer, use_gpu),
       ImageModel(input_width, input_height) {}
 
 FaceLivenessDetector::FaceLivenessDetector(const std::string& param_file,
-                                   const std::string& weight_file,
-                                   int input_width, int input_height,
-                                   bool use_gpu)
+                                           const std::string& weight_file,
+                                           int input_width, int input_height,
+                                           bool use_gpu)
     : NCNNModel(param_file, weight_file, use_gpu),
       ImageModel(input_width, input_height) {}
 
@@ -46,8 +46,8 @@ LivenessDetector::LivenessDetector(AAssetManager* mgr,
       ImageModel(input_width, input_height) {}
 #endif
 
-cv::Rect FaceLivenessDetector::CalculateBox(types::FaceExtended& face_box, int w,
-                                        int h) {
+cv::Rect FaceLivenessDetector::CalculateBox(types::FaceExtended& face_box,
+                                            int w, int h) {
   float scale_ = 4.0;
   float scale = std::min(scale_, std::min((w - 1) / (float)face_box.w,
                                           (h - 1) / (float)face_box.h));
@@ -87,13 +87,14 @@ cv::Rect FaceLivenessDetector::CalculateBox(types::FaceExtended& face_box, int w
   return cv::Rect(left_top_x, left_top_y, new_width, new_height);
 }
 
-void FaceLivenessDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
+void FaceLivenessDetector::Preprocess(const cv::Mat& image,
+                                      ncnn::Mat& net_input) {
   net_input = ncnn::Mat::from_pixels(image.data, ncnn::Mat::PIXEL_BGR,
                                      image.cols, image.rows);
 }
 
 int FaceLivenessDetector::Predict(const cv::Mat& image,
-                              types::FaceExtended& faces) {
+                                  types::FaceExtended& faces) {
   float liveness_score = 0.f;
   cv::Mat roi;
   cv::Rect rect = CalculateBox(faces, image.cols, image.rows);
