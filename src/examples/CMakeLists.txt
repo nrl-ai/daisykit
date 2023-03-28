@@ -39,6 +39,9 @@ target_link_libraries(demo_face_detector_scrfd ${OpenCV_LIBS} daisykitsdk)
 add_executable(demo_face_sequential demo_face_sequential.cpp)
 target_link_libraries(demo_face_sequential ${OpenCV_LIBS} daisykitsdk)
 
+add_executable(demo_face_liveness_detection demo_face_liveness_detection.cpp)
+target_link_libraries(demo_face_liveness_detection ${OpenCV_LIBS} daisykitsdk)
+
 # Copy OpenCV lib to run on Windows
 if(WIN32)
     get_target_property(__dll_dbg opencv_world IMPORTED_LOCATION_DEBUG)
