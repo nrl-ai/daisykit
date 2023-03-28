@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "daisykit/models/liveness_detector.h"
+#include "daisykit/models/face_liveness_detector.h"
 #include "daisykit/common/types/face_extended.h"
 #include "daisykit/processors/image_processors/img_utils.h"
 
