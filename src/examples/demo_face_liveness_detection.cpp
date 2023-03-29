@@ -56,9 +56,6 @@ int main(int, char**) {
         Point p2(face.x + face.w, face.y + face.h);
 
         rectangle(frame, p1, p2, Scalar(0, 0, 255), thickness, LINE_8);
-
-        imshow("Image", frame);
-        waitKey(1);
         continue;
       }
 
@@ -66,9 +63,9 @@ int main(int, char**) {
       Point p2(face.x + face.w, face.y + face.h);
 
       rectangle(frame, p1, p2, Scalar(0, 255, 0), thickness, LINE_8);
-      imshow("Image", frame);
-      waitKey(1);
     }
+    imshow("Image", frame);
+    waitKey(1);
   }
 
   return 0;
