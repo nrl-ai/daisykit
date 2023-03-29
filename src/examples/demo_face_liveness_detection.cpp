@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykit/common/types.h"
-#include "daisykit/common/visualizers/face_visualizer.h"
+#include "daisykit/common/visualizers/base_visualizer.h"
 #include "daisykit/models/face_liveness_detector.h"
 #include "daisykit/models/face_recognition/face_detector_scrfd.h"
 
@@ -48,23 +48,24 @@ int main(int, char**) {
     cap >> frame;
     face_detector->Predict(frame, faces);
     int face_count = 0;
+    cv::Mat draw = frame.clone();
     for (auto face : faces) {
       face.liveness_score = 0;
       face_liveness_detector->Predict(frame, face);
+      std::string liveness_detection;
+      cv::Scalar line_color;
       if (face.liveness_score < 0.97) {
-        Point p1(face.x, face.y);
-        Point p2(face.x + face.w, face.y + face.h);
-
-        rectangle(frame, p1, p2, Scalar(0, 0, 255), thickness, LINE_8);
-        continue;
+        liveness_detection = "Fake face";
+        line_color = cv::Scalar(0, 0, 255);
+      } else {
+        liveness_detection = "Real face";
+        line_color = cv::Scalar(0, 255, 0);
       }
-
-      Point p1(face.x, face.y);
-      Point p2(face.x + face.w, face.y + face.h);
-
-      rectangle(frame, p1, p2, Scalar(0, 255, 0), thickness, LINE_8);
+      visualizers::BaseVisualizer::DrawRoundedBox(
+          draw, static_cast<types::Box>(face), liveness_detection, line_color);
     }
-    imshow("Image", frame);
+
+    imshow("Image", draw);
     waitKey(1);
   }
 
