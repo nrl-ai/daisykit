@@ -1,25 +1,31 @@
 eval "$(conda shell.bash hook)"
 
 conda activate dk36
-pip install numpy
+python -m pip install --upgrade pip
+python -m pip install numpy
 python setup.py bdist_wheel
 
 conda activate dk37
-pip install numpy
+python -m pip install --upgrade pip
+python -m pip install numpy
 python setup.py bdist_wheel
 
 conda activate dk38
-pip install numpy
+python -m pip install --upgrade pip
+python -m pip install numpy
 python setup.py bdist_wheel
 
 conda activate dk39
-pip install numpy
+python -m pip install --upgrade pip
+python -m pip install numpy
 python setup.py bdist_wheel
 
 conda activate dk310
-pip install numpy
+python -m pip install --upgrade pip
+python -m pip install numpy
 python setup.py bdist_wheel
 
 conda activate dk311
-pip install numpy
+python -m pip install --upgrade pip
+python -m pip install numpy
 python setup.py bdist_wheel
