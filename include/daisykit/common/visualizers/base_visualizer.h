@@ -46,7 +46,7 @@ class BaseVisualizer {
       const cv::Scalar line_color = cv::Scalar(0, 255, 0),   /// Line color for
                                                              /// drawing box
       const cv::Scalar text_color = cv::Scalar(20, 20, 20),  /// Text color
-      float box_line_width = -1,                             /// Box line width
+      float box_line_width = 3,                              /// Box line width
       int text_fontface = cv::FONT_HERSHEY_SIMPLEX,          /// Text font face
       double text_scale = -1,                                /// Text scale
       int text_thickness = 2,                                /// Text thickness

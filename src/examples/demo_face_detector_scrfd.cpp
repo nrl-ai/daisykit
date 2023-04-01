@@ -32,8 +32,8 @@ using namespace daisykit::models;
 
 FaceDetectorSCRFD<types::Face>* face_detector =
     new FaceDetectorSCRFD<types::Face>(
-        "models/face_detection_scrfd/scrfd_2.5g_1.param",
-        "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, false);
+        "models/face_detection/scrfd/scrfd_2.5g_1.param",
+        "models/face_detection/scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, false);
 
 int main(int, char**) {
   Mat frame;

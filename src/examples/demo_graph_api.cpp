@@ -58,11 +58,22 @@ int main(int, char**) {
   visualize_node->Activate();
 
   VideoCapture cap(0);
+
+  cv::Mat gray, binary;
   while (1) {
     Mat frame;
     cap >> frame;
     std::shared_ptr<Packet> in_packet = Packet::MakePacket<cv::Mat>(frame);
     grayscale_node->Input("input", in_packet);
+
+    if (visualize_node->GetOutputBinary(binary)) {
+      cv::imshow("Binary", binary);
+      cv::waitKey(1);
+    }
+    if (visualize_node->GetOutputGray(gray)) {
+      cv::imshow("Gray", gray);
+      cv::waitKey(1);
+    }
   }
 
   return 0;

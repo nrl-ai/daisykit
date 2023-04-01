@@ -35,13 +35,13 @@ using namespace daisykit::models;
 
 FaceDetectorSCRFD<types::FaceExtended>* face_detector =
     new FaceDetectorSCRFD<types::FaceExtended>(
-        "models/face_detection_scrfd/scrfd_2.5g_1.param",
-        "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
+        "models/face_detection/scrfd/scrfd_2.5g_1.param",
+        "models/face_detection/scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
 FaceAligner* face_aligner = new FaceAligner();
 
-FaceExtractor* face_extractor =
-    new FaceExtractor("models/face_extraction/iresnet18_1.param",
-                      "models/face_extraction/iresnet18_1.bin", 112, true);
+FaceExtractor* face_extractor = new FaceExtractor(
+    "models/face_extraction/arcface/iresnet18_1.param",
+    "models/face_extraction/arcface/iresnet18_1.bin", 112, true);
 
 FaceManager* face_manager = new FaceManager("data.hnsw", 1000, 1, 512, 1.01);
 

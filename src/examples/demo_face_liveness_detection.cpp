@@ -30,13 +30,13 @@ using namespace daisykit;
 using namespace daisykit::models;
 
 FaceLivenessDetector* face_liveness_detector = new FaceLivenessDetector(
-    "models/face_antispoofing/model_2.param",
-    "models/face_antispoofing/model_2.bin", 80, 80, true);
+    "models/face_antispoofing/minivision/model_2.param",
+    "models/face_antispoofing/minivision/model_2.bin", 80, 80, true);
 
 FaceDetectorSCRFD<types::FaceExtended>* face_detector =
     new FaceDetectorSCRFD<types::FaceExtended>(
-        "models/face_detection_scrfd/scrfd_2.5g_1.param",
-        "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
+        "models/face_detection/scrfd/scrfd_2.5g_1.param",
+        "models/face_detection/scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
 
 int main(int, char**) {
   Mat frame;
@@ -51,24 +51,18 @@ int main(int, char**) {
     for (auto face : faces) {
       face.liveness_score = 0;
       face_liveness_detector->Predict(frame, face);
+
+      Point tl(face.x, face.y);
+      Point br(face.x + face.w, face.y + face.h);
       if (face.liveness_score < 0.97) {
-        Point p1(face.x, face.y);
-        Point p2(face.x + face.w, face.y + face.h);
-
-        rectangle(frame, p1, p2, Scalar(0, 0, 255), thickness, LINE_8);
-
-        imshow("Image", frame);
-        waitKey(1);
-        continue;
+        rectangle(frame, tl, br, Scalar(0, 0, 255), thickness, LINE_8);
+      } else {
+        rectangle(frame, tl, br, Scalar(0, 255, 0), thickness, LINE_8);
       }
-
-      Point p1(face.x, face.y);
-      Point p2(face.x + face.w, face.y + face.h);
-
-      rectangle(frame, p1, p2, Scalar(0, 255, 0), thickness, LINE_8);
-      imshow("Image", frame);
-      waitKey(1);
     }
+
+    imshow("Image", frame);
+    waitKey(1);
   }
 
   return 0;

@@ -49,12 +49,12 @@ void BackgroundMatting::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
   // Clone the original cv::Mat to ensure continuous address for memory
   cv::Mat rgb = image.clone();
 
-  net_input = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB2BGR,
-                                            rgb.cols, rgb.rows, InputWidth(),
-                                            InputHeight());
+  net_input =
+      ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols,
+                                    rgb.rows, InputWidth(), InputHeight());
 
-  const float mean_vals[3] = {104.f, 112.f, 121.f};
-  const float norm_vals[3] = {1.f / 255.f, 1.f / 255.f, 1.f / 255.f};
+  const float mean_vals[3] = {127.5f, 127.5f, 127.5f};
+  const float norm_vals[3] = {1 / 127.5f, 1 / 127.5f, 1 / 127.5f};
   net_input.substract_mean_normalize(mean_vals, norm_vals);
 }
 
@@ -65,18 +65,26 @@ int BackgroundMatting::Predict(const cv::Mat& image, cv::Mat& mask) {
 
   // Inference
   ncnn::Mat out;
-  int result = Infer(in, out, "input_blob1", "sigmoid_blob1");
+  int result = Infer(in, out, "x", "save_infer_model/scale_0.tmp_1");
   if (result != 0) {
     return result;
   }
 
   // Postprocess
-  const float denorm_vals[3] = {255.f, 255.f, 255.f};
-  out.substract_mean_normalize(0, denorm_vals);
-  int img_width = image.cols;
-  int img_height = image.rows;
-  mask = cv::Mat::zeros(cv::Size(img_width, img_height), CV_8UC1);
-  out.to_pixels_resize(mask.data, ncnn::Mat::PIXEL_GRAY, img_width, img_height);
+  // Resize to original size
+  // out has shape (h, w, c)
+  // Get max value on channel 2
+  mask = cv::Mat(out.h, out.w, CV_8UC1);
+  for (int y = 0; y < out.h; y++) {
+    for (int x = 0; x < out.w; x++) {
+      mask.at<uchar>(y, x) =
+          out.channel(0).row(y)[x] > out.channel(1).row(y)[x] ? 0 : 255;
+    }
+  }
+  cv::imshow("mask", mask);
+  cv::waitKey(1);
+  cv::resize(mask, mask, cv::Size(image.cols, image.rows), 0, 0,
+             cv::INTER_CUBIC);
 
   return 0;
 }
@@ -84,18 +92,12 @@ int BackgroundMatting::Predict(const cv::Mat& image, cv::Mat& mask) {
 void BackgroundMatting::BindWithBackground(cv::Mat& rgb,
                                            const cv::Mat& background,
                                            const cv::Mat& mask) {
-  // Resize the background to at least the size of the image
-  cv::Mat resized_background;
-  float scale = std::max(rgb.cols / (float)background.cols,
-                         rgb.rows / (float)background.rows);
-  cv::resize(background, resized_background, cv::Size(), scale, scale);
-
   const int w = rgb.cols;
   const int h = rgb.rows;
 
   for (int y = 0; y < h; y++) {
     uchar* rgbptr = rgb.ptr<uchar>(y);
-    const uchar* bgptr = resized_background.ptr<const uchar>(y);
+    const uchar* bgptr = background.ptr<const uchar>(y);
     const uchar* mptr = mask.ptr<const uchar>(y);
 
     for (int x = 0; x < w; x++) {
