@@ -86,12 +86,19 @@ int main(int, char**) {
 
   VideoCapture cap(0);
 
+  cv::Mat draw;
   while (1) {
     Mat frame;
     cap >> frame;
     cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
     std::shared_ptr<Packet> in_packet = Packet::MakePacket<cv::Mat>(frame);
     packet_distributor_node->Input("input", in_packet);
+
+    if (face_visualizer_node->GetOutputImage(draw)) {
+      cv::cvtColor(draw, draw, cv::COLOR_RGB2BGR);
+      cv::imshow("Face Visualizer", draw);
+      cv::waitKey(1);
+    }
   }
 
   return 0;

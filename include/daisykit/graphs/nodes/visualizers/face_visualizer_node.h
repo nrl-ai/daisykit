@@ -22,6 +22,8 @@
 
 #include <chrono>
 #include <memory>
+#include <mutex>
+#include <thread>
 
 namespace daisykit {
 namespace graphs {
@@ -70,21 +72,30 @@ class FaceVisualizerNode : public Node {
       visualizers::FaceVisualizer<types::Face>::DrawFace(draw, *faces,
                                                          with_landmark_);
       double fps = profiler.Tick();
-      // visualizers::BaseVisualizer::PutText(
-      //     draw, std::string("FPS: ") + std::to_string(fps), cv::Point(100,
-      //     100), cv::FONT_HERSHEY_SIMPLEX, 0.8, 2, 10, cv::Scalar(0, 0, 0),
-      //     cv::Scalar(0, 255, 0));
     }
 
-    cv::cvtColor(draw, draw, cv::COLOR_RGB2BGR);
-    cv::imshow("Visualization", draw);
-    cv::waitKey(1);
+    // Write to output
+    std::lock_guard<std::mutex> lock(draw_mutex_);
+    draw_ = draw;
+    draw_ready_ = true;
+  }
+
+  bool GetOutputImage(cv::Mat& img) {
+    std::lock_guard<std::mutex> lock(draw_mutex_);
+    if (!draw_ready_) return false;
+    img = draw_.clone();
+    draw_ready_ = false;
+    return true;
   }
 
  private:
   bool with_landmark_;
   std::shared_ptr<std::vector<daisykit::types::Face>> faces_;
   Profiler profiler;
+
+  bool draw_ready_ = false;
+  cv::Mat draw_;
+  std::mutex draw_mutex_;
 };
 
 }  // namespace nodes

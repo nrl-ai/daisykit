@@ -1,10 +1,12 @@
 # DaisyKit
 
-Daisykit is an easy AI toolkit for software engineers to integrate pretrained AI models and pipelines into their projects. You DON'T need to be an AI engineer to build AI software. This open source project includes:
+Documentation: [https://daisykit.nrl.ai](https://daisykit.nrl.ai)
 
-- **Daisykit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
-- **Daisykit Python** wrapper for easy integration with Python.
-- **Daisykit Android** - Example app demonstrate how to use Daisykit SDK in Android.
+DaisyKit is an easy AI toolkit for software engineers to integrate pretrained AI models and pipelines into their projects. You DON'T need to be an AI engineer to build AI software. This open source project includes:
+
+- **DaisyKit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
+- **DaisyKit Python** wrapper for easy integration with Python.
+- **DaisyKit Android** - Example app demonstrate how to use DaisyKit SDK in Android.
 
 Python wrapper of DaisyKit with [pybind11](https://github.com/pybind/pybind11), only support python3.x now.
 

@@ -19,3 +19,7 @@ python setup.py bdist_wheel
 conda activate dk310
 pip install numpy
 python setup.py bdist_wheel
+
+conda activate dk311
+pip install numpy
+python setup.py bdist_wheel

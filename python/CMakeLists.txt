@@ -25,8 +25,8 @@ target_link_libraries(pydaisykit PUBLIC daisykitsdk)
 set_target_properties(pydaisykit PROPERTIES PREFIX "" LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/daisykit")
 set_property(TARGET pydaisykit PROPERTY FOLDER "python")
 if("${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" STREQUAL "")
-    add_custom_command(TARGET pydaisykit POST_BUILD 
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/daisykit/daisykit${PYTHON_MODULE_PREFIX}${PYTHON_MODULE_EXTENSION} 
+    add_custom_command(TARGET pydaisykit POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/daisykit/daisykit${PYTHON_MODULE_PREFIX}${PYTHON_MODULE_EXTENSION}
         ${PROJECT_SOURCE_DIR}/daisykit/daisykit${PYTHON_MODULE_PREFIX}${PYTHON_MODULE_EXTENSION})
 endif("${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" STREQUAL "")
 
