@@ -77,7 +77,7 @@ class FaceVisualizerNode : public Node {
     }
 
     cv::cvtColor(draw, draw, cv::COLOR_RGB2BGR);
-    cv::imshow("Face detection", draw);
+    cv::imshow("Visualization", draw);
     cv::waitKey(1);
   }
 

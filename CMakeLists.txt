@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10.2)
 
-project(Daisykit)
+project(DaisyKit)
 
 # Use Release build type if not specified
 if(NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
@@ -136,7 +136,6 @@ set(sources
     src/models/body_detector.cpp
     src/models/pose_detector.cpp
     src/models/pose_detector_movenet.cpp
-    src/models/action_classifier.cpp
     src/models/face_detector.cpp
     src/models/facial_landmark_detector.cpp
     src/models/background_matting.cpp
@@ -144,10 +143,10 @@ set(sources
     src/models/hand_detector_yolox.cpp
     src/models/hand_pose_detector.cpp
     src/models/object_detector_yolox.cpp
-    src/models/face_recognition/face_alignment.cpp
-    src/models/face_recognition/face_extractor.cpp
-    src/models/face_recognition/face_detector_scrfd.cpp
-    src/models/face_recognition/face_manager.cpp
+    src/models/face_alignment.cpp
+    src/models/face_extractor.cpp
+    src/models/face_detector_scrfd.cpp
+    src/models/face_manager.cpp
     src/models/face_liveness_detector.cpp
 
     src/common/visualizers/base_visualizer.cpp
@@ -158,7 +157,6 @@ set(sources
     src/processors/signal_processors/signal_smoothing.cpp
     src/processors/signal_processors/z_score_filter.cpp
     src/processors/image_processors/img_utils.cpp
-    src/processors/fitness/pushup_analyzer.cpp
 
     src/graphs/core/node.cpp
     src/graphs/core/connection.cpp
@@ -167,7 +165,6 @@ set(sources
     src/graphs/core/transmission_profile.cpp
 
     src/flows/object_detector_flow.cpp
-    src/flows/pushup_counter_flow.cpp
     src/flows/face_detector_flow.cpp
     src/flows/background_matting_flow.cpp
     src/flows/human_pose_movenet_flow.cpp

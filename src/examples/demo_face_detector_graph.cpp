@@ -49,8 +49,8 @@ int main(int, char**) {
       facial_landmark_detector_node =
           std::make_shared<nodes::FacialLandmarkDetectorNode>(
               "facial_landmark_detector",
-              "models/facial_landmark/pfld-sim.param",
-              "models/facial_landmark/pfld-sim.bin", NodeType::kAsyncNode);
+              "models/facial_landmark/pfld/pfld-sim.param",
+              "models/facial_landmark/pfld/pfld-sim.bin", NodeType::kAsyncNode);
   std::shared_ptr<nodes::FaceVisualizerNode> face_visualizer_node =
       std::make_shared<nodes::FaceVisualizerNode>("face_visualizer",
                                                   NodeType::kAsyncNode, true);

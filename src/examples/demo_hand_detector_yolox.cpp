@@ -30,9 +30,9 @@ using namespace daisykit::types;
 using namespace daisykit::models;
 
 int main(int, char**) {
-  HandDetectorYOLOX model("models/hand_pose/yolox_hand_relu.param",
-                          "models/hand_pose/yolox_hand_relu.bin", 0.3, 0.3, 256,
-                          256);
+  HandDetectorYOLOX model("models/hand_detection/yolox/yolox_hand_relu.param",
+                          "models/hand_detection/yolox/yolox_hand_relu.bin",
+                          0.3, 0.3, 256, 256);
 
   Mat frame;
   VideoCapture cap(0);
