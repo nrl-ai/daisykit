@@ -93,7 +93,8 @@
     "ios": "cpp",
     "locale": "cpp",
     "queue": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "__verbose_abort": "cpp"
   },
   "C_Cpp.clang_format_style": "{BasedOnStyle: Google, PointerAlignment: Left, IncludeBlocks: Preserve, DerivePointerAlignment: false}",
   "files.insertFinalNewline": true,

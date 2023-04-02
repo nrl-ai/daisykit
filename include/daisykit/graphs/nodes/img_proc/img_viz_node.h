@@ -18,6 +18,8 @@
 #include "daisykit/graphs/core/node.h"
 
 #include <memory>
+#include <mutex>
+#include <thread>
 
 namespace daisykit {
 namespace graphs {
@@ -40,17 +42,48 @@ class ImgVizNode : public Node {
     if (inputs.count("binary") > 0) {
       PacketPtr binary_input = inputs["binary"];
       cv::Mat binary = *binary_input->GetData<cv::Mat>();
-      cv::imshow("Binary", binary);
-      cv::waitKey(1);
+
+      // Write to output
+      std::lock_guard<std::mutex> lock(binary_draw_mutex_);
+      binary_draw_ = binary;
+      binary_draw_ready_ = true;
     }
 
     if (inputs.count("gray") > 0) {
       PacketPtr gray_input = inputs["gray"];
       cv::Mat gray = *gray_input->GetData<cv::Mat>();
-      cv::imshow("Gray", gray);
-      cv::waitKey(1);
+
+      // Write to output
+      std::lock_guard<std::mutex> lock(gray_draw_mutex_);
+      gray_draw_ = gray;
+      gray_draw_ready_ = true;
     }
   }
+
+  bool GetOutputBinary(cv::Mat& img) {
+    std::lock_guard<std::mutex> lock(binary_draw_mutex_);
+    if (!binary_draw_ready_) return false;
+    img = binary_draw_.clone();
+    binary_draw_ready_ = false;
+    return true;
+  }
+
+  bool GetOutputGray(cv::Mat& img) {
+    std::lock_guard<std::mutex> lock(gray_draw_mutex_);
+    if (!gray_draw_ready_) return false;
+    img = gray_draw_.clone();
+    gray_draw_ready_ = false;
+    return true;
+  }
+
+ private:
+  cv::Mat binary_draw_;
+  bool binary_draw_ready_;
+  std::mutex binary_draw_mutex_;
+
+  cv::Mat gray_draw_;
+  bool gray_draw_ready_;
+  std::mutex gray_draw_mutex_;
 };
 
 }  // namespace nodes

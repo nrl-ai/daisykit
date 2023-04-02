@@ -1,11 +1,5 @@
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-add_executable(demo_pushup_classifier fitness/demo_pushup_classifier.cpp)
-target_link_libraries(demo_pushup_classifier ${OpenCV_LIBS} daisykitsdk)
-
-add_executable(demo_pushup_full fitness/demo_pushup_full.cpp)
-target_link_libraries(demo_pushup_full ${OpenCV_LIBS} daisykitsdk)
-
 add_executable(demo_barcode_scanner demo_barcode_scanner.cpp)
 target_link_libraries(demo_barcode_scanner ${OpenCV_LIBS} daisykitsdk)
 

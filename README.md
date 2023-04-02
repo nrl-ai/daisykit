@@ -1,4 +1,4 @@
-# Daisykit - **D.A.I.S.Y: Deploy AI Systems Yourself!**
+# DaisyKit - **D.A.I.S.Y: Deploy AI Systems Yourself!**
 
 [![PyPI](https://img.shields.io/pypi/v/daisykit)](https://pypi.org/project/daisykit)
 [![docs](https://img.shields.io/badge/docs-latest-blue)](https://daisykit.readthedocs.io/en/latest/)
@@ -8,16 +8,16 @@
 
 <a href="https://www.producthunt.com/posts/daisykit?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-daisykit" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=385715&theme=light" alt="Daisykit - A&#0032;library&#0032;for&#0032;building&#0032;AI&#0032;applications&#0032;without&#0032;AI&#0032;knowledge | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
-[Daisykit](https://daisykit.org/>) is an easy AI toolkit with face mask detection, pose detection, background matting, barcode detection and more. This open source project includes:
+[DaisyKit](https://daisykit.nrl.ai) is an easy AI toolkit with face mask detection, pose detection, background matting, barcode detection and more. This open source project includes:
 
-- **Daisykit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
-- **Daisykit Python** wrapper for easy integration with Python.
-- **Daisykit Android** - Example app demonstrate how to use Daisykit SDK in Android.
+- **DaisyKit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
+- **DaisyKit Python** wrapper for easy integration with Python.
+- **DaisyKit Android** - Example app demonstrate how to use Daisykit SDK in Android.
 
 **Links:**
 
-- **Python Package:** <https://pypi.org/project/daisykit/>
-- **Documentation:** <https://daisykit.org/>
+- **Python Package:** [https://pypi.org/project/daisykit/](https://pypi.org/project/daisykit/)
+- **Documentation:** [https://daisykit.nrl.ai/docs](https://daisykit.nrl.ai/docs)
 
 <a href="https://www.youtube.com/watch?v=zKP8sgGoFMc">
 <img src="https://user-images.githubusercontent.com/18329471/224732779-3d2ce7b0-de53-4b9d-b9a8-890557eead16.png"/>

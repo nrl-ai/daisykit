@@ -30,13 +30,13 @@ using namespace daisykit;
 using namespace daisykit::models;
 
 FaceLivenessDetector* face_liveness_detector_2 = new FaceLivenessDetector(
-    "models/face_antispoofing/model_2.param",
-    "models/face_antispoofing/model_2.bin", 80, 80, true);
+    "models/face_antispoofing/minivision/model_2.param",
+    "models/face_antispoofing/minivision/model_2.bin", 80, 80, true);
 
 FaceDetectorSCRFD<types::FaceExtended>* face_detector =
     new FaceDetectorSCRFD<types::FaceExtended>(
-        "models/face_detection_scrfd/scrfd_2.5g_1.param",
-        "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
+        "models/face_detection/scrfd/scrfd_2.5g_1.param",
+        "models/face_detection/scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, true);
 
 int main(int, char**) {
   Mat frame;
