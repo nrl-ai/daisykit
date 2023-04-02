@@ -75,9 +75,9 @@ FaceDetectorFlow::~FaceDetectorFlow() {
   facial_landmark_detector_ = nullptr;
 }
 
-std::vector<types::Face> FaceDetectorFlow::Process(const cv::Mat& rgb) {
+std::vector<types::FaceExtended> FaceDetectorFlow::Process(const cv::Mat& rgb) {
   // Detect faces
-  std::vector<types::Face> faces;
+  std::vector<types::FaceExtended> faces;
   face_detector_->Predict(rgb, faces);
 
   // Detect landmarks
@@ -92,9 +92,9 @@ std::vector<types::Face> FaceDetectorFlow::Process(const cv::Mat& rgb) {
 }
 
 void FaceDetectorFlow::DrawResult(cv::Mat& rgb,
-                                  std::vector<types::Face>& faces) {
+                                  std::vector<types::FaceExtended>& faces) {
   // Draw face bounding boxes and keypoints
-  visualizers::FaceVisualizer<types::Face>::DrawFace(rgb, faces, true);
+  visualizers::FaceVisualizer<types::FaceExtended>::DrawFace(rgb, faces, true);
   if (show_fps_)
     visualizers::BaseVisualizer::PutText(
         rgb, std::string("FPS: ") + std::to_string(profiler.CurrentFPS()),
