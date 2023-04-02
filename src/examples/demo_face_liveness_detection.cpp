@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "daisykit/common/types.h"
-#include "daisykit/common/visualizers/base_visualizer.h"
+#include "daisykit/common/visualizers/face_visualizer.h"
 #include "daisykit/models/face_liveness_detector.h"
 #include "daisykit/models/face_recognition/face_detector_scrfd.h"
 
@@ -29,7 +29,7 @@ using namespace std;
 using namespace daisykit;
 using namespace daisykit::models;
 
-FaceLivenessDetector* face_liveness_detector = new FaceLivenessDetector(
+FaceLivenessDetector* face_liveness_detector_2 = new FaceLivenessDetector(
     "models/face_antispoofing/model_2.param",
     "models/face_antispoofing/model_2.bin", 80, 80, true);
 
@@ -44,27 +44,12 @@ int main(int, char**) {
 
   std::vector<types::FaceExtended> faces;
   while (1) {
-    int thickness = 2;
     cap >> frame;
     face_detector->Predict(frame, faces);
-    int face_count = 0;
+    face_liveness_detector_2->Predict(frame, faces);
     cv::Mat draw = frame.clone();
-    for (auto face : faces) {
-      face.liveness_score = 0;
-      face_liveness_detector->Predict(frame, face);
-      std::string liveness_detection;
-      cv::Scalar line_color;
-      if (face.liveness_score < 0.97) {
-        liveness_detection = "Fake face";
-        line_color = cv::Scalar(0, 0, 255);
-      } else {
-        liveness_detection = "Real face";
-        line_color = cv::Scalar(0, 255, 0);
-      }
-      visualizers::BaseVisualizer::DrawRoundedBox(
-          draw, static_cast<types::Box>(face), liveness_detection, line_color);
-    }
-
+    visualizers::FaceVisualizer<types::FaceExtended>::DrawFace(draw, faces,
+                                                               false);
     imshow("Image", draw);
     waitKey(1);
   }
