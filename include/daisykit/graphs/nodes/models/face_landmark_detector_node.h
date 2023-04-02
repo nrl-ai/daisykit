@@ -52,8 +52,9 @@ class FacialLandmarkDetectorNode : public Node {
     PrepareInputs(inputs);
 
     // Get faces result
-    std::shared_ptr<std::vector<daisykit::types::Face>> faces;
-    faces = inputs["faces"]->GetData<std::vector<daisykit::types::Face>>();
+    std::shared_ptr<std::vector<daisykit::types::FaceExtended>> faces;
+    faces =
+        inputs["faces"]->GetData<std::vector<daisykit::types::FaceExtended>>();
 
     // Get image
     cv::Mat img = *inputs["image"]->GetData<cv::Mat>();
