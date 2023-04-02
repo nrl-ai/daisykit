@@ -39,52 +39,56 @@ FaceLivenessDetector::FaceLivenessDetector(const std::string& param_file,
       ImageModel(input_width, input_height) {}
 
 #if __ANDROID__
-LivenessDetector::LivenessDetector(AAssetManager* mgr,
-                                   const std::string& param_file,
-                                   const std::string& weight_file)
+FaceLivenessDetector::FaceLivenessDetector(AAssetManager* mgr,
+                                           const std::string& param_file,
+                                           const std::string& weight_file)
     : NCNNModel(param_buffer, weight_buffer, use_gpu),
       ImageModel(input_width, input_height) {}
 #endif
 
-cv::Rect FaceLivenessDetector::CalculateBox(types::FaceExtended& face_box,
-                                            int w, int h) {
-  float scale_ = 4.0;
-  float scale = std::min(scale_, std::min((w - 1) / (float)face_box.w,
-                                          (h - 1) / (float)face_box.h));
-  int box_center_x = face_box.w / 2 + face_box.x;
-  int box_center_y = face_box.h / 2 + face_box.y;
+std::vector<cv::Rect> FaceLivenessDetector::CalculateBox(
+    std::vector<types::FaceExtended>& face_boxes, int w, int h) {
+  std::vector<cv::Rect> face_boxes_out;
+  for (auto face_box : face_boxes) {
+    float scale_ = 4.0;
+    float scale = std::min(scale_, std::min((w - 1) / (float)face_box.w,
+                                            (h - 1) / (float)face_box.h));
+    int box_center_x = face_box.w / 2 + face_box.x;
+    int box_center_y = face_box.h / 2 + face_box.y;
 
-  int new_width = static_cast<int>(face_box.w * scale);
-  int new_height = static_cast<int>(face_box.h * scale);
+    int new_width = static_cast<int>(face_box.w * scale);
+    int new_height = static_cast<int>(face_box.h * scale);
 
-  int left_top_x = box_center_x - new_width / 2;
-  int left_top_y = box_center_y - new_height / 2;
-  int right_bottom_x = box_center_x + new_width / 2;
-  int right_bottom_y = box_center_y + new_height / 2;
+    int left_top_x = box_center_x - new_width / 2;
+    int left_top_y = box_center_y - new_height / 2;
+    int right_bottom_x = box_center_x + new_width / 2;
+    int right_bottom_y = box_center_y + new_height / 2;
 
-  if (left_top_x < 0) {
-    right_bottom_x -= left_top_x;
-    left_top_x = 0;
+    if (left_top_x < 0) {
+      right_bottom_x -= left_top_x;
+      left_top_x = 0;
+    }
+
+    if (left_top_y < 0) {
+      right_bottom_y -= left_top_y;
+      left_top_y = 0;
+    }
+
+    if (right_bottom_x >= w) {
+      int s = right_bottom_x - w + 1;
+      left_top_x -= s;
+      right_bottom_x -= s;
+    }
+
+    if (right_bottom_y >= h) {
+      int s = right_bottom_y - h + 1;
+      left_top_y -= s;
+      right_bottom_y -= s;
+    }
+    face_boxes_out.emplace_back(
+        cv::Rect(left_top_x, left_top_y, new_width, new_height));
   }
-
-  if (left_top_y < 0) {
-    right_bottom_y -= left_top_y;
-    left_top_y = 0;
-  }
-
-  if (right_bottom_x >= w) {
-    int s = right_bottom_x - w + 1;
-    left_top_x -= s;
-    right_bottom_x -= s;
-  }
-
-  if (right_bottom_y >= h) {
-    int s = right_bottom_y - h + 1;
-    left_top_y -= s;
-    right_bottom_y -= s;
-  }
-
-  return cv::Rect(left_top_x, left_top_y, new_width, new_height);
+  return face_boxes_out;
 }
 
 void FaceLivenessDetector::Preprocess(const cv::Mat& image,
@@ -94,24 +98,24 @@ void FaceLivenessDetector::Preprocess(const cv::Mat& image,
 }
 
 int FaceLivenessDetector::Predict(const cv::Mat& image,
-                                  types::FaceExtended& faces) {
-  float liveness_score = 0.f;
-  cv::Mat roi;
-  cv::Rect rect = CalculateBox(faces, image.cols, image.rows);
-  cv::resize(image(rect), roi, cv::Size(80, 80));
+                                  std::vector<types::FaceExtended>& faces) {
+  std::vector<cv::Rect> rects = CalculateBox(faces, image.cols, image.rows);
+  for (int i = 0; i < rects.size(); i++) {
+    cv::Mat roi;
+    cv::resize(image(rects[i]), roi, cv::Size(80, 80));
 
-  // Preprocess
-  ncnn::Mat in;
-  Preprocess(roi, in);
+    // Preprocess
+    ncnn::Mat in;
+    Preprocess(roi, in);
 
-  ncnn::Mat out;
-  int result = Infer(in, out, "data", "softmax");
-  if (result != 0) return 0;
+    // Model Inference
+    ncnn::Mat out;
+    int result = Infer(in, out, "data", "softmax");
+    if (result != 0) return 0;
 
-  // Post process
-  liveness_score += out.row(0)[1];
-  faces.liveness_score = liveness_score;
-  // Model Inference
+    // Post process
+    faces[i].liveness_score = out.row(0)[1];
+  }
 
   return 0;
 }
