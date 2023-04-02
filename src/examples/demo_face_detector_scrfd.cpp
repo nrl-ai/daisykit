@@ -30,8 +30,8 @@ using json = nlohmann::json;
 using namespace daisykit;
 using namespace daisykit::models;
 
-FaceDetectorSCRFD<types::Face>* face_detector =
-    new FaceDetectorSCRFD<types::Face>(
+FaceDetectorSCRFD<types::FaceExtended>* face_detector =
+    new FaceDetectorSCRFD<types::FaceExtended>(
         "models/face_detection_scrfd/scrfd_2.5g_1.param",
         "models/face_detection_scrfd/scrfd_2.5g_1.bin", 640, 0.7, 0.5, false);
 
@@ -39,12 +39,13 @@ int main(int, char**) {
   Mat frame;
   VideoCapture cap(0);
 
-  std::vector<types::Face> faces;
+  std::vector<types::FaceExtended> faces;
   while (1) {
     cap >> frame;
     face_detector->Predict(frame, faces);
     cv::Mat draw = frame.clone();
-    visualizers::FaceVisualizer<types::Face>::DrawFace(draw, faces, true);
+    visualizers::FaceVisualizer<types::FaceExtended>::DrawFace(draw, faces,
+                                                               true);
     imshow("Image", draw);
     waitKey(1);
   }
