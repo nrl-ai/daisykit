@@ -84,8 +84,8 @@ int FacialLandmarkDetector::Predict(const cv::Mat& image,
   return 0;
 }
 
-int FacialLandmarkDetector::PredictMulti(const cv::Mat& image,
-                                         std::vector<types::Face>& faces) {
+int FacialLandmarkDetector::PredictMulti(
+    const cv::Mat& image, std::vector<types::FaceExtended>& faces) {
   int num_errors = 0;
   int img_width = image.cols;
   int img_height = image.rows;
