@@ -16,6 +16,7 @@
 #include <assert.h>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <vector>
 #include "daisykit/common/types.h"
 #include "hnswlib.h"

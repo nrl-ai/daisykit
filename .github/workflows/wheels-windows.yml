@@ -1,3 +1,4 @@
+# Workflow to build and test wheels
 name: Wheel builder Windows
 
 on:
@@ -33,7 +34,6 @@ jobs:
         fetch-depth: 0
 
     - name: Update submodules
-      # if: github.event_name == 'pull_request'
       run: git submodule update --remote
 
     - name: Set up Python ${{ matrix.python-version }}
@@ -42,57 +42,44 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: ${{ matrix.platform }}
 
-    - name: Get CMake
-      uses: lukka/get-cmake@latest
-
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.1
-
-    - name: Restore vcpkg and its artifacts.
-      uses: actions/cache@v2
-      id: vcpkg-cache
-      with:
-        path: |
-          ${{ env.VCPKG_ROOT }}
-          ${{ github.workspace }}/build/vcpkg_installed
-          !${{ env.VCPKG_ROOT }}/.git
-          !${{ env.VCPKG_ROOT }}/buildtrees
-          !${{ env.VCPKG_ROOT }}/packages
-          !${{ env.VCPKG_ROOT }}/downloads
-        key: |
-          ${{ hashFiles( 'vcpkg.json' ) }}-cache-key-v1
-
-    - name: Get vcpkg(windows)
-      if: ${{ steps.vcpkg-cache.outputs.cache-hit != 'true' }}
-      run: |
-        cd ${{ github.workspace }}
-        mkdir build -force
-        git clone https://github.com/Microsoft/vcpkg.git
-        cd vcpkg
-        .\bootstrap-vcpkg.bat
-
-    - name: Install OpenCV
-      if: ${{ steps.vcpkg-cache.outputs.cache-hit != 'true' }}
-      run: |
-        cd ${{ github.workspace }}
-        vcpkg install opencv:x64-windows
-
     - name: Build a package
       run: |
-        python --version
-        python -m pip install --upgrade pip
-        python -m pip install --upgrade setuptools
-        python -m pip install toml && python -c "import toml; c = toml.load('pyproject.toml'); print('\n'.join(c['build-system']['requires']))" >> requirements.txt | python -m pip install -r requirements.txt
-        set "CI_BUILD=1" && python setup.py bdist_wheel --py-limited-api=cp36 --dist-dir=%cd%\wheelhouse -v
+        cd "${{ github.workspace }}"
+
+        set "opencv_release_url=https://github.com/opencv/opencv/releases/download/4.7.0/opencv-4.7.0-windows.exe"
+        set "opencv_installer=opencv_installer.exe"
+
+        echo Downloading OpenCV installer...
+        curl -L -o %opencv_installer% %opencv_release_url%
+
+        rem Check if 7-Zip is installed
+        where 7z > nul
+        if %errorlevel% neq 0 (
+            echo 7-Zip is not installed. Downloading...
+            curl -L -o 7zip_installer.exe https://www.7-zip.org/a/7z2201-x64.exe
+            echo Installing 7-Zip silently...
+            start /wait 7zip_installer.exe /S
+            echo Cleaning up...
+            del 7zip_installer.exe
+        )
+
+        echo Extracting OpenCV installer...
+        7z x %opencv_installer% -oopencv
+
+        echo Cleaning up...
+        del %opencv_installer%
+        echo OpenCV installation completed.
+
+        python -m pip install --upgrade pip setuptools wheel
+        pip install numpy
+        set "OpenCV_DIR=${{ github.workspace }}/opencv/opencv/build" && python setup.py bdist_wheel --dist-dir=%cd%\wheelhouse -v
       shell: cmd
-      env:
-        OpenCV_DIR: C:/vcpkg/packages/opencv_x64-windows/share/opencv
 
     - name: Saving all wheels
       uses: actions/upload-artifact@v2
       with:
         name: wheels
-        path: wheelhouse/opencv*.whl
+        path: wheelhouse/*.whl
 
   release_daisykit:
     # if: github.event_name == 'release' && !github.event.release.prerelease

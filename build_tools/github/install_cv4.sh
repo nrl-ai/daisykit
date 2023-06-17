@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Installing OpenCV..."
- 
+
 # Specify OpenCV version
 cvVersion="4.5.4"
 

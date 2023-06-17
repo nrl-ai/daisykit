@@ -1,5 +1,7 @@
 import sys
 from setuptools import setup, find_packages
+import numpy
+
 
 try:
     from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
@@ -16,12 +18,7 @@ except ImportError:
 if sys.version_info < (3, 0):
     sys.exit("Sorry, Python < 3.0 is not supported")
 
-requirements = ["numpy", "tqdm", "requests", "portalocker"]
-if sys.platform == "darwin":
-    requirements.append("opencv-python")
-else:
-    # Newer versions of opencv don't have wheels for i686
-    requirements.append("opencv-python<=4.5.1.48")
+requirements = ["numpy", "tqdm", "requests", "portalocker", "opencv-python"]
 
 setup(
     name="daisykit",
@@ -49,6 +46,7 @@ setup(
     packages=find_packages(),
     package_dir={"": "."},
     package_data={"daisykit": ["daisykit${PYTHON_MODULE_PREFIX}${PYTHON_MODULE_EXTENSION}"]},
+    include_dirs=[numpy.get_include()],
     install_requires=requirements,
     cmdclass={"bdist_wheel": bdist_wheel},
 )

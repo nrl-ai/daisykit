@@ -56,12 +56,21 @@ jobs:
             bitness: 64
             platform_id: manylinux_x86_64
         exclude:
-          # Exclude i686 for Python 3.10 due to numpy installation error
-          # - os: ubuntu-latest
-          #   bitness: 32
-          #   python: 310
-          - os: macos-latest
+          - os: ubuntu-latest
             bitness: 32
+            python: 37
+          - os: ubuntu-latest
+            bitness: 32
+            python: 38
+          - os: ubuntu-latest
+            bitness: 32
+            python: 39
+          - os: ubuntu-latest
+            bitness: 32
+            python: 310
+          - os: ubuntu-latest
+            bitness: 32
+            python: 311
 
     steps:
       - name: Checkout daisykit
