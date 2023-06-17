@@ -2,12 +2,9 @@
 name: Wheel builder Windows
 
 on:
-  # pull_request:
-  #   branches:
-  #     - master
-  # release:
-  #   types: [published, edited]
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build-windows-x86_64:
