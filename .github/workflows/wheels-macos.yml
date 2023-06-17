@@ -68,7 +68,7 @@ jobs:
           CIBW_ENVIRONMENT: OMP_NUM_THREADS=2
                             OPENBLAS_NUM_THREADS=2
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
-          CIBW_BEFORE_ALL_MACOS: brew install opencv
+          CIBW_BEFORE_ALL_MACOS: brew install opencv libomp
           CIBW_TEST_REQUIRES: pytest threadpoolctl
           CIBW_TEST_COMMAND: bash {project}/build_tools/github/test_wheels.sh
           CIBW_BUILD_VERBOSITY: 1

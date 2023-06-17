@@ -2,6 +2,7 @@ eval "$(conda shell.bash hook)"
 
 brew install ninja
 brew install opencv
+brew install libomp
 
 export OpenCV_DIR="/opt/homebrew/Cellar/opencv/4.7.0_2/"
 
