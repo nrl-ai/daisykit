@@ -1,3 +1,5 @@
+set -e
+
 eval "$(conda shell.bash hook)"
 
 brew install ninja
@@ -70,3 +72,8 @@ rm -rf build
 conda activate dk311
 pip install numpy
 arch -arm64 python setup.py bdist_wheel
+
+# Delocate the wheels to make them self-contained
+conda activate dk38
+pip install delocate
+python3 -m delocate.cmd.delocate_wheel -v dist/*.whl
