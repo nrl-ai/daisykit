@@ -6,18 +6,17 @@
 [![open issues](https://isitmaintained.com/badge/open/nrl-ai/daisykit.svg)](https://github.com/nrl-ai/daisykit/issues)
 [![Pypi Downloads](https://pepy.tech/badge/daisykit/month)](https://pypi.org/project/daisykit/)
 
-<a href="https://www.producthunt.com/posts/daisykit?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-daisykit" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=385715&theme=light" alt="Daisykit - A&#0032;library&#0032;for&#0032;building&#0032;AI&#0032;applications&#0032;without&#0032;AI&#0032;knowledge | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-
-[DaisyKit](https://daisykit.nrl.ai) is an easy AI toolkit with face mask detection, pose detection, background matting, barcode detection and more. This open source project includes:
+[DaisyKit](https://daisykit.nrl.ai) is an easy AI toolkit with face mask detection, pose detection, background matting, barcode detection, and more. This open-source project includes the following:
 
 - **DaisyKit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
 - **DaisyKit Python** wrapper for easy integration with Python.
-- **DaisyKit Android** - Example app demonstrate how to use Daisykit SDK in Android.
+- **DaisyKit Android** - Example app demonstrates how to use Daisykit SDK in Android.
 
 **Links:**
 
-- **Python Package:** [https://pypi.org/project/daisykit/](https://pypi.org/project/daisykit/)
-- **Documentation:** [https://daisykit.nrl.ai/docs](https://daisykit.nrl.ai/docs)
+- **Python Package:** [https://pypi.org/project/daisykit/](https://pypi.org/project/daisykit/).
+- **Documentation:** [https://daisykit.nrl.ai/docs](https://daisykit.nrl.ai/docs).
+- **Sponsor this project:** [https://github.com/sponsors/vietanhdev](https://github.com/sponsors/vietanhdev).
 
 <a href="https://www.youtube.com/watch?v=zKP8sgGoFMc">
 <img src="https://user-images.githubusercontent.com/18329471/224732779-3d2ce7b0-de53-4b9d-b9a8-890557eead16.png"/>
@@ -93,13 +92,13 @@ Run face detection example:
 
 ## 3. C++ Coding convention
 
-Read coding convention and contribution guidelines [here](https://daisykit.nrl.ai/docs/contribution).
+Read the coding convention and contribution guidelines [here](https://daisykit.nrl.ai/docs/contribution).
 
 ## 4. Known issues and problems
 
 - **Slow model inference - Low FPS**
 
-This issue can happen on development build. Add `-DCMAKE_BUILD_TYPE=Debug` to `cmake` command and build again. The FPS can be much better.
+This issue can happen on development builds. Add `-DCMAKE_BUILD_TYPE=Debug` to `cmake` command and build again. The FPS can be much better.
 
 ## 5. References
 
