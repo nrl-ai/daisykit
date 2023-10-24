@@ -7,14 +7,14 @@ jobs:
     strategy:
       matrix:
         path:
-          - check: 'src'
-            exclude: 'third_party'
-          - check: 'include'
-            exclude: 'third_party'
+        - check: 'src'
+          exclude: 'third_party'
+        - check: 'include'
+          exclude: 'third_party'
     steps:
     - uses: actions/checkout@v2
     - name: Run clang-format style check for C/C++ programs.
-      uses: jidicula/clang-format-action@v4.4.1
+      uses: jidicula/clang-format-action@v4.11.0
       with:
         clang-format-version: '13'
         check-path: ${{ matrix.path['check'] }}
