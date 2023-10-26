@@ -44,7 +44,7 @@ int main(int, char**) {
     cv::Mat rgb;
     cv::cvtColor(frame, rgb, cv::COLOR_BGR2RGB);
 
-    std::vector<types::Face> faces = flow.Process(rgb);
+    std::vector<types::FaceExtended> faces = flow.Process(rgb);
     flow.DrawResult(rgb, faces);
 
     cv::Mat draw;

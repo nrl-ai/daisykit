@@ -46,13 +46,14 @@ class FaceDetectorNode : public Node {
     cv::Mat img = *in_packet->GetData<cv::Mat>();
 
     // Process
-    std::shared_ptr<std::vector<daisykit::types::Face>> result =
-        std::make_shared<std::vector<daisykit::types::Face>>();
+    std::shared_ptr<std::vector<daisykit::types::FaceExtended>> result =
+        std::make_shared<std::vector<daisykit::types::FaceExtended>>();
     face_detector_->Predict(img, *result);
 
     // Convert to output packet
     utils::TimePoint timestamp = daisykit::utils::Timer::Now();
-    out_packet = Packet::MakePacket<std::vector<daisykit::types::Face>>(result);
+    out_packet =
+        Packet::MakePacket<std::vector<daisykit::types::FaceExtended>>(result);
   }
 
   void Tick() {

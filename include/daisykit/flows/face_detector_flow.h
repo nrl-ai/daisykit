@@ -38,8 +38,8 @@ class FaceDetectorFlow {
                    bool show_fps = false);
 #endif
   ~FaceDetectorFlow();
-  std::vector<types::Face> Process(const cv::Mat& rgb);
-  void DrawResult(cv::Mat& rgb, std::vector<types::Face>& faces);
+  std::vector<types::FaceExtended> Process(const cv::Mat& rgb);
+  void DrawResult(cv::Mat& rgb, std::vector<types::FaceExtended>& faces);
 
  private:
   bool with_landmark_ = false;

@@ -27,7 +27,7 @@ namespace types {
 /// This is used for face recognition.
 class FaceExtended : public Face {
  public:
-  float liveness_score;
+  float liveness_score = -1; 
 
   cv::Mat aligned_face;  /// Aligned face. For increasing recognition accuracy,
                          /// the face should be aligned before recognition.

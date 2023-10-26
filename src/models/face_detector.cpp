@@ -91,7 +91,7 @@ void FaceDetector::Preprocess(const cv::Mat& image, ncnn::Mat& net_input) {
 }
 
 int FaceDetector::Predict(const cv::Mat& image,
-                          std::vector<daisykit::types::Face>& faces) {
+                          std::vector<daisykit::types::FaceExtended>& faces) {
   // Preprocess
   ncnn::Mat in;
   Preprocess(image, in);

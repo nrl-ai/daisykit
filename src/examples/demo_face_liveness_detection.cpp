@@ -29,7 +29,7 @@ using namespace std;
 using namespace daisykit;
 using namespace daisykit::models;
 
-FaceLivenessDetector* face_liveness_detector = new FaceLivenessDetector(
+FaceLivenessDetector* face_liveness_detector_2 = new FaceLivenessDetector(
     "models/face_antispoofing/minivision/model_2.param",
     "models/face_antispoofing/minivision/model_2.bin", 80, 80, true);
 
@@ -44,24 +44,13 @@ int main(int, char**) {
 
   std::vector<types::FaceExtended> faces;
   while (1) {
-    int thickness = 2;
     cap >> frame;
     face_detector->Predict(frame, faces);
-    int face_count = 0;
-    for (auto face : faces) {
-      face.liveness_score = 0;
-      face_liveness_detector->Predict(frame, face);
-
-      Point tl(face.x, face.y);
-      Point br(face.x + face.w, face.y + face.h);
-      if (face.liveness_score < 0.97) {
-        rectangle(frame, tl, br, Scalar(0, 0, 255), thickness, LINE_8);
-      } else {
-        rectangle(frame, tl, br, Scalar(0, 255, 0), thickness, LINE_8);
-      }
-    }
-
-    imshow("Image", frame);
+    face_liveness_detector_2->Predict(frame, faces);
+    cv::Mat draw = frame.clone();
+    visualizers::FaceVisualizer<types::FaceExtended>::DrawFace(draw, faces,
+                                                               false);
+    imshow("Image", draw);
     waitKey(1);
   }
 

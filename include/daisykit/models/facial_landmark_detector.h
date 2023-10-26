@@ -59,7 +59,7 @@ class FacialLandmarkDetector : public NCNNModel, public ImageModel {
   /// Modify faces vector to add landmark info. Return 0 on success, otherwise
   /// return the number of inference errors.
   int PredictMulti(const cv::Mat& image,
-                   std::vector<daisykit::types::Face>& faces);
+                   std::vector<daisykit::types::FaceExtended>& faces);
 
  private:
   /// Preprocess image data to obtain net input.

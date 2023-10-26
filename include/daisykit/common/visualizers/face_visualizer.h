@@ -37,7 +37,25 @@ class FaceVisualizer {
           mask = "Mask";
         }
       }
-      BaseVisualizer::DrawRoundedBox(img, static_cast<types::Box>(face), mask);
+
+      std::cout << face.liveness_score << std::endl;
+      std::string liveness_detection;
+      cv::Scalar line_color = cv::Scalar(0, 255, 0);
+      if (face.liveness_score >= 0.0) {
+        if (face.liveness_score < 0.975f) {
+          liveness_detection =
+              "(Fake face): " + std::to_string(face.liveness_score);
+          line_color = cv::Scalar(0, 0, 255);
+        } else {
+          liveness_detection =
+              "(Real face): " + std::to_string(face.liveness_score);
+          line_color = cv::Scalar(0, 255, 0);
+        }
+      }
+      std::string text_to_show = mask + liveness_detection;
+      BaseVisualizer::DrawRoundedBox(img, static_cast<types::Box>(face),
+                                     text_to_show, line_color);
+
       if (with_landmark) {
         DrawLandmark(img, face.landmark);
       }
